@@ -1,38 +1,43 @@
-# gradelarp design exploration — approval gate
+# gradelarp — product continuation record
 
-## Current milestone
+## Design decision and shipped architecture
 
-Build, browser-review, and present three isolated interactive concepts. **Stop for approval** before altering production navigation/design or implementing phase-5+ academic features. No deployment, push, or publish is authorized.
+The user approved **Expressive**. No more concepts were created. The real `/` route now uses `src/product/app.tsx`, reusing the tested calculation engine/course editor and the approved visual language. The three old design-lab routes remain isolated historical references.
 
-## Audit
+## Completed milestones
 
-- Existing Next.js App Router application; page → Gradelarp client shell → reusable panels/editors/widgets.
-- Strong Zod-backed models; pure calculations implement point-based/weighted category grades, dropped/missing/exempt handling, target solver, credit-weighted GPA, and real snapshots.
-- Production persistence: `gradelarp / workspace / state`. Import/export: validated CSV and complete JSON backups.
-- Existing verification: 37 unit tests; 34 desktop/mobile E2E workflows. Current dashboard composition is four equivalent KPI cards plus repeated bordered widgets, with small labels and generic motivational copy.
-- No Git checkout exists. A reversible source checkpoint and SHA-256 manifest are in `artifacts/redesign-2026-10-13/BASELINE.tar.gz` and `baseline-manifest.json`.
+1. Captured a 59-file source checkpoint + SHA-256 manifest; ran the 54-test baseline from a separate temporary copy.
+2. Added validated profile storage with a non-destructive legacy migration, raw-original preservation, atomic save/revision checks, manual empty onboarding, and separate demo profiles.
+3. Implemented immutable multiple-change what-if scenarios, saved comparisons, target solver and category explanations.
+4. Implemented cumulative/projected/future GPA using the custom policy, multiple semesters and manually entered transcript finals; retained genuine snapshot analytics.
+5. Applied Expressive to the real navigation/tools, with persisted personalization, real widget visibility/order and accessible modal/search workflows.
+6. Added persistent local planner/calendar, schedules/countdown, attendance, reports/transcripts, teacher directory, goals, profiles and all-profile backups.
+7. Completed unit/browser tests, visual review and accessibility checks; repaired audit findings; verified the independent rollback and packaged source/diff/recovery evidence.
 
-## Architecture
+## Final verification
 
-- `/`: unchanged production app.
-- `/design-lab`: comparison and approval page.
-- `/design-lab/precision`, `/expressive`, `/kinetic`: distinct dashboards; shared real tool views and existing course editor.
-- `src/design-lab/storage.ts`: NEW isolated IndexedDB `gradelarp-design-lab-v1`, per-direction keys. Never reads/writes real student workspaces.
-- Existing calculations, demo generator, model validation, and functional editor/panels are reused read-only as source modules.
+- `npm run check`: lint, TypeScript, **89 unit tests**, and production build passed.
+- Desktop/mobile Chromium: **80 passed, 0 failed**; 2 duplicate viewport sweeps intentionally run once in the desktop project.
+- Rollback copy: all 59 original SHA-256 hashes restored, 54 baseline tests passed; active source still uses the Expressive product.
+- No unfinished local/manual feature milestone remains. External HAC and unverified district policies remain explicitly unavailable, not represented as completed integrations.
 
-## Sequence
+## Test and visual review loop
 
-1. Preserve source; run baseline tests.
-2. Lock three composition/token systems; build prototypes in parallel on non-overlapping files.
-3. Implement shared isolated workflows, keyboard search, appearance controls, planner, real analytics.
-4. Run lint/type/unit/build and both the preserved production suite and new design-lab suite.
-5. Inspect real screenshots at 1440 and 390 pixels; fix contrast, legibility, composition, and overflow.
-6. Present three working URLs, screenshots, evidence-based scores, recommendation, and approval question. Stop.
+Run `npm run check`; start the production build on port 3002; run `PLAYWRIGHT_BASE_URL=http://localhost:3002 npm run test:e2e`. This tests all product workflows and historical lab regressions. The supported Webpack production bundler avoids a sandbox-specific Turbopack CSS-worker port bind failure. Do not hide failing tests or modify the genuine user database to seed tests.
 
-## Documentation and tools
+Read `artifacts/product-2026-10-14/VERIFICATION.txt` for final literal command outcomes, restored-copy verification, file hashes and archive/diff/rollback paths. Screenshots and first-failure logs are retained in that directory.
 
-Frontend-design/baseline-ui skills loaded. Next.js installed docs read. Radix/Motion/Recharts primary documentation checked. shadcn MCP audit used. Context7 was absent during initial implementation; it became available late in verification. Its resolve/query tools were then used to cross-check Next.js browser-API client boundaries, Motion reduced-motion semantics, and Recharts custom shapes against primary documentation. Installed Next.js16.4 guides remain the version-specific source. Playwright is available. No new dependency or service is required.
+## If development continues
 
-## Completion state
+- Preserve `/` and the product v2 schema; do not return to a design-selection phase or redirect to the lab.
+- Keep `gradelarp` v1 and `gradelarp-design-lab-v1` untouched by product saves. Add migrations before changing the product format.
+- Keep all profile data in complete JSON backups; import into new profiles by default.
+- Do not implement district formulas until the actual district/year/course rules are verified and encoded with fixtures. Current custom estimates are intentionally labeled.
+- Any future school integration needs an authorized, verified provider boundary. No school passwords or scraping path is present.
+- Publishing, pushing or deploying still requires the user's explicit request.
 
-Phases1–4 prototype work completed: three distinct concepts, browser iterations, four viewport sizes, accessible light/dark states, real isolated editing/calculations/persistence, full regression verification, genuine screenshots, scores/recommendation. Awaiting approval. Finalcheck:54 unit tests; fullbrowser:69 passed/1 duplicate-context skip; original34 files hash-preserved. Consult `DESIGN_REVIEW.md` and the verification record. Do not begin production migration or expanded features before a human approves a direction.
+## Reusable development prompt
+
+```text
+Continue gradelarp in /Users/HrishiL/Desktop/Gradelarp. Expressive is approved and lives at /. Read AGENTS.md, README.md, FEATURE_STATUS.md, and the latest product VERIFICATION.txt. Inspect current source and failing tests before changing anything. Preserve legacy and product browser data, profile isolation, immutable scenarios, and tested grading math. Reuse existing components, keep the approved visual language, verify desktop/mobile and both themes with Playwright/axe, run lint/type/unit/production build, and update truthful verification evidence. Do not create new design concepts or deploy.
+```
