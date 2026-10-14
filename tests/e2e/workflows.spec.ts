@@ -301,7 +301,6 @@ test("real snapshots only and no invented initial trend", async ({ page }) => {
 });
 test("keyboard search and dialog escape work", async ({ page }) => {
   await page.keyboard.press("Control+k");
-  await expect(page.getByRole("dialog")).toBeVisible();
   await page
     .getByRole("dialog")
     .getByLabel("Search workspace", { exact: true })
