@@ -1,6 +1,17 @@
-# gradelarp — three isolated design systems
+# gradelarp — Expressive product design system
 
-**Milestone:** interactive exploration, awaiting user approval. The original app is unchanged. Tokens live in `src/design-lab/workspace.module.css`; compositions and component treatments are scoped modules. These are different information architectures, not recolors.
+**Approved:** Expressive is the real application at `/`. Shared tokens live in `src/design-lab/workspace.module.css`; the real product reuses the Expressive composition in `src/product/dashboard.tsx` and extends the system in `src/product/product.css`. Precision/Kinetic sections below are historical references only, not competing directions.
+
+## Real product extension
+
+- Compact 79px icon rail or expanded navigation, responsive modal mobile drawer, semantic main/skip link, persistent student and semester context.
+- The original plum course spotlight and tactile course selection remain the focal point. Real distribution, deadlines and category/history sections are sortable/hideable without replacing the spotlight.
+- What-if uses a dark-plum outcome strip, live actual/projected figures, editable hypothetical gradebook, target solver, transparent category math and saved-scenario table. On mobile, assignment rows become labeled cards rather than a desktop-width editor.
+- GPA uses editorial headers, compact credit metrics, explicit policy explanations and a real course projection table. Academic tools share the same typography, palette, field labels, confirmation dialogs and tactile controls.
+- Only entered semester dates generate calendar progress. Missing data has meaningful empty states, not invented activity.
+- Appearance supports Light/Dark/System and Daylight/Midnight/Sage presets; rendered accents are contrast-adjusted. Full/subtle/none motion is 200/140/0ms, with OS reduced motion respected.
+- Profile-specific layout, widget order/visibility, density, charts and custom accent are validated and persisted. Keyboard drag and explicit move buttons offer equivalent reordering.
+- Real design review screenshots and desktop/mobile accessibility tests are in `artifacts/product-2026-10-14/`.
 
 ## Shared foundations
 
