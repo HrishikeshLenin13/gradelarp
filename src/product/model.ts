@@ -155,6 +155,11 @@ export const ProfileSchema = z
     }),
   })
   .superRefine((p, ctx) => {
+    if (p.hac && !p.state.demo)
+      ctx.addIssue({
+        code: "custom",
+        message: "HAC mock records must remain in a synthetic sandbox profile.",
+      });
     for (const key of [
       "scenarios",
       "tasks",
