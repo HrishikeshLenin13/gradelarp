@@ -1,25 +1,42 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { createDemo } from "../../src/lib/demo";
+const failures = new WeakMap<Page, string[]>();
+async function saved(page: Page) {
+  await expect(page.locator(".product-status-line")).toContainText(
+    "Saved on this device",
+  );
+}
 async function nav(page: Page, name: string) {
-  const mobile = await page
-    .getByRole("button", { name: "Open navigation", exact: true })
-    .isVisible();
-  if (mobile)
-    await page
-      .getByRole("button", { name: "Open navigation", exact: true })
-      .click();
-  await page.getByRole("button", { name, exact: true }).click();
-  const ids: Record<string, string> = {
-    Overview: "overview",
-    "My courses 6": "courses",
-    "What-if lab LAB": "whatif",
-    "GPA planner": "gpa",
-    "Grade trends": "trends",
-    "Data & import": "data",
-  };
-  await expect(
-    page.locator(`.page-content[data-page="${ids[name]}"]`),
-  ).toHaveCSS("opacity", "1");
+  const toggle = page.getByRole("button", {
+    name: "Open navigation",
+    exact: true,
+  });
+  if (await toggle.isVisible()) await toggle.click();
+  await page
+    .getByRole("navigation", { name: "Main navigation" })
+    .getByRole("button", { name, exact: true })
+    .click();
+  await expect(page.locator(".product-view")).toHaveCSS("opacity", "1");
+}
+async function appearance(page: Page) {
+  const toggle = page.getByRole("button", {
+    name: "Open navigation",
+    exact: true,
+  });
+  if (await toggle.isVisible()) await toggle.click();
+  await page.getByRole("button", { name: "Appearance", exact: true }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+}
+async function profiles(page: Page) {
+  const toggle = page.getByRole("button", {
+    name: "Open navigation",
+    exact: true,
+  });
+  if (await toggle.isVisible()) await toggle.click();
+  await page
+    .getByRole("button", { name: "Student profiles", exact: true })
+    .click();
 }
 async function ready(page: Page) {
   await page.goto("/");
