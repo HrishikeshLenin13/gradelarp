@@ -94,12 +94,11 @@ test("course editing persists and creates actual history", async ({ page }) => {
     "100.0%",
   );
   await nav(page, "Overview");
-  await expect(page.locator(".widget-activity")).toContainText(
-    "Recent changes",
+  await expect(page.locator('[data-widget="activity"]')).toContainText(
+    "94.0 → 100.0%",
   );
-  await expect(page.locator(".widget-activity")).toContainText("94.0 → 100.0%");
 });
-test("ungraded, missing and dropped statuses change inclusion", async ({
+test("missing, exempt, dropped and invalid scores use real grading rules without accidental save", async ({
   page,
 }) => {
   await openCourse(page);
