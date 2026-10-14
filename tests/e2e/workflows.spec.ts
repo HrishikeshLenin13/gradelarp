@@ -24,12 +24,36 @@ async function nav(page: Page, name: string) {
 async function ready(page: Page) {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Let’s make this semester yours." }),
+    page.getByRole("heading", { name: "Your next chapter starts right here." }),
   ).toBeVisible();
-  await expect(page.locator(".stat-card").last()).toHaveCSS("opacity", "1");
-  await expect(page.locator(".stat-card").last()).toHaveCSS(
-    "transform",
-    "none",
+  await page
+    .getByRole("button", { name: "Explore separate demo", exact: true })
+    .click();
+  await expect(page.getByTestId("course-select")).toHaveCount(6);
+  await saved(page);
+  await page
+    .getByRole("button", { name: "Dismiss notification", exact: true })
+    .click();
+}
+async function stored(page: Page) {
+  return page.evaluate(
+    () =>
+      new Promise<string>((resolve, reject) => {
+        const r = indexedDB.open("gradelarp-product-v2", 1);
+        r.onsuccess = () => {
+          const db = r.result;
+          const get = db
+            .transaction("workspace")
+            .objectStore("workspace")
+            .get("current");
+          get.onsuccess = () => {
+            resolve(JSON.stringify(get.result.data));
+            db.close();
+          };
+          get.onerror = () => reject(get.error);
+        };
+        r.onerror = () => reject(r.error);
+      }),
   );
 }
 async function openCourse(page: Page) {
