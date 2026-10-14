@@ -681,7 +681,7 @@ test("lab writes remain isolated from original data and from another concept", a
   expect(await storedLab(page, "expressive")).toBe(expressiveBefore);
   expect(await storedOriginal(page)).toBe(before);
   await page.goto("/");
-  await expect(page.locator(".course-row").first()).toContainText(
+  await expect(page.getByTestId("course-select").first()).toContainText(
     "Preserved original Calculus QA",
   );
   await expect(page.locator('nav a[href^="/design-lab"]')).toHaveCount(0);
