@@ -275,6 +275,9 @@ export function DataTools({
       </section>
       <section className="panel">
         <h3>School connection</h3>
+        <Button variant="outline" onClick={onConnection}>
+          Open school connection
+        </Button>
         <p className="helper">
           Explore district selection, mock sessions, and synthetic grade imports
           in a separate sandbox. Live school authentication stays off.
