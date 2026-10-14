@@ -288,6 +288,10 @@ test("real snapshots only and no invented initial trend", async ({ page }) => {
     page.getByText("1 real snapshot", { exact: true }),
   ).toBeVisible();
   await expect(page.locator(".trend-chart")).toHaveCount(0);
+  await page.getByRole("button", { name: "Target gaps", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Target gaps", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
   await page
     .getByRole("button", { name: "Record snapshot", exact: true })
     .click();
