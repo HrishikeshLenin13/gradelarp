@@ -311,6 +311,19 @@ test("keyboard search and dialog escape work", async ({ page }) => {
   await expect(page.getByRole("dialog")).toContainText("Honors Chemistry");
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
+  for (const name of [
+    "Courses",
+    "What-if calculator",
+    "GPA planner",
+    "Grade history",
+    "Assignment planner",
+    "Academic tools",
+    "Data & backups",
+    "Overview",
+  ]) {
+    await nav(page, name);
+    await fit(page);
+  }
 });
 test("all destinations and appearance pass accessibility checks in light and dark", async ({
   page,
