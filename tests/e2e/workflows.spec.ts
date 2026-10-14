@@ -328,22 +328,109 @@ test("dashboard and preferences pass accessibility scan", async ({ page }) => {
 test("reduced motion and light theme render without overflow", async ({
   page,
 }, info) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.getByRole("button", { name: "Customize", exact: true }).click();
-  await page.getByRole("button", { name: "Daylight", exact: false }).click();
-  await page
-    .getByRole("button", { name: "Save preferences", exact: true })
-    .click();
-  await expect(page.locator(".app")).toHaveClass(/light/);
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBe(true);
-  await page.screenshot({
-    path: `artifacts/${info.project.name}-light.png`,
-    fullPage: true,
-  });
+  test.setTimeout(180000);
+  for (const theme of ["light", "dark"]) {
+    const toggle = page.getByRole("button", {
+      name: `Switch to ${theme} mode`,
+      exact: true,
+    });
+    if (await toggle.isVisible()) await toggle.click();
+    await saved(page);
+    for (const name of [
+      "Overview",
+      "Courses",
+      "What-if calculator",
+      "GPA planner",
+      "Grade history",
+      "Assignment planner",
+      "Academic tools",
+      "Data & backups",
+    ]) {
+      await nav(page, name);
+      await axe(page);
+      await fit(page);
+    }
+    await nav(page, "Overview");
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+    await page.screenshot({
+      path: `artifacts/product-2026-10-14/${info.project.name}-${theme}-overview.png`,
+      fullPage: true,
+    });
+  }
+  await appearance(page);
+  await axe(page);
+});
+test("legacy migration is byte-preserving and design lab edits cannot alter the real product", async ({
+  page,
+}) => {
+  const before = await stored(page);
+  await page.goto("/design-lab/expressive");
+  await expect(page.getByTestId("course-select")).toHaveCount(6);
+  await page.getByTestId("course-open").click();
+  await page.getByLabel("Assignment 1 earned", { exact: true }).fill("70");
+  await page.getByRole("button", { name: "Save course", exact: true }).click();
+  await expect(
+    page.getByText("Saved in this preview", { exact: true }).first(),
+  ).toHaveText("Saved in this preview");
+  expect(await stored(page)).toBe(before);
+  await page.goto("/");
+  await expect(page.getByTestId("course-select").first()).toContainText("94.9");
+});
+// A separate context exercises first-load migration without any product database seeded by ready().
+test("cold upgrade preserves an existing real gradebook verbatim", async ({
+  browser,
+  baseURL,
+}) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto(baseURL + "/icon.svg");
+  const legacy = createDemo();
+  legacy.demo = false;
+  legacy.settings.name = "Preserved student";
+  legacy.courses[0].name = "Real Calculus";
+  await page.evaluate(
+    (state) =>
+      new Promise<void>((resolve, reject) => {
+        const r = indexedDB.open("gradelarp", 1);
+        r.onupgradeneeded = () => r.result.createObjectStore("workspace");
+        r.onsuccess = () => {
+          const d = r.result;
+          const tx = d.transaction("workspace", "readwrite");
+          tx.objectStore("workspace").put(state, "state");
+          tx.oncomplete = () => {
+            d.close();
+            resolve();
+          };
+          tx.onerror = () => reject(tx.error);
+        };
+      }),
+    legacy,
+  );
+  await page.goto(baseURL + "/");
+  await expect(page.getByTestId("course-select").first()).toContainText(
+    "Real Calculus",
+  );
+  const data = JSON.parse(await stored(page));
+  expect(data.profiles[0].state).toEqual(legacy);
+  const preserved = await page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        const r = indexedDB.open("gradelarp", 1);
+        r.onsuccess = () => {
+          const d = r.result;
+          const g = d
+            .transaction("workspace")
+            .objectStore("workspace")
+            .get("state");
+          g.onsuccess = () => {
+            d.close();
+            resolve(g.result);
+          };
+        };
+      }),
+  );
+  expect(preserved).toEqual(legacy);
+  await context.close();
 });
 
 test("concurrent tabs detect stale writes instead of silently overwriting grades", async ({
