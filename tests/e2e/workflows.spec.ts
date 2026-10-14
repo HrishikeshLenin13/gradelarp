@@ -370,13 +370,14 @@ test("light dashboard and course cards pass accessibility checks", async ({
 });
 test("calculator, GPA, trends, data and course editor are accessible", async ({
   page,
-}) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  for (const name of [
-    "What-if lab LAB",
-    "GPA planner",
-    "Grade trends",
-    "Data & import",
+}, info) => {
+  test.skip(
+    info.project.name !== "desktop",
+    "Viewport sweep runs once; all workflows separately run on mobile.",
+  );
+  for (const viewport of [
+    { width: 768, height: 1024 },
+    { width: 1920, height: 1080 },
   ]) {
     await page.setViewportSize(viewport);
     await nav(page, "Overview");
