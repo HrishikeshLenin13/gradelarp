@@ -282,8 +282,454 @@ test("add a manual course with assignment and credits", async ({ page }) => {
   await expect(page.locator(".course-row").last()).toContainText("Statistics");
   await expect(page.locator(".course-row").last()).toContainText("92.0");
 });
-test("real snapshots only and no invented initial trend", async ({ page }) => {
-  await nav(page, "Grade trends");
+test("course deletion requires explicit confirmation and persists", async ({
+  page,
+}) => {
+  await openCourse(page);
+  await page
+    .getByRole("button", { name: "Delete course", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Confirm deletion", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Keep course", exact: true }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page
+    .getByRole("button", { name: "Delete course", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Confirm deletion", exact: true })
+    .click();
+  await saved(page);
+  await page.reload();
+  await expect(page.getByTestId("course-select")).toHaveCount(5);
+});
+test("theme, custom accent, layout, density, motion, widget order and visibility persist", async ({
+  page,
+}) => {
+  await appearance(page);
+  await fit(page);
+  await page
+    .getByRole("button", { name: "Midnight preset", exact: true })
+    .click();
+  await page.getByLabel("Accent hex", { exact: true }).fill("#123456");
+  await page
+    .getByLabel("Interface density", { exact: true })
+    .selectOption("compact");
+  await page
+    .getByLabel("Animation intensity", { exact: true })
+    .selectOption("none");
+  await page
+    .getByLabel("Dashboard layout", { exact: true })
+    .selectOption("wide");
+  await page
+    .getByLabel("Categories & recent changes", { exact: true })
+    .uncheck();
+  await page
+    .getByRole("button", { name: "Move Course cards down", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Save preferences", exact: true })
+    .click();
+  await saved(page);
+  await expect(page.locator(".product-root")).toHaveAttribute(
+    "data-theme",
+    "dark",
+  );
+  await expect(page.locator(".product-root")).toHaveAttribute(
+    "data-density",
+    "compact",
+  );
+  await expect(page.locator('[data-widget="activity"]')).toHaveCount(0);
+  await expect(page.locator("[data-widget]").first()).toHaveAttribute(
+    "data-widget",
+    "distribution",
+  );
+  await page.reload();
+  await expect(page.locator(".product-root")).toHaveAttribute(
+    "data-layout",
+    "wide",
+  );
+  await appearance(page);
+  await expect(page.getByLabel("Accent hex", { exact: true })).toHaveValue(
+    "#123456",
+  );
+  await expect(
+    page.getByLabel("Animation intensity", { exact: true }),
+  ).toHaveValue("none");
+  await axe(page);
+});
+test("keyboard widget drag reorders and persists", async ({ page }) => {
+  const handle = page.getByRole("button", {
+    name: "Reorder distribution widget",
+    exact: true,
+  });
+  await handle.focus();
+  await page.keyboard.press("Space");
+  await expect(handle).toHaveAttribute("aria-pressed", "true");
+  // Activation precedes the sensor's first layout measurement. Wait for its
+  // measured drop target, not just the synchronous pressed state.
+  await expect(page.locator('[id^="DndLiveRegion"]')).toContainText(
+    "distribution was moved over droppable area distribution",
+  );
+  await page.keyboard.press(
+    (page.viewportSize()?.width ?? 1440) < 740 ? "ArrowDown" : "ArrowRight",
+  );
+  await expect(page.locator('[id^="DndLiveRegion"]')).toContainText("upcoming");
+  await page.keyboard.press("Space");
+  await expect(page.locator("[data-widget]").nth(1)).toHaveAttribute(
+    "data-widget",
+    "upcoming",
+  );
+  await saved(page);
+  const order = await page
+    .locator("[data-widget]")
+    .evaluateAll((nodes) => nodes.map((n) => n.getAttribute("data-widget")));
+  expect(order).not.toEqual([
+    "courses",
+    "distribution",
+    "upcoming",
+    "activity",
+  ]);
+  await page.reload();
+  expect(
+    await page
+      .locator("[data-widget]")
+      .evaluateAll((nodes) => nodes.map((n) => n.getAttribute("data-widget"))),
+  ).toEqual(order);
+});
+test("weighted, unweighted, projected and cumulative GPA update with an editable policy", async ({
+  page,
+}) => {
+  await nav(page, "GPA planner");
+  await expect(page.getByTestId("cumulative-gpa")).toHaveText("4.42");
+  await expect(page.locator(".product-kpis")).toContainText("3.83");
+  await page
+    .getByLabel("Projected final AP Calculus AB", { exact: true })
+    .fill("70");
+  await expect(page.getByTestId("projected-gpa")).toHaveText("4.08");
+  await page
+    .getByRole("button", { name: "Edit grading policy", exact: true })
+    .click();
+  await page.getByLabel("AP bonus", { exact: true }).fill("0");
+  await page.getByRole("button", { name: "Save policy", exact: true }).click();
+  await expect(page.getByTestId("cumulative-gpa")).toHaveText("3.92");
+  await page.getByLabel("Goal cumulative GPA", { exact: true }).fill("5");
+  await expect(page.getByTestId("future-gpa")).toContainText("Not attainable");
+  await saved(page);
+  await page.reload();
+  await nav(page, "GPA planner");
+  await expect(page.getByTestId("cumulative-gpa")).toHaveText("3.92");
+  await expect(
+    page.getByLabel("Projected final AP Calculus AB", { exact: true }),
+  ).toHaveValue("70");
+});
+test("manual transcript records contribute to cumulative GPA and export", async ({
+  page,
+}) => {
+  await nav(page, "Academic tools");
+  await page.getByRole("button", { name: "Report cards", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Add transcript record", exact: true })
+    .click();
+  await page.getByLabel("Transcript course", { exact: true }).fill("Algebra I");
+  await page
+    .getByLabel("Transcript semester", { exact: true })
+    .fill("Fall 2025");
+  await page.getByLabel("Transcript credits", { exact: true }).fill("1");
+  await page.getByLabel("Final grade percent", { exact: true }).fill("85");
+  await page
+    .getByRole("button", { name: "Save transcript record", exact: true })
+    .click();
+  await expect(page.locator(".product-report")).toContainText("Algebra I");
+  const event = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Export transcript", exact: true })
+    .click();
+  expect((await event).suggestedFilename()).toBe("gradelarp-transcript.csv");
+  await saved(page);
+  await nav(page, "GPA planner");
+  await expect(page.getByTestId("cumulative-gpa")).toHaveText("4.06");
+  await page
+    .getByLabel("GPA period", { exact: true })
+    .selectOption("Fall 2026");
+  await expect(page.locator(".product-kpis").first()).toContainText("4.42");
+});
+test("CSV imports a new profile without erasing demo or manual data; export works", async ({
+  page,
+}) => {
+  await nav(page, "Data & backups");
+  const csv =
+    "course,teacher,level,semester,credits,mode,category,weight,assignment,earned,possible,status,due\nBiology,Ms. Smith,Regular,Fall 2026,0.5,points,Work,100,Lab,45,50,graded,2026-10-14\n";
+  await page.getByLabel("Import CSV or backup").setInputFiles({
+    name: "grades.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from(csv),
+  });
+  await expect(page.getByRole("dialog")).toContainText("Biology");
+  await page
+    .getByRole("button", { name: "Confirm import", exact: true })
+    .click();
+  await saved(page);
+  await expect(page.getByTestId("course-select")).toHaveCount(1);
+  await expect(page.getByTestId("course-select")).toContainText("90.0");
+  await nav(page, "Data & backups");
+  const event = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export CSV", exact: true }).click();
+  expect((await event).suggestedFilename()).toBe("gradelarp-grades.csv");
+  const data = JSON.parse(await stored(page));
+  expect(data.profiles).toHaveLength(3);
+  expect(
+    data.profiles.find((p: { state: { demo: boolean } }) => p.state.demo).state
+      .courses,
+  ).toHaveLength(6);
+});
+test("invalid CSV and backup reject without overwriting any profile", async ({
+  page,
+}) => {
+  const before = await stored(page);
+  await nav(page, "Data & backups");
+  await page.getByLabel("Import CSV or backup").setInputFiles({
+    name: "bad.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from("course,grade\nBiology,90"),
+  });
+  await expect(
+    page.getByRole("alert").filter({ hasText: "Missing columns" }),
+  ).toBeVisible();
+  await page.getByLabel("Import CSV or backup").setInputFiles({
+    name: "bad.json",
+    mimeType: "application/json",
+    buffer: Buffer.from('{"version":99}'),
+  });
+  await expect(page.locator(".error-message")).toBeVisible();
+  expect(await stored(page)).toBe(before);
+});
+test("complete JSON backup restores academic records, profiles and scenarios without destructive replacement", async ({
+  page,
+}) => {
+  await nav(page, "Assignment planner");
+  await page.getByRole("button", { name: "Add task", exact: true }).click();
+  await page
+    .getByLabel("Task title", { exact: true })
+    .fill("Backup proof task");
+  await page.getByRole("button", { name: "Save task", exact: true }).click();
+  await saved(page);
+  await nav(page, "Data & backups");
+  const event = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Full backup", exact: true }).click();
+  const path = await (await event).path();
+  expect(path).not.toBeNull();
+  await page
+    .getByRole("button", { name: "Clear current profile", exact: true })
+    .click();
+  await expect(page.getByRole("alertdialog")).toBeVisible();
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByLabel("Import CSV or backup").setInputFiles(path!);
+  await page
+    .getByRole("button", { name: "Confirm import", exact: true })
+    .click();
+  await saved(page);
+  const data = JSON.parse(await stored(page));
+  expect(data.profiles).toHaveLength(4);
+  expect(
+    data.profiles.filter((p: { tasks: { title: string }[] }) =>
+      p.tasks.some((t) => t.title === "Backup proof task"),
+    ),
+  ).toHaveLength(2);
+});
+test("a new manual student can create real weighted grades independently of demo data", async ({
+  page,
+}, info) => {
+  await profiles(page);
+  await page.getByLabel("New student name", { exact: true }).fill("Jordan");
+  await page
+    .getByRole("button", { name: "Create profile", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Your next chapter starts right here." }),
+  ).toBeVisible();
+  await saved(page);
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "Your next chapter starts right here." }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Add your first course", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Course & grading", exact: true })
+    .click();
+  await page.getByLabel("Course name", { exact: true }).fill("Manual algebra");
+  await page.getByRole("button", { name: "Assignments", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Add assignment", exact: true })
+    .click();
+  await page.getByLabel("Assignment 1 possible", { exact: true }).fill("10");
+  await page
+    .getByLabel("Assignment 1 status", { exact: true })
+    .selectOption("graded");
+  await page.getByLabel("Assignment 1 earned", { exact: true }).fill("9");
+  await page
+    .getByRole("button", { name: "Add assignment", exact: true })
+    .click();
+  await page
+    .getByLabel("Assignment 2 category", { exact: true })
+    .selectOption({ label: "Daily work" });
+  await page.getByLabel("Assignment 2 possible", { exact: true }).fill("5");
+  await page
+    .getByLabel("Assignment 2 status", { exact: true })
+    .selectOption("graded");
+  await page.getByLabel("Assignment 2 earned", { exact: true }).fill("4");
+  await page.getByRole("button", { name: "Save course", exact: true }).click();
+  await saved(page);
+  await page.reload();
+  await expect(page.getByTestId("course-select")).toHaveCount(1);
+  await expect(page.getByTestId("course-select")).toContainText("86.0");
+  await expect(page.locator(".product-status-line")).toContainText(
+    "Manual / imported grades",
+  );
+  await expect(page.locator(".product-demo-banner")).toHaveCount(0);
+  await page.screenshot({
+    path: `artifacts/product-2026-10-14/${info.project.name}-manual-student.png`,
+    scale: "css",
+    fullPage: false,
+  });
+  await profiles(page);
+  await page.getByRole("button").filter({ hasText: "Alex · Demo" }).click();
+  await expect(page.getByTestId("course-select")).toHaveCount(6);
+  await profiles(page);
+  await expect(
+    page.getByRole("button").filter({ hasText: "Jordan" }),
+  ).toBeVisible();
+  await page.getByRole("button").filter({ hasText: "Jordan" }).click();
+  await expect(page.getByTestId("course-select")).toHaveCount(1);
+  await expect(page.getByTestId("course-select")).toContainText("86.0");
+});
+test("planner tasks, completion, calendar and gradebook deadlines persist independently", async ({
+  page,
+}) => {
+  const before = JSON.parse(await stored(page));
+  const grades = before.profiles.find(
+    (p: { id: string }) => p.id === before.activeProfileId,
+  ).state.courses;
+  await nav(page, "Assignment planner");
+  await page.getByRole("button", { name: "Add task", exact: true }).click();
+  await page
+    .getByLabel("Task title", { exact: true })
+    .fill("Study reaction rates");
+  await page.getByLabel("Priority", { exact: true }).selectOption("high");
+  await page.getByRole("button", { name: "Save task", exact: true }).click();
+  await page
+    .getByRole("checkbox", {
+      name: "Complete Study reaction rates",
+      exact: true,
+    })
+    .click();
+  await page
+    .getByRole("checkbox", {
+      name: "Complete Unit 3: applications test",
+      exact: true,
+    })
+    .click();
+  await page.getByLabel("Show tasks", { exact: true }).selectOption("done");
+  await expect(
+    page.getByText("Study reaction rates", { exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Calendar", exact: true }).click();
+  await expect(page.locator(".product-calendar")).toBeVisible();
+  await fit(page);
+  await saved(page);
+  await page.reload();
+  await nav(page, "Assignment planner");
+  await page.getByLabel("Show tasks", { exact: true }).selectOption("done");
+  await expect(
+    page.getByRole("checkbox", {
+      name: "Complete Study reaction rates",
+      exact: true,
+    }),
+  ).toBeChecked();
+  const after = JSON.parse(await stored(page));
+  expect(
+    after.profiles.find((p: { id: string }) => p.id === after.activeProfileId)
+      .state.courses,
+  ).toEqual(grades);
+});
+test("manual weekly schedule, attendance, teachers and goals complete real persistent workflows", async ({
+  page,
+}) => {
+  await nav(page, "Academic tools");
+  await page
+    .getByRole("button", { name: "Add class block", exact: true })
+    .click();
+  await page.getByLabel("Block name", { exact: true }).fill("Chemistry block");
+  await page.getByLabel("Room", { exact: true }).fill("Lab 204");
+  await page
+    .getByRole("button", { name: "Save class block", exact: true })
+    .click();
+  await expect(page.locator(".product-schedule-grid")).toContainText(
+    "Chemistry block",
+  );
+  await page.getByRole("button", { name: "Attendance", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Record attendance", exact: true })
+    .click();
+  await page
+    .getByLabel("Attendance status", { exact: true })
+    .selectOption("tardy");
+  await page
+    .getByRole("button", { name: "Save attendance", exact: true })
+    .click();
+  await expect(
+    page.getByRole("region", { name: "Attendance entries" }),
+  ).toContainText("tardy");
+  await page.getByRole("button", { name: "Teachers", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Add teacher contact", exact: true })
+    .click();
+  await page.getByLabel("Teacher name", { exact: true }).fill("Ms. Example");
+  await page
+    .getByLabel("Teacher email", { exact: true })
+    .fill("teacher@example.com");
+  await page
+    .getByRole("button", { name: "Save teacher contact", exact: true })
+    .click();
+  await expect(
+    page.getByRole("link", { name: "teacher@example.com" }),
+  ).toHaveAttribute("href", "mailto:teacher@example.com");
+  await page.getByRole("button", { name: "Goals", exact: true }).click();
+  await page.getByRole("button", { name: "Add goal", exact: true }).click();
+  await page
+    .getByLabel("Goal title", { exact: true })
+    .fill("Practice every weekday");
+  await page
+    .getByRole("button", { name: "Save academic goal", exact: true })
+    .click();
+  await page
+    .getByRole("checkbox", {
+      name: "Complete goal Practice every weekday",
+      exact: true,
+    })
+    .check();
+  await saved(page);
+  await page.reload();
+  await nav(page, "Academic tools");
+  await expect(page.locator(".product-schedule-grid")).toContainText(
+    "Chemistry block",
+  );
+  const data = JSON.parse(await stored(page));
+  const p = data.profiles.find(
+    (x: { id: string }) => x.id === data.activeProfileId,
+  );
+  expect(p.schedules).toHaveLength(1);
+  expect(p.attendance[0].status).toBe("tardy");
+  expect(p.contacts[0].email).toBe("teacher@example.com");
+  expect(p.goals[0].done).toBe(true);
+});
+test("real snapshots only, interactive charts, no invented trend", async ({
+  page,
+}) => {
+  await nav(page, "Grade history");
   await expect(
     page.getByText("1 real snapshot", { exact: true }),
   ).toBeVisible();
