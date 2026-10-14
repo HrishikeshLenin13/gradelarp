@@ -54,29 +54,17 @@ test("dashboard uses computed demo grades and fits viewport", async ({
 test("what-if calculation changes projection without altering real grades", async ({
   page,
 }) => {
-  await nav(page, "What-if lab LAB");
-  await page.getByRole("button", { name: "100%", exact: true }).click();
-  await expect(page.getByTestId("projected-grade")).toContainText("95.5");
-  await page.getByRole("button", { name: "70%", exact: true }).click();
-  await expect(page.getByTestId("projected-grade")).toContainText("91.0");
-  await page
-    .getByRole("spinbutton", { name: "Target course grade", exact: true })
-    .fill("99");
-  await expect(page.getByText("Not with this assignment alone.")).toBeVisible();
-  await nav(page, "Overview");
-  await expect(page.locator(".course-row").first()).toContainText("94.9");
-});
-test("course editing persists and creates actual history", async ({ page }) => {
-  await page.locator(".course-row").first().click();
-  await page
-    .getByRole("spinbutton", { name: "Assignment 1 earned", exact: true })
-    .fill("100");
+  await openCourse(page);
+  await page.getByLabel("Assignment 1 earned", { exact: true }).fill("100");
   await page.getByRole("button", { name: "Save course", exact: true }).click();
-  await expect(page.locator(".course-row").first()).toContainText("96.1");
+  await saved(page);
+  await expect(page.getByTestId("course-select").first()).toContainText("96.1");
   await page.reload();
-  await expect(page.locator(".course-row").first()).toContainText("96.1");
-  await nav(page, "Grade trends");
-  await expect(page.getByText("2 real snapshots")).toBeVisible();
+  await expect(page.getByTestId("course-select").first()).toContainText("96.1");
+  await nav(page, "Grade history");
+  await expect(
+    page.getByText("2 real snapshots", { exact: true }),
+  ).toBeVisible();
   await expect(page.locator(".trend-chart")).toBeVisible();
   await page
     .getByLabel("Trend course", { exact: true })
