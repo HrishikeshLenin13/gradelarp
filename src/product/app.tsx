@@ -506,9 +506,11 @@ export function GradelarpApp() {
             <div className={cn(styles.demoNote, "product-status-line")}>
               <span className={styles.demoDot} />
               <span>
-                {state.demo
-                  ? "Demo profile · sample grades"
-                  : "Manual / imported grades"}{" "}
+                {profile.hac
+                  ? "HAC sandbox · synthetic grades"
+                  : state.demo
+                    ? "Demo profile · sample grades"
+                    : "Manual / imported grades"}{" "}
                 · Custom GPA estimates
               </span>
               <span role="status">{saved}</span>
