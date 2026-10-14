@@ -204,7 +204,7 @@ export function GradelarpApp() {
         profiles: data.profiles.map((x) => (x.id === p.id ? p : x)),
       });
   }
-  function changeData(next: ProductData) {
+  function changeData(next: ProductData, keepView = false) {
     const p = next.profiles.find((p) => p.id === next.activeProfileId)!;
     if (next.activeProfileId !== data?.activeProfileId) {
       setSemester(p.state.courses[0]?.semester ?? currentSemester());
