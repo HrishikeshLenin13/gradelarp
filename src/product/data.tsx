@@ -30,6 +30,7 @@ export function DataTools({
   data: ProductData;
   profile: Profile;
   onChange: (d: ProductData) => void;
+  onConnection: () => void;
   onProfiles: () => void;
   onDemo: () => void;
   notify: (s: string) => void;
