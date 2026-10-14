@@ -278,9 +278,36 @@ test("add a manual course with assignment and credits", async ({ page }) => {
     .getByRole("spinbutton", { name: "Assignment 1 earned", exact: true })
     .fill("92");
   await page.getByRole("button", { name: "Save course", exact: true }).click();
-  await expect(page.locator(".course-row")).toHaveCount(7);
-  await expect(page.locator(".course-row").last()).toContainText("Statistics");
-  await expect(page.locator(".course-row").last()).toContainText("92.0");
+  await expect(page.getByTestId("course-select")).toContainText("95.0");
+  await appearance(page);
+  await expect(page.getByLabel("Semester start", { exact: true })).toHaveValue(
+    "",
+  );
+  await page.getByLabel("Semester start", { exact: true }).fill("2027-01-11");
+  await page.getByLabel("Semester end", { exact: true }).fill("2027-05-28");
+  await page
+    .getByRole("button", { name: "Save preferences", exact: true })
+    .click();
+  await saved(page);
+  await page.reload();
+  await page.getByLabel("Active semester").selectOption("Spring 2027");
+  await appearance(page);
+  await expect(page.getByLabel("Semester start", { exact: true })).toHaveValue(
+    "2027-01-11",
+  );
+  await expect(page.getByLabel("Semester end", { exact: true })).toHaveValue(
+    "2027-05-28",
+  );
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  const workspace = JSON.parse(await stored(page));
+  const active = workspace.profiles.find(
+    (p: { id: string }) => p.id === workspace.activeProfileId,
+  );
+  expect(active.periods["Spring 2027"]).toEqual({
+    start: "2027-01-11",
+    end: "2027-05-28",
+  });
+  expect(Object.keys(active.periods)).toHaveLength(2);
 });
 test("course deletion requires explicit confirmation and persists", async ({
   page,
