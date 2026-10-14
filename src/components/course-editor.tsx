@@ -311,6 +311,7 @@ export function CourseEditor({
                   <label>
                     Category
                     <select
+                      aria-label={`Assignment ${i + 1} category`}
                       value={a.categoryId}
                       onChange={(e) =>
                         patchAssignment(a.id, { categoryId: e.target.value })
