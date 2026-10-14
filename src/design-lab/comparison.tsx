@@ -15,7 +15,7 @@ export function DesignComparison() {
           Your original workspace is unchanged
         </span>
         <Link href="/">
-          Open original app
+          Open real application
           <ArrowUpRight size={15} />
         </Link>
       </header>
