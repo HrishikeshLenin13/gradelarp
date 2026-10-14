@@ -1,0 +1,65 @@
+.chartWrap {
+  width: 100%;
+  min-width: 0;
+}
+.mode {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+.mode button {
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--dl-muted);
+}
+.mode button[aria-pressed="true"] {
+  background: var(--dl-raised);
+  color: var(--dl-text);
+}
+.plot {
+  height: 240px;
+  min-width: 0;
+}
+.legend {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.course {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid var(--dl-line);
+  border-radius: 5px;
+  color: var(--dl-muted);
+  font-size: 12px;
+}
+.selected {
+  border-color: var(--dl-accent);
+  color: var(--dl-text);
+}
+.course b {
+  font-weight: 550;
+}
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+@media (max-width: 600px) {
+  .plot {
+    height: 250px;
+  }
+  .mode button {
+    min-height: 36px;
+  }
+  .legend {
+    gap: 6px;
+  }
+  .course {
+    font-size: 12px;
+  }
+}
