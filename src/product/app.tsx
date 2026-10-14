@@ -209,7 +209,7 @@ export function GradelarpApp() {
     if (next.activeProfileId !== data?.activeProfileId) {
       setSemester(p.state.courses[0]?.semester ?? currentSemester());
       setSelected(p.state.courses[0]?.id ?? "");
-      setView("overview");
+      if (!keepView) setView("overview");
     }
     commit(next);
   }
