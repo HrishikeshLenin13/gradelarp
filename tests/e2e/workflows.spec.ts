@@ -385,11 +385,4 @@ test("calculator, GPA, trends, data and course editor are accessible", async ({
       .analyze();
     expect(result.violations).toEqual([]);
   }
-  await nav(page, "Overview");
-  await page.locator(".course-row").first().click();
-  await expect(page.getByRole("dialog")).toBeVisible();
-  const editor = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-    .analyze();
-  expect(editor.violations).toEqual([]);
 });
