@@ -26,7 +26,7 @@ export function DesignComparison() {
             <h1>
               A new perspective.
               <br />
-              Three distinct directions.
+              Three archived directions.
             </h1>
           </div>
           <p>
