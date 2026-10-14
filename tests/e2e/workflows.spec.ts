@@ -51,7 +51,95 @@ test("dashboard uses computed demo grades and fits viewport", async ({
     fullPage: true,
   });
 });
-test("what-if calculation changes projection without altering real grades", async ({
+test("multi-score scenario, hypothetical additions, target solver, save and restore leave real grades unchanged", async ({
+  page,
+}, info) => {
+  const before = JSON.parse(await stored(page));
+  const actual = before.profiles.find(
+    (p: { id: string }) => p.id === before.activeProfileId,
+  ).state.courses;
+  await nav(page, "What-if calculator");
+  await page
+    .locator(".product-scenario-table tbody tr")
+    .first()
+    .screenshot({
+      path: `artifacts/product-2026-10-14/${info.project.name}-scenario-row.png`,
+      scale: "css",
+    });
+  await page.getByLabel("Scenario 1 earned", { exact: true }).fill("100");
+  await page.getByLabel("Scenario 2 earned", { exact: true }).fill("100");
+  await expect(page.getByTestId("projected-grade")).toContainText("97.2");
+  await expect(page.getByTestId("actual-grade")).toContainText("94.9");
+  await page
+    .getByRole("button", { name: "Add hypothetical assignment", exact: true })
+    .click();
+  await page
+    .getByLabel("Hypothetical 8 name", { exact: true })
+    .fill("Final exam possibility");
+  await page.getByLabel("Scenario 8 earned", { exact: true }).fill("100");
+  await expect(page.getByTestId("projected-grade")).toContainText("97.5");
+  await page.getByLabel("Target course grade", { exact: true }).fill("99");
+  await expect(page.getByTestId("required-score")).toContainText(
+    "Not with this assignment alone.",
+  );
+  await page.getByLabel("Scenario name", { exact: true }).fill("Strong finish");
+  await page
+    .getByRole("button", { name: "Save scenario", exact: true })
+    .click();
+  await saved(page);
+  await page
+    .getByRole("button", { name: "Reset simulation", exact: true })
+    .click();
+  await expect(page.getByTestId("projected-grade")).toContainText("94.9");
+  await page.getByRole("button", { name: "Load", exact: true }).click();
+  await expect(page.getByTestId("projected-grade")).toContainText("97.5");
+  await page.reload();
+  await nav(page, "What-if calculator");
+  await page.getByRole("button", { name: "Load", exact: true }).click();
+  await expect(page.getByTestId("projected-grade")).toContainText("97.5");
+  await page
+    .getByLabel("Scenario name", { exact: true })
+    .fill("Strong finish revised");
+  await page
+    .getByRole("button", { name: "Update scenario", exact: true })
+    .click();
+  const comparison = page.getByRole("region", {
+    name: "Saved scenario comparison",
+  });
+  await expect(comparison.locator("tbody tr")).toHaveCount(1);
+  await page
+    .getByRole("button", { name: "Reset simulation", exact: true })
+    .click();
+  await page.getByLabel("Scenario 1 earned", { exact: true }).fill("0");
+  await page.getByLabel("Scenario name", { exact: true }).fill("Missed exam");
+  await page
+    .getByRole("button", { name: "Save scenario", exact: true })
+    .click();
+  await saved(page);
+  await expect(comparison.locator("tbody tr")).toHaveCount(2);
+  await expect(
+    comparison.getByRole("row").filter({ hasText: "Missed exam" }),
+  ).toContainText("76.1%");
+  await expect(
+    comparison.getByRole("row").filter({ hasText: "Strong finish revised" }),
+  ).toContainText("97.5%");
+  await page
+    .getByRole("button", { name: "Delete scenario Missed exam", exact: true })
+    .click();
+  await expect(page.getByRole("alertdialog")).toBeVisible();
+  await page
+    .getByRole("alertdialog")
+    .getByRole("button", { name: "Delete", exact: true })
+    .click();
+  await saved(page);
+  await expect(comparison.locator("tbody tr")).toHaveCount(1);
+  const after = JSON.parse(await stored(page));
+  expect(
+    after.profiles.find((p: { id: string }) => p.id === after.activeProfileId)
+      .state.courses,
+  ).toEqual(actual);
+});
+test("actual course editing persists and captures genuine assignment history", async ({
   page,
 }) => {
   await openCourse(page);
