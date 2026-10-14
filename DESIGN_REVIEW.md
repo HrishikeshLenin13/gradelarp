@@ -1,3 +1,5 @@
+> **Final user decision, October 14, 2026:** Expressive (Option 2) was approved. The real application now uses it at `/`. Scores and recommendations below describe the earlier exploration, not an active approval request. Product implementation/verification is documented in FEATURE_STATUS.md and artifacts/product-2026-10-14/VERIFICATION.txt.
+
 # gradelarp — prototype review and approval decision
 
 ## Recommendation: Kinetic
