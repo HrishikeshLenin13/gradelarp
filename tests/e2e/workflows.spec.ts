@@ -272,8 +272,18 @@ test("add a manual course with assignment and credits", async ({ page }) => {
     .getByRole("textbox", { name: "Assignment 1 name", exact: true })
     .fill("First exam");
   await page
-    .getByRole("combobox", { name: "Assignment 1 status", exact: true })
+    .getByLabel("Assignment 1 status", { exact: true })
     .selectOption("graded");
+  await page.getByLabel("Assignment 1 earned", { exact: true }).fill("92");
+  await page.getByRole("button", { name: "Save course", exact: true }).click();
+  await saved(page);
+  await expect(page.getByLabel("Active semester")).toHaveValue("Spring 2027");
+  await expect(page.getByTestId("course-select")).toHaveCount(1);
+  await expect(page.getByTestId("course-select")).toContainText("92.0");
+  await page.reload();
+  await page.getByLabel("Active semester").selectOption("Spring 2027");
+  await openCourse(page);
+  await page.getByLabel("Assignment 1 earned", { exact: true }).fill("95");
   await page
     .getByRole("button", { name: "Add assignment", exact: true })
     .click();
