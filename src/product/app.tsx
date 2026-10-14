@@ -67,6 +67,7 @@ const pages = [
   { id: "trends", name: "Grade history", icon: BarChart3 },
   { id: "planner", name: "Assignment planner", icon: CalendarDays },
   { id: "academics", name: "Academic tools", icon: NotebookTabs },
+  { id: "hac", name: "School connection", icon: School },
   { id: "data", name: "Data & backups", icon: Upload },
 ] as const;
 type View = (typeof pages)[number]["id"];
