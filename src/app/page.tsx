@@ -1,4 +1,4 @@
-import { Gradelarp } from "@/components/gradelarp";
+import { GradelarpApp } from "@/product/app";
 export default function Page() {
-  return <Gradelarp />;
+  return <GradelarpApp />;
 }
