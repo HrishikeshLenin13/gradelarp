@@ -538,7 +538,9 @@ export function GradelarpApp() {
             {state.demo && (
               <div className="product-demo-banner">
                 <span>
-                  You’re exploring a separate demo. Ready for your own semester?
+                  {profile.hac
+                    ? "HAC sandbox: synthetic school records, not your real grades."
+                    : "You’re exploring a separate demo. Ready for your own semester?"}
                 </span>
                 <button onClick={() => setProfiles(true)}>
                   Create a student profile <Plus size={15} />
