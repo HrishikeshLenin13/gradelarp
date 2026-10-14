@@ -78,6 +78,7 @@ const descriptions: Record<View, string> = {
   trends: "Real grades. Real snapshots. Your academic story over time.",
   planner: "Make room for what’s next. Plan work without changing your grades.",
   academics: "The details around your school day, together at last.",
+  hac: "A thoughtful connection, with your work kept intact.",
   data: "Your data belongs to you. Keep a copy, wherever you go.",
 };
 function subscribeSystem(listener: () => void) {
