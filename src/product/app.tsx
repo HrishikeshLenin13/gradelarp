@@ -55,6 +55,7 @@ import { GpaPlanner } from "./gpa";
 import { Planner } from "./planner";
 import { Academics } from "./academics";
 import { Appearance, Profiles } from "./preferences";
+import { SchoolConnection } from "./hac";
 import { DataTools } from "./data";
 import { Confirm } from "./forms";
 import styles from "@/design-lab/workspace.module.css";
