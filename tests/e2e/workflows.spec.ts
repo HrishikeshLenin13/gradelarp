@@ -255,15 +255,15 @@ test("add a manual course with assignment and credits", async ({ page }) => {
   await page
     .getByRole("button", { name: "Course & grading", exact: true })
     .click();
+  await page.getByLabel("Course name", { exact: true }).fill("Statistics");
   await page
-    .getByRole("textbox", { name: "Course name", exact: true })
-    .fill("Statistics");
-  await page
-    .getByRole("combobox", { name: "Grading method", exact: true })
+    .getByLabel("Grading method", { exact: true })
     .selectOption("points");
+  await page.getByLabel("Course credits", { exact: true }).fill("1");
   await page
-    .getByRole("spinbutton", { name: "Course credits", exact: true })
-    .fill("1");
+    .getByRole("dialog")
+    .getByLabel("Semester", { exact: true })
+    .fill("Spring 2027");
   await page.getByRole("button", { name: "Assignments", exact: true }).click();
   await page
     .getByRole("button", { name: "Add assignment", exact: true })
