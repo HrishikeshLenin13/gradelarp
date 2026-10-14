@@ -756,6 +756,13 @@ export function GradelarpApp() {
                   onUpdate={updateProfile}
                 />
               )}
+              {view === "hac" && (
+                <SchoolConnection
+                  data={data}
+                  profile={profile}
+                  onChange={(next) => changeData(next, true)}
+                />
+              )}
               {view === "data" && (
                 <DataTools
                   data={data}
