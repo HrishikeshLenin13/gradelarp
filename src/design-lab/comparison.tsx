@@ -12,7 +12,7 @@ export function DesignComparison() {
         </Link>
         <span>
           <Check size={14} />
-          Your original workspace is unchanged
+          Expressive is approved and live at /
         </span>
         <Link href="/">
           Open real application
