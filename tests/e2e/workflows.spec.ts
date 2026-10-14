@@ -299,7 +299,9 @@ test("real snapshots only and no invented initial trend", async ({ page }) => {
     .click();
   await expect(page.locator(".calculation-details tbody tr")).toHaveCount(2);
 });
-test("keyboard search and dialog escape work", async ({ page }) => {
+test("keyboard search, Escape, and every primary navigation destination work", async ({
+  page,
+}) => {
   await page.keyboard.press("Control+k");
   await page
     .getByRole("dialog")
