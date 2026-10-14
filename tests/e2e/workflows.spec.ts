@@ -312,20 +312,7 @@ test("keyboard search and dialog escape work", async ({ page }) => {
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
-test("dashboard and preferences pass accessibility scan", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(page.locator(".stat-card").last()).toHaveCSS("opacity", "1");
-  const result = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-    .analyze();
-  expect(result.violations).toEqual([]);
-  await page.getByRole("button", { name: "Customize", exact: true }).click();
-  const dialog = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-    .analyze();
-  expect(dialog.violations).toEqual([]);
-});
-test("reduced motion and light theme render without overflow", async ({
+test("all destinations and appearance pass accessibility checks in light and dark", async ({
   page,
 }, info) => {
   test.setTimeout(180000);
