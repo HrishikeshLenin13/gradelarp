@@ -38,16 +38,23 @@ test.beforeEach(async ({ page }) => {
 test("dashboard uses computed demo grades and fits viewport", async ({
   page,
 }, info) => {
-  await expect(page.getByText("4.42", { exact: true })).toBeVisible();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(
+    page.getByRole("button", { name: "Weighted GPA Local estimate 4.42" }),
+  ).toBeVisible();
   await expect(page.getByText("94.0%", { exact: true })).toBeVisible();
-  await expect(page.locator(".course-row")).toHaveCount(6);
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth <= innerWidth,
-    ),
-  ).toBe(true);
+  await page.getByTestId("course-select").nth(2).click();
+  await expect(
+    page.getByRole("heading", { name: "Honors Chemistry", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText("94.23", { exact: false }).first()).toBeVisible();
+  await expect(page.getByTestId("course-select").nth(2)).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await fit(page);
   await page.screenshot({
-    path: `artifacts/${info.project.name}-dashboard.png`,
+    path: `artifacts/product-2026-10-14/${info.project.name}-dark-or-default.png`,
     fullPage: true,
   });
 });
