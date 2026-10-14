@@ -111,10 +111,18 @@ test("ungraded, missing and dropped statuses change inclusion", async ({
     .getByRole("combobox", { name: "Assignment 1 status", exact: true })
     .selectOption("dropped");
   await expect(page.locator(".editor-grade")).toContainText("95.5");
+  await page
+    .getByLabel("Assignment 1 status", { exact: true })
+    .selectOption("graded");
+  await page.getByLabel("Assignment 1 earned", { exact: true }).fill("101");
+  await page.getByRole("button", { name: "Save course", exact: true }).click();
+  await expect(
+    page.getByRole("alert").filter({ hasText: "Score must not exceed" }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
-  await expect(page.locator(".course-row").first()).toContainText("94.9");
+  await expect(page.getByTestId("course-select").first()).toContainText("94.9");
 });
-test("preferences persist: light theme, accent, density and visibility", async ({
+test("create course, configure points and credits, add/edit/delete assignment, and change semester", async ({
   page,
 }) => {
   await page.getByRole("button", { name: "Add course", exact: true }).click();
