@@ -346,6 +346,7 @@ export function CourseEditor({
                   <label>
                     Possible
                     <input
+                      aria-label={`Assignment ${i + 1} possible`}
                       type="number"
                       min="0.01"
                       step="any"
