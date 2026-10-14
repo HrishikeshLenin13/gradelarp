@@ -33,7 +33,10 @@ export function DesignComparison() {
             Same grades. Same trusted calculations.
             <br />A different way to understand your semester.
             <br />
-            <span>Explore the working previews, then choose a direction.</span>
+            <span>
+              Expressive is the approved direction. These previews remain
+              isolated references.
+            </span>
           </p>
         </div>
         <div className={styles.concepts}>
