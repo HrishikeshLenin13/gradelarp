@@ -348,6 +348,7 @@ test("reduced motion and light theme render without overflow", async ({
 
 test("light dashboard and course cards pass accessibility checks", async ({
   page,
+  context,
 }) => {
   const second = await context.newPage();
   await second.goto("/");
