@@ -346,7 +346,7 @@ test("reduced motion and light theme render without overflow", async ({
   });
 });
 
-test("light dashboard and course cards pass accessibility checks", async ({
+test("concurrent tabs detect stale writes instead of silently overwriting grades", async ({
   page,
   context,
 }) => {
