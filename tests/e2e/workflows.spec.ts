@@ -32,7 +32,28 @@ async function ready(page: Page) {
     "none",
   );
 }
+async function openCourse(page: Page) {
+  await page.getByTestId("course-open").click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+}
+async function fit(page: Page) {
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth + 1,
+    ),
+  ).toBe(true);
+}
+async function axe(page: Page) {
+  const result = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+    .analyze();
+  expect(result.violations).toEqual([]);
+}
 test.beforeEach(async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  const errors: string[] = [];
+  failures.set(page, errors);
+  page.on("pageerror", (e) => errors.push(e.message));
   await ready(page);
 });
 test.afterEach(async ({ page }) => {
