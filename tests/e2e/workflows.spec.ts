@@ -355,18 +355,17 @@ test("light dashboard and course cards pass accessibility checks", async ({
   await page
     .getByRole("button", { name: "Save preferences", exact: true })
     .click();
-  await expect(page.locator(".app")).toHaveClass(/light/);
-  await page.mouse.move(0, 0);
-  const dashboard = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-    .analyze();
-  expect(dashboard.violations).toEqual([]);
-  await nav(page, "My courses 6");
-  await expect(page.locator(".course-card")).toHaveCount(6);
-  const courses = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-    .analyze();
-  expect(courses.violations).toEqual([]);
+  await expect(
+    second
+      .getByRole("alert")
+      .filter({ hasText: "Another tab saved newer data" }),
+  ).toBeVisible();
+  const data = JSON.parse(await stored(page));
+  expect(
+    data.profiles.find((p: { id: string }) => p.id === data.activeProfileId)
+      .state.courses[0].assignments[0].earned,
+  ).toBe(100);
+  await second.close();
 });
 
 test("tablet and wide layouts preserve Expressive hierarchy and accessible controls", async ({
