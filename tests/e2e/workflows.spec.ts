@@ -436,6 +436,7 @@ test("keyboard widget drag reorders and persists", async ({ page }) => {
   await handle.focus();
   await page.keyboard.press("Space");
   await expect(handle).toHaveAttribute("aria-pressed", "true");
+  // A realistic key hold lets the library attach its deferred key listener.
   // Activation precedes the sensor's first layout measurement. Wait for its
   // measured drop target, not just the synchronous pressed state.
   await expect(page.locator('[id^="DndLiveRegion"]')).toContainText(
