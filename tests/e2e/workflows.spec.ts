@@ -275,8 +275,14 @@ test("add a manual course with assignment and credits", async ({ page }) => {
     .getByRole("combobox", { name: "Assignment 1 status", exact: true })
     .selectOption("graded");
   await page
-    .getByRole("spinbutton", { name: "Assignment 1 earned", exact: true })
-    .fill("92");
+    .getByRole("button", { name: "Add assignment", exact: true })
+    .click();
+  await page
+    .getByRole("button", {
+      name: "Delete assignment New assignment",
+      exact: true,
+    })
+    .click();
   await page.getByRole("button", { name: "Save course", exact: true }).click();
   await expect(page.getByTestId("course-select")).toContainText("95.0");
   await appearance(page);
