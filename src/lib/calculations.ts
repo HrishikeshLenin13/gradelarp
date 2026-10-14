@@ -1,0 +1,213 @@
+import type { Course, GpaPolicy, Assignment, AppState } from "./model";
+export function included(a: Assignment) {
+  return a.status === "graded" || a.status === "missing";
+}
+export function courseGrade(course: Course): number | null {
+  const work = course.assignments.filter(included);
+  if (!work.length) return null;
+  if (course.mode === "points") {
+    const possible = work.reduce((s, a) => s + a.possible, 0);
+    return possible
+      ? (work.reduce(
+          (s, a) => s + (a.status === "missing" ? 0 : (a.earned ?? 0)),
+          0,
+        ) /
+          possible) *
+          100
+      : null;
+  }
+  let total = 0,
+    weights = 0;
+  for (const category of course.categories) {
+    const items = work.filter((a) => a.categoryId === category.id);
+    const possible = items.reduce((s, a) => s + a.possible, 0);
+    if (possible && category.weight > 0) {
+      total +=
+        (items.reduce(
+          (s, a) => s + (a.status === "missing" ? 0 : (a.earned ?? 0)),
+          0,
+        ) /
+          possible) *
+        100 *
+        category.weight;
+      weights += category.weight;
+    }
+  }
+  return weights ? total / weights : null;
+}
+export function gradeLetter(grade: number | null, policy: GpaPolicy) {
+  if (grade === null) return "—";
+  return (
+    [...policy.scale].sort((a, b) => b.min - a.min).find((s) => grade >= s.min)
+      ?.letter ?? "F"
+  );
+}
+export function gpa(courses: Course[], policy: GpaPolicy, weighted = true) {
+  let sum = 0,
+    credits = 0;
+  for (const course of courses) {
+    const grade = courseGrade(course);
+    if (grade === null) continue;
+    let points =
+      [...policy.scale]
+        .sort((a, b) => b.min - a.min)
+        .find((s) => grade >= s.min)?.points ?? 0;
+    if (weighted && grade >= policy.bonusMinimum)
+      points +=
+        course.level === "AP"
+          ? policy.apBonus
+          : course.level === "Honors"
+            ? policy.honorsBonus
+            : 0;
+    sum += points * course.credits;
+    credits += course.credits;
+  }
+  return credits ? { value: sum / credits, credits, qualityPoints: sum } : null;
+}
+export function cumulativeGpa(courses: Course[], policy: GpaPolicy) {
+  const current = gpa(courses, policy);
+  const credits = (current?.credits ?? 0) + policy.priorCredits;
+  return credits
+    ? ((current?.qualityPoints ?? 0) + policy.priorCredits * policy.priorGpa) /
+        credits
+    : null;
+}
+export function averageGrade(courses: Course[]) {
+  const grades = courses
+    .map(courseGrade)
+    .filter((g): g is number => g !== null);
+  return grades.length
+    ? grades.reduce((a, b) => a + b, 0) / grades.length
+    : null;
+}
+export function scenarioCourse(
+  course: Course,
+  assignment: Assignment,
+  percent: number,
+) {
+  const newAssignment = {
+    ...assignment,
+    earned: (assignment.possible * percent) / 100,
+    status: "graded" as const,
+  };
+  return {
+    ...course,
+    assignments: [
+      ...course.assignments.filter((a) => a.id !== assignment.id),
+      newAssignment,
+    ],
+  };
+}
+export function requiredScore(
+  course: Course,
+  assignment: Assignment,
+  target: number,
+): number | null {
+  const at = (p: number) => courseGrade(scenarioCourse(course, assignment, p));
+  if (at(100) === null || (at(100) ?? 0) + 1e-8 < target) return null;
+  if ((at(0) ?? 0) >= target) return 0;
+  let low = 0,
+    high = 100;
+  for (let i = 0; i < 60; i++) {
+    const middle = (low + high) / 2;
+    if ((at(middle) ?? 0) >= target) high = middle;
+    else low = middle;
+  }
+  return Math.ceil(high * 100 - 1e-8) / 100;
+}
+export function categoryBreakdown(course: Course) {
+  return course.categories.map((c) => {
+    const work = course.assignments.filter(
+      (a) => a.categoryId === c.id && included(a),
+    );
+    const possible = work.reduce((s, a) => s + a.possible, 0),
+      earned = work.reduce(
+        (s, a) => s + (a.status === "missing" ? 0 : (a.earned ?? 0)),
+        0,
+      );
+    return {
+      ...c,
+      earned,
+      possible,
+      grade: possible ? (earned / possible) * 100 : null,
+    };
+  });
+}
+export function semesterProgress(start: string, end: string, now = new Date()) {
+  const from = new Date(start + "T00:00:00").getTime(),
+    to = new Date(end + "T23:59:59").getTime();
+  return Math.min(
+    100,
+    Math.max(0, ((now.getTime() - from) / (to - from)) * 100),
+  );
+}
+
+/** Snapshot only the values actually entered at the moment of capture. */
+export function snapshotScores(courses: Course[]) {
+  return {
+    grades: Object.fromEntries(courses.map((c) => [c.id, courseGrade(c)])),
+    assignments: Object.fromEntries(
+      courses.map((c) => [
+        c.id,
+        Object.fromEntries(
+          c.assignments.map((a) => [
+            a.id,
+            {
+              name: a.name,
+              status: a.status,
+              percent:
+                a.status === "missing"
+                  ? 0
+                  : a.status === "graded"
+                    ? ((a.earned ?? 0) / a.possible) * 100
+                    : null,
+            },
+          ]),
+        ),
+      ]),
+    ),
+  };
+}
+/** Historical changes come from adjacent real snapshots, never a demo timeline. */
+export function assignmentChanges(
+  snapshots: AppState["snapshots"],
+  courses: Course[],
+) {
+  const changes: Array<{
+    id: string;
+    at: string;
+    course: Course;
+    name: string;
+    before: number | null;
+    after: number | null;
+    status: string;
+  }> = [];
+  const bySemester = new Map<string, AppState["snapshots"][number]>();
+  for (const [index, snapshot] of snapshots.entries()) {
+    const previous = bySemester.get(snapshot.semester);
+    bySemester.set(snapshot.semester, snapshot);
+    if (!previous?.assignments || !snapshot.assignments) continue;
+    for (const course of courses) {
+      const old = previous.assignments[course.id],
+        current = snapshot.assignments[course.id];
+      if (!old || !current) continue;
+      for (const [id, grade] of Object.entries(current)) {
+        const before = old[id];
+        if (
+          before &&
+          (before.percent !== grade.percent || before.status !== grade.status)
+        )
+          changes.push({
+            id: `${index}/${course.id}/${id}`,
+            at: snapshot.at,
+            course,
+            name: grade.name,
+            before: before.percent,
+            after: grade.percent,
+            status: grade.status,
+          });
+      }
+    }
+  }
+  return changes.reverse();
+}
