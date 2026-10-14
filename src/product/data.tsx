@@ -23,6 +23,7 @@ export function DataTools({
   data,
   profile,
   onChange,
+  onConnection,
   onProfiles,
   onDemo,
   notify,
