@@ -357,7 +357,7 @@ export function DesignWorkspace({ direction }: { direction: Direction }) {
             {directionInfo[direction].name} <b>Unapproved preview</b>
           </span>
           <Link href="/">
-            Original app
+            Real application
             <ArrowUpRight size={13} />
           </Link>
         </div>
