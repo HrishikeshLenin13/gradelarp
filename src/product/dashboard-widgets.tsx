@@ -6,6 +6,7 @@ import {
   useSensor,
   useSensors,
   closestCenter,
+  MeasuringStrategy,
 } from "@dnd-kit/core";
 import {
   SortableContext,
