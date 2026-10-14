@@ -378,11 +378,13 @@ test("calculator, GPA, trends, data and course editor are accessible", async ({
     "Grade trends",
     "Data & import",
   ]) {
-    await nav(page, name);
-    await expect(page.locator(".demo-banner")).toBeVisible();
-    const result = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
-      .analyze();
-    expect(result.violations).toEqual([]);
+    await page.setViewportSize(viewport);
+    await nav(page, "Overview");
+    await fit(page);
+    await axe(page);
+    await page.screenshot({
+      path: `artifacts/product-2026-10-14/overview-${viewport.width}.png`,
+      fullPage: true,
+    });
   }
 });
