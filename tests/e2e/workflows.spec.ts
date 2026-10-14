@@ -303,7 +303,8 @@ test("keyboard search and dialog escape work", async ({ page }) => {
   await page.keyboard.press("Control+k");
   await expect(page.getByRole("dialog")).toBeVisible();
   await page
-    .getByRole("textbox", { name: "Search workspace", exact: true })
+    .getByRole("dialog")
+    .getByLabel("Search workspace", { exact: true })
     .fill("chemistry");
   await page
     .getByRole("button", { name: "Honors Chemistry Fall 2026", exact: true })
