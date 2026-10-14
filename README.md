@@ -1,109 +1,95 @@
-# gradelarp
+# gradelarp.
 
-**A little clarity. A lot of potential.** A working, local-first student grade workspace built with Next.js, React, and TypeScript.
+**Expressive is the approved design and the real application at `/`.** This is a local-first student gradebook and academic planner, not a redirect to the design lab. No deployment, remote database, accounts, school credentials, or live HAC connection is configured.
 
-## Run
+## Run locally
 
 ```sh
 cd /Users/HrishiL/Desktop/Gradelarp
-npm install
 npm run dev
+# http://localhost:3000
 ```
 
-Open http://localhost:3000. For production: `npm run build && npm start`.
+For a production build:
 
-Node 20.9+ is required by Next.js; this implementation was verified with Node 26.8.1. Exact dependency versions are locked in `package-lock.json`.
+```sh
+npm run check
+npm run start
+```
+
+`build` uses Next.js’s supported Webpack bundler. The default Turbopack build could not bind its CSS-worker port in this desktop sandbox; Webpack production compilation succeeds without that worker-port requirement. Development continues to use the installed Next.js default. No new runtime dependencies were added.
+
+## Start with your own data
+
+- A fresh browser starts with an **empty manual student profile**, never fabricated grades.
+- Add a course, choose weighted categories or total points, set credits/level/semester/target, and enter assignments.
+- Use **Student profiles** for separate local students. The demo opens a separate, clearly labeled profile.
+- The semester selector filters the overview/course cards/history. The what-if selector can reach every entered semester. GPA offers selected-period and all-semester views.
+- Set actual term dates in **Appearance**; progress is shown only for configured semesters. New manual profiles do not imply a school calendar.
+- Changes save to IndexedDB after validation. “Saved on this device” follows transaction completion, not a timer. Export a backup if an error appears. Conflicting edits from another tab are rejected rather than silently overwriting newer data.
 
 ## What works
 
-- Responsive Obsidian and Daylight themes, four accents, density/layout preferences, reduced-motion support, animation intensity, and persistent widget ordering/visibility.
-- Pointer and keyboard widget drag-and-drop; settings also provide explicit up/down reorder buttons.
-- Six **clearly labeled demo courses**, editable course names, teachers, semesters, credits, course levels, targets, colors, category weights, and assignment data.
-- Weighted-category and point-based grading. Missing work counts as zero. Dropped, exempt, ungraded, and future assignments are excluded from the actual grade.
-- What-if lab for any existing assignment or a new hypothetical assignment. Solves the minimum percentage needed to hit a target and identifies impossible targets. Displays category math. Scenarios never overwrite actual grades.
-- Credit-weighted GPA, unweighted GPA, and a cumulative estimate with user-entered prior credits/GPA. Editable threshold scale and AP/honors bonuses; GPA is explicitly an **estimate**, not a school-reported result.
-- Actual course and assignment-grade snapshots on course saves/deletion, plus manual snapshots. Trend charts remain empty until two real snapshots exist. Assignment-level trend selection and recent changes use recorded snapshots only. Semester comparison uses entered data only.
-- Course search/sorting, workspace command search (`Ctrl+K` / `⌘K`), upcoming assignments, recent assignments, help/onboarding, import previews, confirmation dialogs, and accessible feedback.
-- CSV assignment import/export, full JSON backup/restore, demo reload, and workspace deletion. Import files are validated before state changes.
-- IndexedDB persistence through a replaceable `DataProvider` interface. No accounts, credentials, or remote grade fetching.
+### Gradebook and simulations
 
-## Architecture
+Course/assignment create, edit and delete; teacher, colors, levels, credits, semesters and targets; category names and weights; graded/missing/ungraded/future/dropped/exempt statuses. Weighted grades normalize populated positive-weight categories. Total-points grades use included earned/possible totals. Missing = zero. Ungraded, future, dropped and exempt = excluded. A graded score must be between zero and possible points; extra credit is not supported.
 
-```text
-src/app/                  Next.js app router, metadata, global design tokens/styles
-src/components/           Application shell, sortable widgets, calculators, course/settings editors
-src/components/ui/        Heavily restyled shadcn-style Button / Radix Dialog foundations
-src/lib/model.ts          Strong types + Zod validation
-src/lib/calculations.ts   Pure grade/GPA/target-score math
-src/lib/demo.ts           Explicitly labeled realistic sample data
-src/lib/persistence.ts    IndexedDB provider boundary
-src/lib/import-export.ts  CSV and full-backup portability
- tests/                   Unit and desktop/mobile browser tests
-```
+The what-if gradebook changes several existing scores/statuses simultaneously, adds hypothetical assignments with their own points/categories, calculates a combined projection, solves a target score with the other changes held fixed, and explains effective category weights. Save, load, update, compare, reset and delete scenarios locally. No hypothetical action writes actual assignments. Saved scenarios recalculate against current real data and flag stale/deleted references.
 
-Application naming lives in `APP_NAME` in `src/components/gradelarp.tsx`, package metadata, and `src/app/layout.tsx`.
+### GPA and authentic history
 
-## Calculation rules
+Selected-semester/all-semester weighted and unweighted GPA; all-semester cumulative GPA including explicit prior credits and manual transcript finals; persistent hypothetical final-grade projections; future-credit target solver with a course-level feasibility bound. Edit the complete custom scale and level bonuses. These are **custom estimates**, not verified LISD/RRISD or official rank calculations. Avoid entering the same credit twice in gradebook, transcript records and aggregate prior-credit fields.
 
-- **Points:** sum of included earned points / sum of included possible points × 100.
-- **Weighted:** a category's point percentage × its configured weight, divided by the sum of weights of populated categories. Empty categories do not silently become zeros. Weights must total 100%.
-- **Statuses:** missing = zero; graded = entered earned points; future, ungraded, dropped, exempt = excluded. Extra credit above possible points is not supported in v1.
-- **Target solver:** binary search on [0,100] percent for one assignment. Returns the minimum feasible score, rounded upward to 0.01%; targets above the reachable maximum are reported as impossible.
-- **GPA:** total quality points / included course credits. Grades use exact values, not display-rounded values, for mapping to a scale. AP/honors bonuses are user-configurable and require the configured minimum grade.
-- **Cumulative:** combines current-semester quality points with prior GPA × prior credits. Prior entries must use the same weighted scale and exclude the current semester.
-- **Dashboard average:** simple mean of currently graded course percentages, not the official credit-weighted GPA.
-- **Progress:** elapsed time between the configured semester dates, clamped to 0–100%.
+Every saved gradebook edit records actual snapshots. You can capture an additional real snapshot. Course/assignment history, comparisons, target-gap charts and change lists use those records, with empty states before sufficient history exists. No invented timeline or grade improvements.
 
-## Data portability
+### Academic workspace
 
-CSV headers, all required:
+- Agenda and monthly calendar combining entered assignment deadlines and manual tasks, priorities, notes, search, overdue/completed filters. Planner completion does not alter grade status.
+- Weekly class blocks by semester, room, overlap validation, local-time next-class/end-of-class countdown. No inferred holidays or special bell schedules.
+- Manual per-course/day attendance with present/absent/tardy/excused counts. No invented absences or attendance rates.
+- Personal report cards and manual transcript records, print layout and CSV export. Not official school documents.
+- Teacher contact directory, email links, rooms, office hours and notes.
+- Personal academic goals/completion and real course-target tracking.
+- Separate student profiles, profile exports, all-profile backups, validated legacy/full JSON restoration and assignment CSV import/export.
 
-```csv
-course,teacher,level,semester,credits,mode,category,weight,assignment,earned,possible,status,due
-Biology,Ms. Smith,Regular,Fall 2026,0.5,weighted,Major grades,60,Unit 1 test,92,100,graded,2026-10-12
-Biology,Ms. Smith,Regular,Fall 2026,0.5,weighted,Daily work,40,Lab notebook,45,50,graded,2026-10-13
-```
+### Personalization
 
-- `level`: Regular, Honors, AP. `mode`: weighted, points.
-- `status`: graded, missing, ungraded, future, dropped, exempt.
-- `earned` may be blank for ungraded work; graded rows require a valid score. `possible` must be positive.
-- A course is grouped by **course name + semester**. Each category must have consistent weights. Course metadata must be consistent across rows.
-- Files up to 10 MB and 10,000 CSV assignment rows are supported.
-- CSV represents assignments, not preferences or snapshot history. Use the full JSON backup to preserve empty courses, empty categories, settings, targets, colors, policy, and history.
-- IndexedDB belongs to this browser and origin. Changing the origin/port does not carry the workspace with it. Browser data clearing/private mode may remove it. Keep regular backups.
+Light/dark/system, Daylight/Midnight/Sage presets, custom hex accent adjusted for text contrast, per-course colors, expanded/icon navigation, balanced/wide layout, compact/spacious density, 0/140/200-ms motion, OS reduced-motion support, bars/dots charts. Widget visibility and positions persist; reorder with pointer/keyboard drag or accessible move buttons in Appearance.
 
-## Verification
+## Data preservation and storage
 
-Verified on October 13, 2026: **37 unit tests and 34 desktop/mobile production browser tests passed**, alongside lint, TypeScript checks, and the production build. Accessibility scans cover the dashboard, course cards, calculators, GPA table, trends, data tools, preferences, and course editor, including both themes.
+| Database                                                | Purpose                                    | Upgrade behavior                                            |
+| ------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------- |
+| `gradelarp / workspace / state`                         | Original v1 gradebook                      | Read once, never overwritten or cleared by product v2       |
+| `gradelarp-product-v2 / workspace / current`            | `{revision, data}` containing all profiles | Validated, atomic, optimistic-revision saves                |
+| `gradelarp-product-v2 / preservation / legacy-original` | Original raw v1 state at first migration   | Retained; downloadable from Data & backups                  |
+| `gradelarp-design-lab-v1 / workspaces / direction`      | Historical isolated concept references     | Never read by product migration; never writes real profiles |
+
+A corrupt/unsupported saved gradebook displays a load error and is not replaced with demo data. Full JSON imports restore as **new profiles**, preserving current profiles. CSV imports default to a new profile; appending is offered for manual profiles only. Clearing requires confirmation and affects only the current profile. Browser cleanup, private browsing, different origins/ports and device changes can affect access: keep downloaded backups. Local storage is not encrypted at rest by the application.
+
+## Source organization
+
+- `src/app/page.tsx` → `src/product/app.tsx` real Expressive application.
+- `src/product/model.ts`, `storage.ts`, `engine.ts`: validated product schemas, non-destructive migration, immutable simulations and extended planning math.
+- `src/product/dashboard*.tsx`: approved Expressive composition + sortable real-data widgets.
+- `src/product/what-if.tsx`, `gpa.tsx`, `planner.tsx`, `academics.tsx`, `preferences.tsx`, `data.tsx`: functioning product tools.
+- Existing `src/lib/calculations.ts` and v1 model/import math remain reused. Existing course editor, policy editor, trends and chart primitives are reused.
+- `src/design-lab/`: retained isolated reference designs, not the production data provider.
+
+## Verification and recovery
 
 ```sh
 npm run lint
 npm run typecheck
 npm test
 npm run build
-npx playwright install chromium
-npm run test:e2e
+PLAYWRIGHT_BASE_URL=http://localhost:3002 npm run test:e2e
 ```
 
-Playwright covers desktop and mobile: actual calculations, edits and persistence, status handling, preferences, widget keyboard reordering, policy changes, import/export, backup round-trip, deletion confirmation, manual course creation, real-only snapshots, search, accessibility scans, and reduced motion. It reuses a running port-3000 development server, or starts one automatically. Browser screenshots are saved in `artifacts/`; test traces and reports are in `test-results/` and `playwright-report/`.
+Playwright runs Chromium desktop and mobile, plus tablet/wide layout sweeps, keyboard paths and axe scans. Production browser tests use an isolated browser profile and test port, not the user’s stored browser data. See `FEATURE_STATUS.md` and `artifacts/product-2026-10-14/VERIFICATION.txt` for final observed results and command logs. Initial failing logs are retained alongside the repaired reruns.
 
-## Design foundations
+The pre-product checkpoint has 59 files and SHA-256 manifest in `artifacts/product-2026-10-14/BASELINE.tar.gz`. The final changed-source archive, source diff and tested rollback script live beside it. The rollback script only runs against a deliberately marked independent copy; it refuses the live project. It restores source, not browser data. The new product database remains retained if old source is restored, while the old app reads the preserved original database.
 
-Obsidian and Daylight tokens were also established as editable Figma variable collections:
-[gradelarp · foundations](https://www.figma.com/design/0r0dTjQ4HHKW8wNFh8s6Qo).
+## Deliberately unavailable
 
-Implementation references checked: [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), [Motion reduced motion](https://motion.dev/docs/react-use-reduced-motion), [Recharts ResponsiveContainer](https://recharts.github.io/api/ResponsiveContainer/), [shadcn Radix Dialog](https://ui.shadcn.com/docs/components/radix/dialog), [Radix Dialog](https://www.radix-ui.com/primitives/docs/components/dialog), [idb](https://github.com/jakearchibald/idb), and [dnd-kit keyboard sorting](https://dndkit.com/legacy/presets/sortable/overview/).
-
-## Deliberate v1 boundaries
-
-- No HAC integration, student password collection, official school sync, Supabase/cloud accounts, or deployment. The requested repository app runs independently.
-- No verified LISD profile. The custom default scale is not attributed to LISD or any district.
-- No invented historical data or grade-change claims. Recent assignments are sorted by due date, not presented as an edit audit log.
-- What-if scenarios model one assignment at a time; multi-assignment scenario saving, automatic category drop-lowest rules, and extra-credit policies are future additions. Individual dropped/exempt statuses work now.
-- Native selects are intentionally restyled for robust keyboard and mobile behavior; the dialog/button layer uses Radix/shadcn patterns.
-- Accessibility scans are automated checks, not a substitute for a full assistive-technology audit. Mobile browser tests use Chromium emulation; Safari-specific behavior still needs a device test.
-- Production dependencies passed `npm audit --omit=dev`. The latest ESLint/Next lint tooling currently inherits an unpatched `braces` advisory; this is a dev-only dependency chain, not runtime app code. No forced incompatible framework downgrade was applied.
-
-## Next development step
-
-Add a real-device Safari/VoiceOver pass, then deploy the tested app. A future approved grade provider can implement `DataProvider` without replacing the UI or calculation engine; verify any district GPA policy using its official published source before adding it.
+HAC connection, automatic school synchronization, remote accounts/cloud sync, school-verified LISD/RRISD GPA/rank rules, official transcripts, school holiday inference, extra credit above possible points and automatic drop-lowest/category policies. The UI labels the applicable limitations rather than showing fake controls or official claims. No publishing/pushing/deployment occurred.
