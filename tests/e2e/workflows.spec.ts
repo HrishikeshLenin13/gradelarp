@@ -102,9 +102,9 @@ test("course editing persists and creates actual history", async ({ page }) => {
 test("ungraded, missing and dropped statuses change inclusion", async ({
   page,
 }) => {
-  await page.locator(".course-row").first().click();
+  await openCourse(page);
   await page
-    .getByRole("combobox", { name: "Assignment 1 status", exact: true })
+    .getByLabel("Assignment 1 status", { exact: true })
     .selectOption("missing");
   await expect(page.locator(".editor-grade")).toContainText("76.1");
   await page
