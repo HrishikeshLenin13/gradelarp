@@ -159,8 +159,9 @@ export function DesignComparison() {
             <p>
               Each concept starts with clearly labeled demo data and keeps its
               edits and appearance preferences in a separate preview database.
-              The existing app at <Link href="/">/</Link> is preserved. No
-              design will replace it until you approve.
+              The approved Expressive application now lives at{" "}
+              <Link href="/">/</Link>. Preview edits here never update real
+              student profiles.
             </p>
           </div>
         </div>
