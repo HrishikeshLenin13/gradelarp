@@ -276,9 +276,8 @@ export function DataTools({
       <section className="panel">
         <h3>School connection</h3>
         <p className="helper">
-          HAC integration is not connected. Use manual entry, CSV, or JSON
-          backups. No credentials are requested and no automated school scraping
-          is implemented.
+          Explore district selection, mock sessions, and synthetic grade imports
+          in a separate sandbox. Live school authentication stays off.
         </p>
       </section>
       <section className="panel danger-zone">
