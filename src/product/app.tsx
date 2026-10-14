@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MotionConfig, motion, useReducedMotion } from "motion/react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import {
+  School,
   LayoutDashboard,
   BookOpen,
   FlaskConical,
