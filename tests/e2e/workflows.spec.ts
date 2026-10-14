@@ -108,7 +108,11 @@ test("ungraded, missing and dropped statuses change inclusion", async ({
     .selectOption("missing");
   await expect(page.locator(".editor-grade")).toContainText("76.1");
   await page
-    .getByRole("combobox", { name: "Assignment 1 status", exact: true })
+    .getByLabel("Assignment 1 status", { exact: true })
+    .selectOption("exempt");
+  await expect(page.locator(".editor-grade")).toContainText("95.5");
+  await page
+    .getByLabel("Assignment 1 status", { exact: true })
     .selectOption("dropped");
   await expect(page.locator(".editor-grade")).toContainText("95.5");
   await page
