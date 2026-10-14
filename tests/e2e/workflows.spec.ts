@@ -269,7 +269,7 @@ test("add a manual course with assignment and credits", async ({ page }) => {
     .getByRole("button", { name: "Add assignment", exact: true })
     .click();
   await page
-    .getByRole("textbox", { name: "Assignment 1 name", exact: true })
+    .getByLabel("Assignment 1 name", { exact: true })
     .fill("First exam");
   await page
     .getByLabel("Assignment 1 status", { exact: true })
