@@ -212,7 +212,7 @@ test.afterEach(async ({ page }) => {
   pageErrors.delete(page);
 });
 
-test("comparison offers three distinct, isolated concepts and approval boundary", async ({
+test("historical comparison retains three isolated references and marks Expressive approved", async ({
   page,
 }) => {
   await page.goto("/design-lab");
