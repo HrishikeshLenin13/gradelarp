@@ -349,11 +349,17 @@ test("reduced motion and light theme render without overflow", async ({
 test("light dashboard and course cards pass accessibility checks", async ({
   page,
 }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.getByRole("button", { name: "Customize", exact: true }).click();
-  await page.getByRole("button", { name: "Daylight", exact: false }).click();
-  await page
-    .getByRole("button", { name: "Save preferences", exact: true })
+  const second = await context.newPage();
+  await second.goto("/");
+  await expect(second.getByTestId("course-select")).toHaveCount(6);
+  await openCourse(page);
+  await page.getByLabel("Assignment 1 earned", { exact: true }).fill("100");
+  await page.getByRole("button", { name: "Save course", exact: true }).click();
+  await saved(page);
+  await openCourse(second);
+  await second.getByLabel("Assignment 1 earned", { exact: true }).fill("70");
+  await second
+    .getByRole("button", { name: "Save course", exact: true })
     .click();
   await expect(
     second
