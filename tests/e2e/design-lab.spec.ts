@@ -228,7 +228,12 @@ test("comparison offers three distinct, isolated concepts and approval boundary"
       page.getByRole("link", { name: `Explore ${name}`, exact: true }),
     ).toHaveAttribute("href", `/design-lab/${direction}`);
   }
-  await expect(page.getByText(/approval|approve/i).first()).toBeVisible();
+  await expect(
+    page.getByText(
+      "Expressive is the approved direction. These previews remain isolated references.",
+      { exact: true },
+    ),
+  ).toBeVisible();
   await noOverflow(page);
   await accessible(page);
   const signatures: string[] = [];
