@@ -2,6 +2,7 @@ import { z } from "zod";
 import { AssignmentSchema, StateSchema, type AppState } from "../lib/model";
 import { emptyState, createDemo } from "../lib/demo";
 import { uid } from "../lib/utils";
+import { ImportStateSchema } from "../hac/types";
 
 export const dashboardWidgets = [
   "courses",
