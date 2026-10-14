@@ -225,7 +225,7 @@ export function GradelarpApp() {
   }
   function openDemo() {
     if (!data) return;
-    const existing = data.profiles.find((p) => p.state.demo);
+    const existing = data.profiles.find((p) => p.state.demo && !p.hac);
     if (existing) {
       changeData({ ...data, activeProfileId: existing.id });
       return;
