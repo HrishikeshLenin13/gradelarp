@@ -166,7 +166,7 @@ export function DesignComparison() {
         </div>
         <footer className={styles.footer}>
           <span>gradelarp. / Design exploration</span>
-          <span>Local previews only. Awaiting your direction.</span>
+          <span>Expressive approved. Local references only.</span>
         </footer>
       </main>
     </div>
