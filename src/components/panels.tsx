@@ -619,7 +619,7 @@ export function GpaPanel({
     </>
   );
 }
-function PolicyEditor({
+export function PolicyEditor({
   initial,
   onSave,
   onClose,
