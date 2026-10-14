@@ -354,7 +354,12 @@ export function DesignWorkspace({ direction }: { direction: Direction }) {
             Design laboratory
           </Link>
           <span>
-            {directionInfo[direction].name} <b>Unapproved preview</b>
+            {directionInfo[direction].name}{" "}
+            <b>
+              {direction === "expressive"
+                ? "Approved design · isolated reference"
+                : "Archived concept"}
+            </b>
           </span>
           <Link href="/">
             Real application
