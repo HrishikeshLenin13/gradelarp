@@ -31,6 +31,7 @@ export function DashboardWidgets({
     useSensor(PointerSensor, { activationConstraint: { distance: 7 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
+      scrollBehavior: "auto",
     }),
   );
   const visible = settings.order.filter((w) => settings.widgets.includes(w));
