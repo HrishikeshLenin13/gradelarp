@@ -35,7 +35,11 @@ async function ready(page: Page) {
 test.beforeEach(async ({ page }) => {
   await ready(page);
 });
-test("dashboard uses computed demo grades and fits viewport", async ({
+test.afterEach(async ({ page }) => {
+  expect(failures.get(page)).toEqual([]);
+});
+
+test("Expressive is the real root app with computed grades, selection, and no redirect", async ({
   page,
 }, info) => {
   await expect(page).toHaveURL(/\/$/);
