@@ -368,7 +368,8 @@ test("light dashboard and course cards pass accessibility checks", async ({
     .analyze();
   expect(courses.violations).toEqual([]);
 });
-test("calculator, GPA, trends, data and course editor are accessible", async ({
+
+test("tablet and wide layouts preserve Expressive hierarchy and accessible controls", async ({
   page,
 }, info) => {
   test.skip(
