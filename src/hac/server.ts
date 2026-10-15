@@ -69,6 +69,11 @@ export class LiveHacService {
     });
     this.active++;
     try {
+      if (command.action === "probe")
+        return {
+          session: previous?.public ?? null,
+          portalCheck: await probePortal(command.portal, this.factory),
+        };
       if (command.action === "connect") {
         const result = await connectPortal(command, this.factory);
         if (token) this.sessions.delete(token);
