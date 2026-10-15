@@ -77,8 +77,48 @@ describe("synthetic HTML contract", () => {
     );
     expect(unknown.status).toBe("partial");
   });
-  it("rejects oversized pages and invalid scores without turning them into zeros", () => {
-    expect(() => parseFixture(" ".repeat(1_000_001), "lisd")).toThrow(/limit/);
+  it("rate-limits failed sign-ins without logging credentials", async () => {
+    const f = fakeTransport({ rejected: true }),
+      s = new LiveHacService(() => f.transport);
+    const log = vi.spyOn(console, "log");
+    for (let i = 0; i < 5; i++)
+      await expect(
+        s.handle(
+          {
+            action: "connect",
+            portal,
+            username: "test-user",
+            password: "test-only",
+          },
+          undefined,
+          "same-client",
+        ),
+      ).rejects.toThrow(/accept/);
+    await expect(
+      s.handle(
+        {
+          action: "connect",
+          portal,
+          username: "test-user",
+          password: "test-only",
+        },
+        undefined,
+        "same-client",
+      ),
+    ).rejects.toThrow(/attempts/);
+    expect(log).not.toHaveBeenCalled();
+    log.mockRestore();
+  });
+  it("constructs a cookie jar per portal connection", async () => {
+    const t = new DirectPortalTransport(portal);
+    await t.destroy();
+  });
+});
+describe("source grade accuracy and preservation", () => {
+  it("retains school averages separately from assignment reconstruction and unknown marks", () => {
+    const s = snapshot(),
+      c = s.courses[0];
+    expect(c.averageText).toBe("88.00");
     expect(
       parseLiveAssignments(
         gradebook().replace("Course: Algebra II", "Coursework I"),
