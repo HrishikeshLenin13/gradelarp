@@ -183,6 +183,7 @@ export function DataTools({
             </Button>
             <Button
               variant="outline"
+              disabled={!profile.state.courses.length}
               onClick={() =>
                 download(
                   "gradelarp-grades.csv",
