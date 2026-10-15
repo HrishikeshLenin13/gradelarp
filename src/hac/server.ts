@@ -3,6 +3,7 @@ import { HacError } from "./types";
 import { LiveCommandSchema, type LiveSession } from "./live-types";
 import {
   connectPortal,
+  probePortal,
   refreshPortal,
   type PortalSession,
   type TransportFactory,
