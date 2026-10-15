@@ -52,7 +52,7 @@ export const productProvider = {
       return { ...concurrent, data: ProductSchema.parse(concurrent.data) };
     }
     const envelope = { revision: 0, data };
-    if (raw !== null)
+    if (raw !== null && !(raw as { demo?: boolean }).demo)
       await tx.objectStore("preservation").put(raw, "legacy-original");
     await tx.objectStore("workspace").put(envelope, "current");
     await tx.done;
