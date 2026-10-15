@@ -306,8 +306,8 @@ describe("server-only mock boundary", () => {
       req("{}", {}, "http://localhost:3000/api/hac?pass=test"),
       req(
         "{}",
-        { origin: "http://example.test" },
-        "http://example.test/api/hac",
+        { origin: "http://remote.example" },
+        "http://remote.example/api/hac",
       ),
     ])
       await expect(readCommand(r)).rejects.toThrow();
