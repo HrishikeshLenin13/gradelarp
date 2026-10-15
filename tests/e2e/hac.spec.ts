@@ -265,6 +265,9 @@ test("bad credentials stay on sign-in with a clear error and no fabricated succe
   await expect(page.getByLabel("HAC password", { exact: true })).toHaveValue(
     "",
   );
+  await expect(
+    page.getByText("Connection details: AUTH_FAILED · sign-in"),
+  ).toBeVisible();
   expect((await stored(page)).profiles).toHaveLength(1);
 });
 test("refresh, partial sync and confirmed disconnect preserve imported source records", async ({
