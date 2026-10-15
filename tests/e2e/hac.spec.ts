@@ -48,13 +48,13 @@ async function stored(page: Page): Promise<ProductData> {
       new Promise((resolve, reject) => {
         const r = indexedDB.open("gradelarp-product-v2", 1);
         r.onsuccess = () => {
-          const db = r.result;
-          const get = db
-            .transaction("workspace")
-            .objectStore("workspace")
-            .get("current");
-          get.onsuccess = () => {
-            resolve(get.result.data);
+          const db = r.result,
+            g = db
+              .transaction("workspace")
+              .objectStore("workspace")
+              .get("current");
+          g.onsuccess = () => {
+            resolve(g.result.data);
             db.close();
           };
           g.onerror = () => reject(g.error);
