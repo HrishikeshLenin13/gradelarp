@@ -29,3 +29,13 @@ export class HacError extends Error {
     super(message);
   }
 }
+
+/** Survives Next dev module re-evaluation without trusting an arbitrary name. */
+export function isHacError(error: unknown): error is HacError {
+  return (
+    error instanceof HacError ||
+    (error instanceof Error &&
+      errorBrand in error &&
+      error[errorBrand] === true)
+  );
+}
