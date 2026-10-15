@@ -3,6 +3,7 @@ import { AssignmentSchema, StateSchema, type AppState } from "../lib/model";
 import { emptyState, createDemo } from "../lib/demo";
 import { uid } from "../lib/utils";
 import { ImportStateSchema } from "../hac/types";
+import { LiveConnectionSchema } from "../hac/live-types";
 
 export const dashboardWidgets = [
   "courses",
