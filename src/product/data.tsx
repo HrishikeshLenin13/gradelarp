@@ -168,7 +168,8 @@ export function DataTools({
           <h2>Always yours to keep.</h2>
           <p>
             A full backup includes every student profile, grade, scenario,
-            setting, and academic record. CSV contains assignments only.
+            setting, HAC source record, and academic record. CSV exports manual
+            planning assignments only.
           </p>
           <div className="flex">
             <Button
