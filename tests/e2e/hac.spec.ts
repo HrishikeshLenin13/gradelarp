@@ -438,7 +438,7 @@ test("landing and school records are accessible, responsive and free of runtime 
     .getByRole("heading", { name: "Less checking. More understanding." })
     .click();
   await page.screenshot({
-    path: `artifacts/hac-live-2026-10-15/${info.project.name}-landing.png`,
+    path: `artifacts/hac-records-fix-2026-10-15/test-only-${info.project.name}-landing.png`,
     fullPage: true,
   });
   await fill(page);
