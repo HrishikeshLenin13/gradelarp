@@ -57,7 +57,7 @@ async function stored(page: Page): Promise<ProductData> {
             resolve(get.result.data);
             db.close();
           };
-          get.onerror = () => reject(get.error);
+          g.onerror = () => reject(g.error);
         };
         r.onerror = () => reject(r.error);
       }),
