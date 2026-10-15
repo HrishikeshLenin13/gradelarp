@@ -276,6 +276,16 @@ export function GradelarpApp() {
         )}
       </div>
     );
+  if (entry)
+    return (
+      <HacWelcome
+        onSync={syncSchool}
+        onManual={() => {
+          rememberManualEntry();
+          setEntry(false);
+        }}
+      />
+    );
   const prefs = profile.preferences,
     state = profile.state,
     theme =
