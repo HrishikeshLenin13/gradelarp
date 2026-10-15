@@ -60,6 +60,7 @@ describe("Expressive product migration and data separation", () => {
   it("round-trips complete multi-profile backups", () => {
     const a = newProfile("A"),
       b = newProfile("B", true);
+    b.state.demo = false;
     a.tasks = [
       {
         id: "task",
