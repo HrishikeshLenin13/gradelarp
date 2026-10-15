@@ -21,7 +21,8 @@ export async function POST(request: NextRequest) {
   let isConnect = false;
   try {
     const command = await readCommand(request);
-    isConnect = command?.action === "connect";
+    action = command?.action;
+    isConnect = action === "connect";
     const { token, clearCookie, ...result } = (await service.handle(
       command,
       request.cookies.get(cookieName)?.value,
