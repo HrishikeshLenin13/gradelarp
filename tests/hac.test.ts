@@ -298,9 +298,8 @@ describe("server-only mock boundary", () => {
   it("accepts bounded same-origin POST JSON", async () => {
     expect(await readCommand(req('{"action":"status"}'))).toEqual({
       action: "status",
-    });
-  });
-  it("rejects cross-origin requests, URL queries, plain HTTP on remote hosts, wrong content type and bad JSON", async () => {
+    }));
+  it("rejects cross-origin, query secrets, non-JSON, oversize and remote HTTP requests", async () => {
     for (const r of [
       req("{}", { origin: "https://other.example" }),
       req("{}", {}, "http://localhost:3000/api/hac?pass=test"),
