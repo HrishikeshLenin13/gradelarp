@@ -85,6 +85,122 @@ describe("synthetic HTML contract", () => {
         "lisd",
       ).status,
     ).toBe("partial");
+    expect(() =>
+      parseLiveAssignments(LOGIN_HTML, portal, "Test Student", "id"),
+    ).toThrow(/session ended/);
+    expect(() =>
+      parseLiveAssignments("<p>Maintenance</p>", portal, "Test Student", "id"),
+    ).toThrow(/not recognized/);
+  });
+  it("rejects unfamiliar assignment columns instead of shifting scores", () => {
+    expect(() =>
+      parseLiveAssignments(
+        gradebook().replace("<th>Score</th>", "<th>Other</th>"),
+        portal,
+        "Test Student",
+        "id",
+      ),
+    ).toThrow(/columns/);
+  });
+  it("retains extra-credit source marks without clamping or declaring official GPA", () => {
+    const s = parseLiveAssignments(
+      gradebook({ score: "105" }),
+      portal,
+      "Test Student",
+      "id",
+    );
+    expect(s.courses[0].assignments[0].earned).toBe(105);
+    expect(s.courses[0]).not.toHaveProperty("credits");
+    expect(s.courses[0]).not.toHaveProperty("level");
+  });
+  it("stable identities survive score changes; duplicate identities fail closed", () => {
+    const a = snapshot(),
+      b = parseLiveAssignments(
+        gradebook({ score: "90" }),
+        portal,
+        "Test Student",
+        "student-id",
+      );
+    expect(a.courses[0].id).toBe(b.courses[0].id);
+    expect(a.courses[0].assignments[0].id).toBe(b.courses[0].assignments[0].id);
+    expect(() =>
+      parseLiveAssignments(
+        gradebook().replace("showAssignment('a2')", "showAssignment('a1')"),
+        portal,
+        "Test Student",
+        "id",
+      ),
+    ).toThrow(/uniquely/);
+    expect(identity("a")).not.toBe(identity("b"));
+  });
+  it("syncs into a source-only student profile without overwriting manual courses or scenarios", () => {
+    const p = newProfile("Manual"),
+      data: ProductData = {
+        format: "gradelarp-product",
+        version: 2,
+        activeProfileId: p.id,
+        profiles: [p],
+      };
+    p.tasks.push({
+      id: "task",
+      title: "Manual task",
+      courseId: "",
+      date: "2026-10-15",
+      priority: "normal",
+      done: false,
+      notes: "",
+    });
+    const before = structuredClone(p);
+    const next = applyLiveSnapshot(data, snapshot());
+    expect(next.profiles[0]).toEqual(before);
+    expect(next.profiles[1].hacLive?.snapshot.courses).toHaveLength(1);
+    expect(next.profiles[1].state.courses).toEqual([]);
+    expect(next.profiles[1].state.demo).toBe(false);
+    expect(applyLiveSnapshot(next, snapshot()).profiles).toHaveLength(2);
+  });
+  it("partial sync retains previously published assignments without claiming fresh completeness", () => {
+    const p = newProfile(),
+      d: ProductData = {
+        format: "gradelarp-product",
+        version: 2,
+        activeProfileId: p.id,
+        profiles: [p],
+      },
+      first = applyLiveSnapshot(d, snapshot()),
+      partial = parseLiveAssignments(
+        gradebook({ missing: true }),
+        portal,
+        "Test Student",
+        "student-id",
+      ),
+      next = applyLiveSnapshot(first, partial);
+    expect(next.profiles[1].hacLive?.snapshot.status).toBe("partial");
+    expect(
+      next.profiles[1].hacLive?.snapshot.courses[0].assignments,
+    ).toHaveLength(3);
+    expect(
+      next.profiles[1].hacLive?.snapshot.courses[0].assignmentsAvailable,
+    ).toBe(false);
+    partial.term = "Quarter 2";
+    expect(
+      applyLiveSnapshot(first, partial).profiles[1].hacLive?.snapshot.courses[0]
+        .assignments,
+    ).toEqual([]);
+  });
+  it("purges marked sample profiles while retaining genuine user records and valid active selection", () => {
+    const real = newProfile("Real"),
+      demo = newProfile("Old sample");
+    demo.state.demo = true;
+    const d: ProductData = {
+      format: "gradelarp-product",
+      version: 2,
+      activeProfileId: demo.id,
+      profiles: [real, demo],
+    };
+    const next = removeDemonstrations(d);
+    expect(next.profiles).toEqual([real]);
+    expect(next.activeProfileId).toBe(real.id);
+    expect(parseProductBackup(JSON.stringify(d)).profiles).toHaveLength(1);
   });
 });
 describe("request guards", () => {
