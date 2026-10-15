@@ -1,5 +1,58 @@
 import { HacError, isHacError, type HacStage } from "./types";
 
+/** Schema-only diagnostics. Never include issue.message, issue.input or field values. */
+export function validationFields(
+  issues: readonly { path: readonly PropertyKey[]; code: string }[],
+) {
+  const allowed = new Set([
+    "mode",
+    "portal",
+    "studentId",
+    "studentName",
+    "term",
+    "fetchedAt",
+    "status",
+    "issues",
+    "courses",
+    "id",
+    "name",
+    "teacher",
+    "average",
+    "averageText",
+    "assignmentsAvailable",
+    "assignments",
+    "categories",
+    "weight",
+    "category",
+    "due",
+    "score",
+    "earned",
+    "possible",
+    "possibleText",
+    "weightText",
+    "percentText",
+  ]);
+  return [
+    ...new Set(
+      issues.slice(0, 20).map(
+        (issue) =>
+          `${
+            issue.path
+              .map((p) =>
+                typeof p === "number"
+                  ? "[]"
+                  : allowed.has(String(p))
+                    ? String(p)
+                    : "field",
+              )
+              .join(".")
+              .replace(/\.\[\]/g, "[]") || "snapshot"
+          }:${["too_big", "too_small", "invalid_type", "invalid_format", "custom"].includes(issue.code) ? issue.code : "invalid"}`,
+      ),
+    ),
+  ].slice(0, 8);
+}
+
 /** Never return/log upstream messages, URLs, HTML, cookie values or schema values. */
 export function connectionError(error: unknown, stage: HacStage): HacError {
   if (isHacError(error))
