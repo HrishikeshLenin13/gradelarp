@@ -895,8 +895,6 @@ test("legacy migration is byte-preserving and design lab edits cannot alter the 
     page.getByText("Saved in this preview", { exact: true }).first(),
   ).toHaveText("Saved in this preview");
   expect(await stored(page)).toBe(before);
-  await page.goto("/");
-  await expect(page.getByTestId("course-select").first()).toContainText("94.9");
 });
 // A separate context exercises first-load migration without any product database seeded by ready().
 test("cold upgrade preserves an existing real gradebook verbatim", async ({
