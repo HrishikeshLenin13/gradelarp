@@ -31,6 +31,19 @@ export function challenge(html: string) {
 export function loginForm(html: string) {
   return load(html)('input[name="LogOnDetails.Password"]').length > 0;
 }
+function validateSnapshot(value: unknown): LiveSnapshot {
+  const result = LiveSnapshotSchema.safeParse(value);
+  if (result.success) return result.data;
+  throw new HacError(
+    "SOURCE_VALIDATION",
+    "HAC returned records that need a parser adjustment. Your existing grades are unchanged.",
+    422,
+    {
+      stage: "parse-records",
+      validation: validationFields(result.error.issues),
+    },
+  );
+}
 export function parseLiveAssignments(
   html: string,
   portal: string,
