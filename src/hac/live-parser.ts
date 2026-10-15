@@ -206,14 +206,16 @@ export function parseLiveAssignments(
                       /^(?:--|—|ungraded|not graded)$/i.test(score)
                     ? "ungraded"
                     : "unknown";
-        const link = $(row).find("a").first(),
-          sourceKey =
-            link.attr("onclick") ??
-            (link.attr("href") &&
-            !/^(?:#|javascript:(?:void|;))/i.test(link.attr("href")!)
-              ? link.attr("href")
-              : undefined) ??
-            `${title}|${di < 0 ? "" : cells[di]}|${ci < 0 ? "" : cells[ci]}`;
+        const link = assignmentLink.length
+          ? assignmentLink
+          : $(row).find("a").first();
+        const sourceKey =
+          link.attr("onclick") ??
+          (link.attr("href") &&
+          !/^(?:#|javascript:(?:void|;))/i.test(link.attr("href")!)
+            ? link.attr("href")
+            : undefined) ??
+          `${title}|${di < 0 ? "" : cells[di]}|${ci < 0 ? "" : cells[ci]}`;
         const aid = identity(`${id}|${sourceKey}`);
         if (assignments.some((a) => a.id === aid))
           throw new HacError(
