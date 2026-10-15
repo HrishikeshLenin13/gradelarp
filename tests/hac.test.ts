@@ -14,12 +14,15 @@ import {
   newProfile,
   parseProductBackup,
 } from "../src/product/model";
-import { courseGrade } from "../src/lib/calculations";
-const snapshot = (scenario: Parameters<typeof fixtureHtml>[1] = "normal") =>
-  parseFixture(
-    fixtureHtml("lisd", scenario),
-    "lisd",
-    new Date("2026-10-14T12:00:00Z"),
+import { LOGIN_HTML, gradebook } from "./fixtures/hac-pages";
+const portal = "https://hac.example.edu/HomeAccess";
+const snapshot = () =>
+  parseLiveAssignments(
+    gradebook(),
+    portal,
+    "Test Student",
+    "student-id",
+    new Date("2026-10-15T12:00:00Z"),
   );
 function fakeTransport({
   rejected = false,
