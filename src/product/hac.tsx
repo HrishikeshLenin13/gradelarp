@@ -52,8 +52,9 @@ async function request(command: unknown, signal?: AbortSignal) {
       error.success ? error.data.error.code : "RESPONSE",
       error.success
         ? error.data.error.message
-        : "The mock connector returned an invalid response.",
-      response.status,
+        : "The HAC server returned an unexpected response.",
+      error.success ? error.data.error.code : "RESPONSE",
+      error.success ? error.data.error.details?.databases : undefined,
     );
   }
   return LiveResponseSchema.parse(body);
