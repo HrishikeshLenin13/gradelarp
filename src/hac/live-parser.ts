@@ -187,7 +187,8 @@ export function parseLiveAssignments(
             `${name}: an assignment row is incomplete.`,
             422,
           );
-        const title = cells[ni];
+        const assignmentLink = $(row).children("td").eq(ni).find("a").first();
+        const title = clean(assignmentLink.text()) || cells[ni];
         if (!title) continue;
         const score = cells[si] ?? "",
           possible = pi < 0 ? null : number(cells[pi] ?? ""),
