@@ -14,34 +14,6 @@ async function nav(page: Page, name = "School connection") {
     .click();
   await expect(page.locator(".product-view")).toHaveCSS("opacity", "1");
 }
-async function ready(page: Page) {
-  await page.goto("/");
-  await nav(page);
-  await expect(
-    page.getByRole("button", { name: "Connect mock student", exact: true }),
-  ).toBeEnabled();
-}
-async function connect(page: Page) {
-  await page
-    .getByRole("button", { name: "Connect mock student", exact: true })
-    .click();
-  await expect(page.locator(".hac-session-status")).toContainText(
-    "Mock session connected",
-  );
-}
-async function preview(page: Page) {
-  await page
-    .getByRole("button", { name: "Refresh preview", exact: true })
-    .click();
-  await expect(
-    page.getByRole("heading", { name: "Review before importing", exact: true }),
-  ).toBeVisible();
-}
-async function saved(page: Page) {
-  await expect(page.locator(".product-status-line")).toContainText(
-    "Saved on this device",
-  );
-}
 async function stored(page: Page): Promise<ProductData> {
   return page.evaluate(
     () =>
