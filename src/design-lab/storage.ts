@@ -1,7 +1,7 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb";
 import { z } from "zod";
 import { StateSchema } from "@/lib/model";
-import { createDemo } from "@/lib/demo";
+import { emptyState } from "@/lib/demo";
 import type { Direction } from "./types";
 export const LAB_DATABASE = "gradelarp-design-lab-v1";
 export const LabPreferencesSchema = z.object({
