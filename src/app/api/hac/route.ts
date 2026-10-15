@@ -6,8 +6,11 @@ export const dynamic = "force-dynamic";
 const singleton = globalThis as typeof globalThis & {
   gradelarpMockHac?: MockHacService;
 };
-const service = (singleton.gradelarpMockHac ??= new MockHacService());
-const cookieName = "gradelarp-hac-mock";
+const service =
+  singleton.gradelarpLiveHac instanceof LiveHacService
+    ? singleton.gradelarpLiveHac
+    : (singleton.gradelarpLiveHac = new LiveHacService());
+const cookieName = "gradelarp-hac-session";
 const headers = {
   "Cache-Control": "no-store, private",
   Pragma: "no-cache",
