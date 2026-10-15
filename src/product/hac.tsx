@@ -112,22 +112,8 @@ export function SchoolConnection({
     );
     return () => clearTimeout(timer);
   }, [session]);
-  const config = districtConfig(district);
-  const existing =
-    (profile.hac?.district === district ? profile : undefined) ??
-    data.profiles.find(
-      (p) => p.hac?.district === district && p.hac.studentId === "sample-2026",
-    );
-  const target = snapshot
-    ? (existing ?? {
-        ...newSandbox(snapshot),
-        preferences: { ...profile.preferences },
-      })
-    : existing;
-  const decisions = snapshot && target ? previewImport(target, snapshot) : [];
-  const connected = session?.district === district;
-  const imported = existing?.hac?.imported ?? {};
-  async function run(command: unknown) {
+  const source = profile.hacLive;
+  async function run(action: "sync" | "disconnect") {
     setBusy(true);
     setError("");
     try {
