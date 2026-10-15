@@ -541,18 +541,6 @@ export function GradelarpApp() {
                 </Button>
               </div>
             )}
-            {state.demo && (
-              <div className="product-demo-banner">
-                <span>
-                  {profile.hac
-                    ? "HAC sandbox: synthetic school records, not your real grades."
-                    : "You’re exploring a separate demo. Ready for your own semester?"}
-                </span>
-                <button onClick={() => setProfiles(true)}>
-                  Create a student profile <Plus size={15} />
-                </button>
-              </div>
-            )}
             <motion.div
               key={`${profile.id}/${view}`}
               className="lab-view product-view"
