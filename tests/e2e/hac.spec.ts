@@ -63,11 +63,84 @@ async function stored(page: Page): Promise<ProductData> {
       }),
   );
 }
-async function condition(page: Page, value: string) {
-  const tools = page.locator(".hac-fixture-tools");
-  if ((await tools.getAttribute("open")) === null)
-    await tools.locator("summary").click();
-  await page.getByLabel("Preview fixture").selectOption(value);
+async function simulatePortal(
+  page: Page,
+  {
+    failure = false,
+    partial = false,
+  }: { failure?: boolean; partial?: boolean } = {},
+) {
+  let connected = false;
+  const requests: Record<string, unknown>[] = [];
+  await page.route("**/api/hac", async (route) => {
+    const command = route.request().postDataJSON();
+    requests.push(command);
+    let body: unknown,
+      status = 200;
+    if (command.action === "connect" && failure) {
+      status = 401;
+      body = {
+        error: {
+          code: "AUTH_FAILED",
+          message:
+            "HAC did not accept this sign-in. Check your district, username and password.",
+        },
+      };
+    } else if (command.action === "disconnect") {
+      connected = false;
+      body = { session: null };
+    } else if (command.action === "status") {
+      body = {
+        session: connected
+          ? {
+              mode: "live",
+              portal,
+              studentId: source.studentId,
+              studentName: source.studentName,
+              expiresAt: new Date(Date.now() + 1800000).toISOString(),
+            }
+          : null,
+      };
+    } else {
+      connected = true;
+      body = {
+        session: {
+          mode: "live",
+          portal,
+          studentId: source.studentId,
+          studentName: source.studentName,
+          expiresAt: new Date(Date.now() + 1800000).toISOString(),
+        },
+        snapshot: {
+          ...source,
+          ...(partial && command.action === "sync"
+            ? {
+                status: "partial",
+                issues: [
+                  "Algebra II: assignment table unavailable; previous assignments retained.",
+                ],
+                courses: [
+                  {
+                    ...source.courses[0],
+                    assignmentsAvailable: false,
+                    assignments: [],
+                  },
+                ],
+              }
+            : {}),
+        },
+      };
+    }
+    await route.fulfill({
+      status,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+      },
+      body: JSON.stringify(body),
+    });
+  });
+  return requests;
 }
 test("first visit has an information page, direct HAC form and absolutely no seeded grades", async ({
   page,
