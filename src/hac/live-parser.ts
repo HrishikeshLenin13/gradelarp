@@ -13,10 +13,12 @@ export const clean = (value: string) =>
     .replace(/\u00a0/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-const number = (value: string) =>
-  /^\d+(?:\.\d+)?\s*%?$/.test(value.trim())
-    ? Number(value.replace(/[%\s]/g, ""))
-    : null;
+const number = (value: string) => {
+  const raw = value.trim();
+  if (!/^(?:\d+|\d{1,3}(?:,\d{3})+)(?:\.\d+)?\s*%?$/.test(raw)) return null;
+  const parsed = Number(raw.replace(/[,%\s]/g, ""));
+  return Number.isFinite(parsed) ? parsed : null;
+};
 export function challenge(html: string) {
   const $ = load(html);
   return (
