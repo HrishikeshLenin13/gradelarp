@@ -1,40 +1,56 @@
 # gradelarp
 
-A clean student workspace with a direct Home Access Center sign-in, school-reported gradebook, and separate manual planning tools.
+A grade dashboard and planner built around Home Access Center.
 
-## Start locally
+Connect your school's HAC account to see its reported averages and assignments. Use a separate manual profile for what-if calculations, GPA planning, and anything you want to track yourself. Gradelarp doesn't write changes back to your school.
+
+## Run locally
+
+You'll need Node.js 22 or newer and npm.
 
 ```sh
-npm install
+npm ci
 npm run dev
 ```
 
-Open [http://localhost:3000/](http://localhost:3000/). New visitors see an information page and HAC sign-in. Choose LISD/RRISD or another compatible HAC portal, then **Sign in & sync**. The form sends credentials directly through Gradelarp’s server to the selected district, not to a public grade API. Credentials are not saved by the app.
+Open [localhost:3000](http://localhost:3000). Choose your district, or enter its official HAC address, then sign in. You can also skip HAC and enter courses manually.
 
-For manual courses, use **Continue with manual grades instead**. No sample grades or demo profiles are generated. Existing marked demonstrations are removed while genuine records are preserved.
+## What's here
 
-## Features
+- HAC sign-in, saved school records, refresh, and disconnect
+- Course and assignment tracking
+- What-if scenarios and a configurable GPA calculator
+- Planner, schedules, attendance notes, contacts, and goals
+- Multiple profiles, themes, and JSON backups
 
-- Direct HAC form/session connector, school-reported averages and assignment marks, refresh/disconnect and explicit failure/partial states.
-- Manual course/assignment management, immutable saved what-if scenarios, editable custom GPA planning and actual snapshots.
-- Local planner, schedules, attendance, reports, contacts, goals, profiles and full JSON backups.
-- Approved Expressive design, responsive desktop/mobile layouts, themes, accessibility, keyboard controls and persisted preferences.
+HAC support is still being tested against different district setups. Some schools require SSO or extra verification. An unfamiliar response leaves saved grades alone and shows a diagnostic rather than filling in made-up values. School-reported averages stay separate from manual calculations.
 
-## Accuracy and compatibility
+## Data
 
-Standard compatible HAC portals are supported by the generic adapter; not every ISD uses HAC or permits the same login method. SSO/MFA/challenges, guardian selection and unknown markup produce explicit errors rather than fake success. Both public LISD/RRISD forms have passed GET-only preflight. Actual account authentication/grade syncing has not been tested with real credentials in this development run.
+Academic records are saved in your browser. The server keeps the school session in memory while you're connected; it doesn't save your HAC password. Clearing browser storage removes local records, so export a backup if you need one.
 
-HAC averages remain school-reported source values. Unknown credits, course levels and district GPA/scoring policies are not guessed; manual planning is separate. See [HAC_INTEGRATION.md](HAC_INTEGRATION.md) for current implementation, evidence, limitations and recovery details.
+Backups contain school information. Keep them private and out of Git.
 
-## Verify
+## Development
 
 ```sh
 npm run check
-npx vitest run --config vitest.public.config.ts
+```
+
+This runs lint, type checks, unit tests, and a production build. For browser tests, start the built app in one terminal:
+
+```sh
 npm run start -- --port 3002
+```
+
+Then, in another:
+
+```sh
 PLAYWRIGHT_BASE_URL=http://localhost:3002 npm run test:e2e
 ```
 
-Public preflight performs GETs only, never credential submissions. Browser/connector error tests use fixtures under `tests/`, not production mock endpoints. Final literal results are in `artifacts/hac-live-2026-10-15/VERIFICATION.txt`.
+The tests use isolated fixtures. They don't prove that a particular district account has synced successfully. Connector details are in [HAC_INTEGRATION.md](HAC_INTEGRATION.md).
 
-No deployment or remote publication was performed.
+## History
+
+The local project predates this repository. Its saved source checkpoints were imported into Git; [the history notes](docs/history.md) explain the reconstruction and dates.
