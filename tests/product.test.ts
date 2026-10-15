@@ -81,6 +81,7 @@ describe("Expressive product migration and data separation", () => {
   });
   it("imports legacy JSON as a preserved independent profile", () => {
     const old = createDemo();
+    old.demo = false;
     expect(parseProductBackup(JSON.stringify(old)).profiles[0].state).toEqual(
       old,
     );
