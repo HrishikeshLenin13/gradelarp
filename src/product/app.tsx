@@ -44,7 +44,6 @@ import {
   ProductSchema,
   currentSemester,
   localDate,
-  newProfile,
   recordState,
   type Profile,
   type ProductData,
