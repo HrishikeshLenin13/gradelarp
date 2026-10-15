@@ -23,12 +23,16 @@ const commandSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("disconnect") }).strict(),
 ]);
 const TTL = 30 * 60 * 1000;
-/** Bounded, ephemeral mock sessions. A restart expires them; no credentials exist. */
-export class MockHacService {
-  private sessions = new Map<string, HacSession>();
-  private attempts: number[] = [];
-  constructor(private clock = () => Date.now()) {}
-  private prune() {
+type Entry = { public: LiveSession; connection: PortalSession };
+export class LiveHacService {
+  private sessions = new Map<string, Entry>();
+  private attempts = new Map<string, { count: number; until: number }>();
+  private active = 0;
+  constructor(
+    private factory?: TransportFactory,
+    private clock = () => Date.now(),
+  ) {}
+  async handle(raw: unknown, token?: string, client = "local") {
     const now = this.clock();
     for (const [key, s] of this.sessions)
       if (Date.parse(s.public.expiresAt) <= now) {
