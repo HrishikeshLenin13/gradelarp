@@ -136,7 +136,7 @@ export function HacLogin({
           <select
             aria-label="School district"
             value={district}
-            disabled={busy}
+            disabled={busy || checking}
             onChange={(e) => {
               setDistrict(e.target.value);
               setCheckResult("");
