@@ -183,9 +183,10 @@ export async function connectPortal(
       );
     let studentName = extractName(page.html) || extractName(authenticated.html);
     if (!studentName) {
-      const registration = await transport.page(
-        `${portal}/Content/Student/Registration.aspx`,
-        { signal },
+      const registration = await atStage("student-identity", () =>
+        transport.page(`${portal}/Content/Student/Registration.aspx`, {
+          signal,
+        }),
       );
       checkInteractive(registration.html);
       studentName = extractName(registration.html);
