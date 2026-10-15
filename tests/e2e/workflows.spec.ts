@@ -39,6 +39,45 @@ async function profiles(page: Page) {
     .click();
 }
 async function ready(page: Page) {
+  const manual = newProfile("Student"),
+    fixture = newProfile("Academic test student");
+  fixture.state = createDemo();
+  fixture.state.demo = false;
+  fixture.state.settings.name = fixture.name;
+  fixture.periods = {
+    "Fall 2026": {
+      start: fixture.state.settings.semesterStart,
+      end: fixture.state.settings.semesterEnd,
+    },
+  };
+  await page.goto("/icon.svg");
+  await page.evaluate(
+    (data) =>
+      new Promise<void>((resolve, reject) => {
+        const r = indexedDB.open("gradelarp-product-v2", 1);
+        r.onupgradeneeded = () => {
+          r.result.createObjectStore("workspace");
+          r.result.createObjectStore("preservation");
+        };
+        r.onsuccess = () => {
+          const db = r.result;
+          const tx = db.transaction("workspace", "readwrite");
+          tx.objectStore("workspace").put({ revision: 0, data }, "current");
+          tx.oncomplete = () => {
+            db.close();
+            resolve();
+          };
+          tx.onerror = () => reject(tx.error);
+        };
+        r.onerror = () => reject(r.error);
+      }),
+    {
+      format: "gradelarp-product",
+      version: 2,
+      activeProfileId: fixture.id,
+      profiles: [manual, fixture],
+    },
+  );
   await page.goto("/");
   await expect(page.getByTestId("course-select")).toHaveCount(6);
   await saved(page);
