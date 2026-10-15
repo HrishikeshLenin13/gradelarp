@@ -227,20 +227,18 @@ export function GradelarpApp() {
     const c = profile?.state.courses.find((c) => c.id === id);
     if (c) setSemester(c.semester);
   }
-  function openDemo() {
-    if (!data) return;
-    const existing = data.profiles.find((p) => p.state.demo && !p.hac);
-    if (existing) {
-      changeData({ ...data, activeProfileId: existing.id });
-      return;
-    }
-    const demo = newProfile("Alex · Demo", true);
-    changeData({
-      ...data,
-      profiles: [...data.profiles, demo],
-      activeProfileId: demo.id,
-    });
-    notify("Separate demo profile opened. Manual profiles are unchanged.");
+  function syncSchool(snapshot: LiveSnapshot) {
+    const current = liveData.current ?? data;
+    if (!current) return;
+    const next = applyLiveSnapshot(current, snapshot);
+    changeData(next);
+    setEntry(false);
+    setView("overview");
+    notify(
+      snapshot.status === "partial"
+        ? "HAC partially synced. Review the source notices."
+        : "HAC grades synced and saved on this device.",
+    );
   }
   function addAssignment(course: Course) {
     setEditor({
