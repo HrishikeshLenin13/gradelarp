@@ -90,12 +90,8 @@ export class MockHacService {
       );
     try {
       return {
-        session,
-        snapshot: parseFixture(
-          fixtureHtml(session.district, command.scenario),
-          session.district,
-          new Date(this.clock()),
-        ),
+        session: previous.public,
+        snapshot: await refreshPortal(previous.connection),
       };
     } catch (error) {
       if (
