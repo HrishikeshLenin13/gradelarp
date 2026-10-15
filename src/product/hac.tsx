@@ -28,6 +28,8 @@ class ConnectionError extends Error {
     message: string,
     public code: string,
     public databases?: { id: string; name: string }[],
+    public stage?: string,
+    public kind?: string,
   ) {
     super(message);
   }
