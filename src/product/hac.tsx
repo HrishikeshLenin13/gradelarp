@@ -94,7 +94,7 @@ export function SchoolConnection({
           setError(e instanceof Error ? e.message : "Session check failed.");
       })
       .finally(() => {
-        if (!controller.signal.aborted) setBusy(false);
+        if (!c.signal.aborted) setBusy(false);
       });
     return () => c.abort();
   }, []);
