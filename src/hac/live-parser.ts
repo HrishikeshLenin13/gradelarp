@@ -258,7 +258,9 @@ export function parseLiveAssignments(
           if (cs[ni] && !/^total$/i.test(cs[ni]))
             categories.push({
               name: cs[ni],
-              weight: wi < 0 ? null : number(cs[wi] ?? ""),
+              weight: number(rawWeight),
+              ...(wi >= 0 ? { weightText: rawWeight } : {}),
+              ...(pi >= 0 ? { percentText: cs[pi] ?? "" } : {}),
             });
           }
         }
