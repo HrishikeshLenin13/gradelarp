@@ -12,6 +12,7 @@ import { MockHacService, readCommand } from "../src/hac/server";
 import {
   ProductSchema,
   newProfile,
+  removeDemonstrations,
   parseProductBackup,
   type ProductData,
 } from "../src/product/model";
