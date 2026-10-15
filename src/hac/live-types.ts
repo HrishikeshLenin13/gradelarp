@@ -19,8 +19,8 @@ export const SourceAssignmentSchema = z.object({
 });
 export const SourceCourseSchema = z.object({
   id: text,
-  name: text,
-  teacher: z.string().max(160),
+  name: sourceLabel,
+  teacher: z.string().max(4096),
   average: z.number().finite().min(0).max(1000).nullable(),
   averageText: z.string().max(2048),
   assignmentsAvailable: z.boolean(),
