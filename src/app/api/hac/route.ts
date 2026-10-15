@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       { error: { code: e.code, message: e.message } },
       { status: e.status, headers },
     );
-    if (e.status === 401)
+    if (e.status === 401 && !isConnect)
       response.cookies.set(cookieName, "", {
         httpOnly: true,
         secure: request.nextUrl.protocol === "https:",
