@@ -1,7 +1,67 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import type { ProductData } from "../../src/product/model";
-async function nav(page: Page, name = "School connection") {
+import { newProfile, type ProductData } from "../../src/product/model";
+import type { LiveSnapshot } from "../../src/hac/live-types";
+const portal = "https://lis-hac.eschoolplus.powerschool.com/HomeAccess";
+const source: LiveSnapshot = {
+  mode: "live",
+  portal,
+  studentId: "test-source-id",
+  studentName: "Browser Test Student",
+  term: "Quarter 1",
+  fetchedAt: "2026-10-15T12:00:00Z",
+  status: "complete",
+  issues: [],
+  courses: [
+    {
+      id: "course-1",
+      name: "Algebra II",
+      teacher: "Teacher from source",
+      average: 88,
+      averageText: "88.00",
+      assignmentsAvailable: true,
+      assignments: [
+        {
+          id: "assignment-1",
+          name: "Published test",
+          category: "Major",
+          due: "10/12/2026",
+          score: "85",
+          earned: 85,
+          possible: 100,
+          status: "graded",
+        },
+        {
+          id: "assignment-2",
+          name: "Source exemption",
+          category: "Daily",
+          due: null,
+          score: "EX",
+          earned: null,
+          possible: 10,
+          status: "exempt",
+        },
+      ],
+      categories: [
+        { name: "Major", weight: 60 },
+        { name: "Daily", weight: 40 },
+      ],
+    },
+  ],
+};
+async function ready(page: Page) {
+  await page.goto("/");
+  await expect(page.getByTestId("hac-entry")).toBeVisible();
+}
+async function fill(page: Page) {
+  await page
+    .getByLabel("HAC username", { exact: true })
+    .fill("browser-test-only");
+  await page
+    .getByLabel("HAC password", { exact: true })
+    .fill("not-a-real-password");
+}
+async function nav(page: Page, name: string) {
   await expect(page.locator(".product-root")).toBeVisible();
   const menu = page.getByRole("button", {
     name: "Open navigation",
