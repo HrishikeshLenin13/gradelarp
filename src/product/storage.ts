@@ -37,6 +37,42 @@ async function legacyRaw(): Promise<unknown | null> {
     legacy.close();
   }
 }
+async function purgeMarkedLegacy() {
+  const legacy = await openDB("gradelarp", 1, {
+    upgrade(d) {
+      d.createObjectStore("workspace");
+    },
+  });
+  try {
+    const tx = legacy.transaction("workspace", "readwrite");
+    const state = await tx.store.get("state");
+    if (state?.demo === true) await tx.store.delete("state");
+    await tx.done;
+  } finally {
+    legacy.close();
+  }
+  if (
+    typeof indexedDB.databases === "function" &&
+    (await indexedDB.databases()).some(
+      (x) => x.name === "gradelarp-design-lab-v1",
+    )
+  ) {
+    const old = await openDB("gradelarp-design-lab-v1");
+    try {
+      if (old.objectStoreNames.contains("workspaces")) {
+        const tx = old.transaction("workspaces", "readwrite");
+        let cursor = await tx.store.openCursor();
+        while (cursor) {
+          if (cursor.value?.state?.demo === true) await cursor.delete();
+          cursor = await cursor.continue();
+        }
+        await tx.done;
+      }
+    } finally {
+      old.close();
+    }
+  }
+}
 export const productProvider = {
   async load(): Promise<Envelope> {
     const d = await db();
