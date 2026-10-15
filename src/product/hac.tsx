@@ -188,8 +188,8 @@ export function SchoolConnection({
     ["add", "update"].includes(d.action),
   ).length;
   return (
-    <div className="product-stack hac-workspace">
-      <section className="hac-intro">
+    <div className="product-stack">
+      <section className="panel hac-connected">
         <div>
           <span className="hac-live-tag">
             <Check size={15} />
