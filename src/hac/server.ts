@@ -31,12 +31,13 @@ export class MockHacService {
   private prune() {
     const now = this.clock();
     for (const [key, s] of this.sessions)
-      if (Date.parse(s.expiresAt) <= now) this.sessions.delete(key);
-    this.attempts = this.attempts.filter((t) => t > now - 60_000);
-  }
-  handle(raw: unknown, token?: string) {
-    this.prune();
-    const parsed = commandSchema.safeParse(raw);
+      if (Date.parse(s.public.expiresAt) <= now) {
+        this.sessions.delete(key);
+        await s.connection.transport.destroy();
+      }
+    for (const [key, a] of this.attempts)
+      if (a.until <= now) this.attempts.delete(key);
+    const parsed = LiveCommandSchema.safeParse(raw);
     if (!parsed.success)
       throw new HacError(
         "REQUEST",
