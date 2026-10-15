@@ -229,6 +229,7 @@ export function parseLiveAssignments(
           score,
           earned,
           possible: possible && possible > 0 ? possible : null,
+          ...(pi >= 0 ? { possibleText: cells[pi] ?? "" } : {}),
           status,
         });
       }
