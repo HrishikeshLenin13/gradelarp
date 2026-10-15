@@ -114,6 +114,7 @@ async function simulatePortal(
       body = {
         error: {
           code: "AUTH_FAILED",
+          details: { stage: "sign-in" },
           message:
             "HAC did not accept this sign-in. Check your district, username and password.",
         },
