@@ -160,7 +160,7 @@ export function HacLogin({
                 placeholder="https://your-district.org/HomeAccess"
                 required
                 value={portal}
-                disabled={busy}
+                disabled={busy || checking}
                 autoComplete="url"
                 onChange={(e) => {
                   setPortal(e.target.value);
