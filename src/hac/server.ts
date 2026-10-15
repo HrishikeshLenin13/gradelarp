@@ -58,37 +58,6 @@ export class MockHacService {
           "The mock connector is busy. Try again in one minute.",
           429,
         );
-      this.attempts.push(this.clock());
-      if (token) this.sessions.delete(token);
-      // Exercise the synthetic login-error branch before creating a session.
-      parseFixture(
-        fixtureHtml(command.district, command.scenario),
-        command.district,
-      );
-      if (token) this.sessions.delete(token);
-      const next: HacSession = {
-        mode: "mock",
-        district: command.district,
-        studentName: "Jordan · Synthetic student",
-        expiresAt: new Date(this.clock() + TTL).toISOString(),
-      };
-      const nextToken = randomBytes(32).toString("hex");
-      this.sessions.set(nextToken, next);
-      return { session: next, token: nextToken };
-    }
-    if (!session)
-      throw new HacError(
-        "SESSION_EXPIRED",
-        "Your mock session ended. Reconnect to refresh; saved imports are unchanged.",
-        401,
-      );
-    if (command.district !== session.district)
-      throw new HacError(
-        "DISTRICT_MISMATCH",
-        "Reconnect to the selected district before refreshing.",
-        409,
-      );
-    try {
       return {
         session: previous.public,
         snapshot: await refreshPortal(previous.connection),
