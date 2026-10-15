@@ -255,13 +255,13 @@ export class DirectPortalTransport implements PortalTransport {
         req.setTimeout(12_000, () => req.destroy(new Error("timeout")));
         req.on("error", () =>
           reject(
-            new HacError(
-              signal.aborted ? "TIMEOUT" : "NETWORK",
-              signal.aborted
-                ? "HAC took too long to respond. Try again."
-                : "The district HAC server could not be reached securely. Try its official portal, then retry.",
-              signal.aborted ? 504 : 502,
-            ),
+            signal.aborted || timedOut
+              ? new HacError(
+                  "TIMEOUT",
+                  "HAC took too long to respond. Try again.",
+                  504,
+                )
+              : error,
           ),
         );
         req.end(payload);
