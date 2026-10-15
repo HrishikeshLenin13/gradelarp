@@ -159,34 +159,23 @@ export function SchoolConnection({
       setBusy(false);
     }
   }
-  function importPreview() {
-    if (!snapshot || !target) return;
-    try {
-      if (!existing && data.profiles.length >= 25)
-        throw new Error(
-          "The workspace has 25 profiles. Remove an unused profile before creating a sandbox.",
-        );
-      const result = applyImport(target, snapshot);
-      onChange({
-        ...data,
-        activeProfileId: result.profile.id,
-        profiles: existing
-          ? data.profiles.map((p) =>
-              p.id === existing.id ? result.profile : p,
-            )
-          : [...data.profiles, result.profile],
-      });
-      setSnapshot(null);
-      setMessage(
-        `${result.changes} course${result.changes === 1 ? "" : "s"} added or updated. Local edits, manual profiles and saved scenarios were preserved.`,
-      );
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "The import did not complete.");
-    }
-  }
-  const changes = decisions.filter((d) =>
-    ["add", "update"].includes(d.action),
-  ).length;
+  if (!session)
+    return (
+      <div className="product-stack hac-connect-page">
+        {source && (
+          <p className="hac-notice">
+            Your saved school records are still available. Sign in again to
+            refresh them.
+          </p>
+        )}
+        {error && (
+          <p className="hac-login-error" role="alert">
+            {error}
+          </p>
+        )}
+        <HacLogin onSync={onSync} onManual={onManual} compact />
+      </div>
+    );
   return (
     <div className="product-stack">
       <section className="panel hac-connected">
