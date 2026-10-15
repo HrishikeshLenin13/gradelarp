@@ -40,7 +40,7 @@ export class MockHacService {
     if (!parsed.success)
       throw new HacError(
         "REQUEST",
-        "Use the mock connector controls. Live authentication and credential fields are disabled.",
+        "Enter a valid district portal and HAC sign-in details.",
         400,
       );
     const command = parsed.data;
