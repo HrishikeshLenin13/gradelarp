@@ -264,18 +264,17 @@ test("API rejects live mode, credentials, query strings and cross-origin request
 }) => {
   await ready(page);
   const results = await page.evaluate(async () => {
-    const cases = [
-      {
-        url: "/api/hac",
-        body: { action: "connect", mode: "live", district: "lisd" },
-      },
-      {
-        url: "/api/hac",
-        body: {
-          action: "connect",
-          mode: "mock",
-          district: "lisd",
-          pass: "synthetic-test-only",
+    return Promise.all(
+      [
+        { url: "/api/hac?pass=test", body: { action: "status" } },
+        {
+          url: "/api/hac",
+          body: {
+            action: "connect",
+            portal: "https://example.edu",
+            username: "",
+            password: "",
+          },
         },
         {
           url: "/api/hac",
