@@ -25,7 +25,6 @@ export function DataTools({
   onChange,
   onConnection,
   onProfiles,
-  onDemo,
   notify,
 }: {
   data: ProductData;
