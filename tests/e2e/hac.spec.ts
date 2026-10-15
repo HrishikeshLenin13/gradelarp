@@ -318,7 +318,7 @@ test("connection, preview and imported records fit mobile and pass accessibility
     ),
   ).toBe(true);
   await page
-    .getByRole("heading", { name: "A clearer connection to your classes." })
+    .getByRole("heading", { name: "Less checking. More understanding." })
     .click();
   await page.screenshot({
     path: `artifacts/hac-live-2026-10-15/${info.project.name}-landing.png`,
