@@ -33,7 +33,6 @@ export function DataTools({
   onChange: (d: ProductData) => void;
   onConnection: () => void;
   onProfiles: () => void;
-  onDemo: () => void;
   notify: (s: string) => void;
 }) {
   const input = useRef<HTMLInputElement>(null);
