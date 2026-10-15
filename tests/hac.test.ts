@@ -21,24 +21,72 @@ const snapshot = (scenario: Parameters<typeof fixtureHtml>[1] = "normal") =>
     "lisd",
     new Date("2026-10-14T12:00:00Z"),
   );
-const imported = () => {
-  const s = snapshot();
-  return applyImport(newSandbox(s), s).profile;
-};
-describe("synthetic HTML contract", () => {
-  it("normalizes courses, category weights, statuses, points and source averages separately", () => {
-    const s = snapshot();
-    expect(s.mode).toBe("mock");
-    expect(s.status).toBe("complete");
-    expect(s.courses).toHaveLength(2);
-    const c = s.courses[0].course;
-    expect(c.assignments).toHaveLength(4);
-    expect(c.assignments[2].earned).toBeNull();
-    expect(c.assignments[3].status).toBe("missing");
-    expect(courseGrade(c)).toBe(75);
-    expect(s.courses[0].reportedAverage).toBe(88);
-    expect(s.transcript).toHaveLength(1);
-    expect(s.rank).toEqual({ position: 12, cohort: 240 });
+function fakeTransport({
+  rejected = false,
+  challenge = false,
+  missing = false,
+}: { rejected?: boolean; challenge?: boolean; missing?: boolean } = {}) {
+  const calls: { url: string; body?: Record<string, string> }[] = [];
+  const transport: PortalTransport = {
+    page: vi.fn(async (url, options) => {
+      calls.push({
+        url,
+        body: options?.body ? Object.fromEntries(options.body) : undefined,
+      });
+      return {
+        url,
+        status: 200,
+        html: options?.body
+          ? rejected
+            ? LOGIN_HTML
+            : challenge
+              ? "<p>Verify your identity</p>"
+              : gradebook()
+          : url.includes("LogOn")
+            ? LOGIN_HTML
+            : gradebook({ missing }),
+      };
+    }),
+    destroy: vi.fn(async () => {}),
+  };
+  return { transport, calls };
+}
+describe("direct HAC boundary", () => {
+  it("normalizes compatible public HTTPS portals, not arbitrary paths or credential URLs", () => {
+    expect(normalizePortal("hac.example.edu")).toBe(portal);
+    expect(
+      validatePortalRequest(
+        "https://hac.example.edu",
+        "https://hac.example.edu/HomeAccess",
+      ).pathname,
+    ).toBe("/HomeAccess");
+    expect(() =>
+      validatePortalRequest(
+        "https://hac.example.edu",
+        "https://other.example/HomeAccess",
+      ),
+    ).toThrow();
+    expect(() =>
+      validatePortalRequest(
+        "https://hac.example.edu",
+        "https://hac.example.edu/HomeAccess?password=secret",
+      ),
+    ).toThrow();
+    expect(normalizePortal(portal + "/Account/LogOn")).toBe(portal);
+    expect(
+      normalizePortal(portal + "/Account/LogOn?ReturnUrl=%2FHomeAccess"),
+    ).toBe(portal);
+    for (const url of [
+      "http://hac.example.edu",
+      "https://127.0.0.1/HomeAccess",
+      "https://[::1]/HomeAccess",
+      "https://a:b@hac.example.edu/HomeAccess",
+      "https://hac.example.edu:444/HomeAccess",
+      "https://hac.example.edu/HomeAccess?pass=x",
+      "https://hac.example.edu/other",
+      "https://localhost/HomeAccess",
+    ])
+      expect(() => normalizePortal(url)).toThrow();
   });
   it.each([
     "127.0.0.1",
