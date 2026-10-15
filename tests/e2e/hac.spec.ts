@@ -263,6 +263,190 @@ test("API rejects live mode, credentials, query strings and cross-origin request
   page,
 }) => {
   await ready(page);
+  await expect(
+    page.getByRole("heading", { name: "Less checking. More understanding." }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Sign in & sync", exact: true }),
+  ).toBeVisible();
+  expect(
+    (await stored(page)).profiles.every(
+      (p) => p.state.courses.length === 0 && !p.state.demo && !p.hac,
+    ),
+  ).toBe(true);
+  await expect(
+    page.getByRole("button", { name: /mock|demo|fixture/i }),
+  ).toHaveCount(0);
+});
+test("one sign-in automatically saves school-reported records, clears password and opens the real gradebook", async ({
+  page,
+}) => {
+  const requests = await simulatePortal(page);
+  await ready(page);
+  await fill(page);
+  await page
+    .getByRole("button", { name: "Sign in & sync", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Browser Test Student’s gradebook" }),
+  ).toBeVisible();
+  await expect(page.getByText("88.00", { exact: true })).toBeVisible();
+  await expect(page.getByText("EX / 10", { exact: true })).toBeVisible();
+  await expect(page.locator(".product-status-line")).toContainText(
+    "Saved on this device",
+  );
+  const data = await stored(page);
+  expect(data.profiles).toHaveLength(2);
+  expect(data.profiles[1].hacLive?.snapshot.courses).toHaveLength(1);
+  expect(data.profiles[1].state.courses).toEqual([]);
+  expect(JSON.stringify(data)).not.toContain("not-a-real-password");
+  expect(requests.find((c) => c.action === "connect")).toMatchObject({
+    portal,
+    username: "browser-test-only",
+    password: "not-a-real-password",
+  });
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "Browser Test Student’s gradebook" }),
+  ).toBeVisible();
+});
+test("another district supports a user-confirmed official HAC URL rather than a hosted third-party API", async ({
+  page,
+}) => {
+  const requests = await simulatePortal(page);
+  await ready(page);
+  await page
+    .getByLabel("School district", { exact: true })
+    .selectOption("other");
+  await page
+    .getByLabel("Official HAC portal address")
+    .fill("https://hac.example.edu/HomeAccess");
+  await page
+    .getByLabel("I checked this is my district’s official HAC address.")
+    .check();
+  await fill(page);
+  await page
+    .getByRole("button", { name: "Sign in & sync", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Browser Test Student’s gradebook" }),
+  ).toBeVisible();
+  expect(requests.find((c) => c.action === "connect")?.portal).toBe(
+    "https://hac.example.edu/HomeAccess",
+  );
+});
+test("bad credentials stay on sign-in with a clear error and no fabricated success", async ({
+  page,
+}) => {
+  await simulatePortal(page, { failure: true });
+  await ready(page);
+  await fill(page);
+  await page
+    .getByRole("button", { name: "Sign in & sync", exact: true })
+    .click();
+  await expect(page.locator(".hac-login-error")).toContainText(
+    "did not accept",
+  );
+  await expect(page.getByLabel("HAC password", { exact: true })).toHaveValue(
+    "",
+  );
+  expect((await stored(page)).profiles).toHaveLength(1);
+});
+test("refresh, partial sync and confirmed disconnect preserve imported source records", async ({
+  page,
+}) => {
+  const requests = await simulatePortal(page, { partial: true });
+  await ready(page);
+  await fill(page);
+  await page
+    .getByRole("button", { name: "Sign in & sync", exact: true })
+    .click();
+  await nav(page, "School connection");
+  await expect(
+    page.getByText("Connected to HAC", { exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Sync now", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Browser Test Student’s gradebook" }),
+  ).toBeVisible();
+  expect(
+    (await stored(page)).profiles[1].hacLive?.snapshot.courses[0].assignments,
+  ).toHaveLength(2);
+  await nav(page, "School connection");
+  await page.getByRole("button", { name: "Disconnect", exact: true }).click();
+  await page
+    .getByRole("alertdialog")
+    .getByRole("button", { name: "Disconnect", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Sign in & sync", exact: true }),
+  ).toBeVisible();
+  expect(
+    (await stored(page)).profiles[1].hacLive?.snapshot.courses[0].assignments,
+  ).toHaveLength(2);
+  expect(
+    requests
+      .filter((c) => c.action === "sync" || c.action === "disconnect")
+      .every((c) => !("password" in c)),
+  ).toBe(true);
+});
+test("stored marked samples are removed but genuine manual grades survive", async ({
+  page,
+}) => {
+  await page.goto("/icon.svg");
+  const real = newProfile("Genuine user"),
+    sample = newProfile("Old mock profile");
+  sample.state.demo = true;
+  await page.evaluate(
+    (data) =>
+      new Promise<void>((resolve) => {
+        const r = indexedDB.open("gradelarp-product-v2", 1);
+        r.onupgradeneeded = () => {
+          r.result.createObjectStore("workspace");
+          r.result.createObjectStore("preservation");
+        };
+        r.onsuccess = () => {
+          const db = r.result,
+            tx = db.transaction("workspace", "readwrite");
+          tx.objectStore("workspace").put({ revision: 4, data }, "current");
+          tx.oncomplete = () => {
+            db.close();
+            resolve();
+          };
+        };
+      }),
+    {
+      format: "gradelarp-product",
+      version: 2,
+      activeProfileId: sample.id,
+      profiles: [real, sample],
+    },
+  );
+  await page.goto("/");
+  await expect(page.getByTestId("hac-entry")).toBeVisible();
+  expect((await stored(page)).profiles).toEqual([real]);
+});
+test("manual entry remains available without any school account or sample dataset", async ({
+  page,
+}) => {
+  await ready(page);
+  await page
+    .getByRole("button", { name: "Continue with manual grades instead" })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Your next chapter starts right here." }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Connect HAC", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: /demo|mock/i })).toHaveCount(0);
+});
+test("API rejects GET, query secrets, missing credentials, cross-origin and private portal destinations", async ({
+  page,
+}) => {
+  await ready(page);
+  const get = await page.request.get("/api/hac");
+  expect(get.status()).toBe(405);
   const results = await page.evaluate(async () => {
     return Promise.all(
       [
