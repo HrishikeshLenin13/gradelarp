@@ -68,7 +68,8 @@ export function SchoolConnection({
 }: {
   data: ProductData;
   profile: Profile;
-  onChange: (next: ProductData) => void;
+  onSync: (s: LiveSnapshot) => void;
+  onManual?: () => void;
 }) {
   const [session, setSession] = useState<LiveSession | null>(null),
     [busy, setBusy] = useState(true),
