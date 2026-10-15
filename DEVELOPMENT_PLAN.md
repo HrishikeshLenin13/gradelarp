@@ -14,18 +14,15 @@ The user approved **Expressive**. No more concepts were created. The real `/` ro
 6. Added persistent local planner/calendar, schedules/countdown, attendance, reports/transcripts, teacher directory, goals, profiles and all-profile backups.
 7. Completed unit/browser tests, visual review and accessibility checks; repaired audit findings; verified the independent rollback and packaged source/diff/recovery evidence.
 
-## Final verification
+## Current verification
 
-- `npm run check`: lint, TypeScript, **89 unit tests**, and production build passed.
-- Desktop/mobile Chromium: **80 passed, 0 failed**; 2 duplicate viewport sweeps intentionally run once in the desktop project.
-- Rollback copy: all 59 original SHA-256 hashes restored, 54 baseline tests passed; active source still uses the Expressive product.
-- No unfinished local/manual feature milestone remains. External HAC and unverified district policies remain explicitly unavailable, not represented as completed integrations.
+The HAC extension preserves a separate 74-file pre-HAC checkpoint (89 baseline tests). The full regression passed 96 desktop/mobile tests (2 duplicate sweeps skipped), and static/unit/build checks passed with 114 unit tests. Final observed unit/build/browser/rollback results are recorded in `artifacts/hac-2026-10-14/VERIFICATION.txt`, generated only after the required assertions pass. The original local/manual workflows remain in the regression suite. Live school authentication, provider authorization and unverified district formulas are separate future work; the completed connector is explicitly mock-only.
 
 ## Test and visual review loop
 
 Run `npm run check`; start the production build on port 3002; run `PLAYWRIGHT_BASE_URL=http://localhost:3002 npm run test:e2e`. This tests all product workflows and historical lab regressions. The supported Webpack production bundler avoids a sandbox-specific Turbopack CSS-worker port bind failure. Do not hide failing tests or modify the genuine user database to seed tests.
 
-Read `artifacts/product-2026-10-14/VERIFICATION.txt` for final literal command outcomes, restored-copy verification, file hashes and archive/diff/rollback paths. Screenshots and first-failure logs are retained in that directory.
+Read `artifacts/hac-2026-10-14/VERIFICATION.txt` for final literal command outcomes, restored-copy verification, file hashes and archive/diff/rollback paths. Screenshots and first-failure logs are retained under the product and HAC artifact directories.
 
 ## If development continues
 
@@ -39,5 +36,10 @@ Read `artifacts/product-2026-10-14/VERIFICATION.txt` for final literal command o
 ## Reusable development prompt
 
 ```text
-Continue gradelarp in /Users/HrishiL/Desktop/Gradelarp. Expressive is approved and lives at /. Read AGENTS.md, README.md, FEATURE_STATUS.md, and the latest product VERIFICATION.txt. Inspect current source and failing tests before changing anything. Preserve legacy and product browser data, profile isolation, immutable scenarios, and tested grading math. Reuse existing components, keep the approved visual language, verify desktop/mobile and both themes with Playwright/axe, run lint/type/unit/production build, and update truthful verification evidence. Do not create new design concepts or deploy.
+Continue gradelarp in /Users/HrishiL/Desktop/Gradelarp. Expressive is approved and lives at /. Read AGENTS.md, README.md, FEATURE_STATUS.md, HAC_INTEGRATION.md, and the latest HAC VERIFICATION.txt. Inspect current source and failing tests before changing anything. Preserve legacy and product browser data, profile isolation, immutable scenarios, and tested grading math. Reuse existing components, keep the approved visual language, verify desktop/mobile and both themes with Playwright/axe, run lint/type/unit/production build, and update truthful verification evidence. Do not create new design concepts or deploy.
 ```
+
+
+## HAC connector update — 2026-10-14
+
+A separate, mock-only **School connection** workspace now supports LISD/RRISD selection, ephemeral server sessions, validated synthetic HTML parsing, explicit course/assignment import previews, idempotent refresh, local-edit conflicts, disconnect and imported-record management. Imports stay in labeled sandbox profiles; real/manual data and saved scenarios are preserved. Transcript/rank previews are synthetic reference values. Live school login and deployment remain off. See [HAC_INTEGRATION.md](HAC_INTEGRATION.md) and [the source audit](research/hac/SOURCE_AUDIT.md) for implementation details and remaining live-auth prerequisites. Final test evidence is in `artifacts/hac-2026-10-14/VERIFICATION.txt`.
