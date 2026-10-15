@@ -127,6 +127,7 @@ export const ProfileSchema = z
     name: z.string().trim().min(1).max(50),
     state: StateSchema,
     hac: ImportStateSchema.optional(),
+    hacLive: LiveConnectionSchema.optional(),
     preferences: PreferencesSchema,
     periods: z
       .record(
