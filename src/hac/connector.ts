@@ -202,11 +202,9 @@ export async function connectPortal(
     const studentId = identity(
       `${portal}|${input.username.trim()}|${studentName}`,
     );
-    const snapshot = parseLiveAssignments(
-      page.html,
-      portal,
-      studentName,
-      studentId,
+    stage = "parse-records";
+    const snapshot = await atStage("parse-records", async () =>
+      parseLiveAssignments(page.html, portal, studentName, studentId),
     );
     return {
       connection: { portal, studentId, studentName, transport },
