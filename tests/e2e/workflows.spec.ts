@@ -666,7 +666,10 @@ test("a new manual student can create real weighted grades independently of demo
     fullPage: false,
   });
   await profiles(page);
-  await page.getByRole("button").filter({ hasText: "Alex · Demo" }).click();
+  await page
+    .getByRole("button")
+    .filter({ hasText: "Academic test student" })
+    .click();
   await expect(page.getByTestId("course-select")).toHaveCount(6);
   await profiles(page);
   await expect(
