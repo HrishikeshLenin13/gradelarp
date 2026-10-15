@@ -277,11 +277,16 @@ test("API rejects live mode, credentials, query strings and cross-origin request
           district: "lisd",
           pass: "synthetic-test-only",
         },
-      },
-      { url: "/api/hac?test=1", body: { action: "status" } },
-    ];
-    return Promise.all(
-      cases.map(async (c) => {
+        {
+          url: "/api/hac",
+          body: {
+            action: "connect",
+            portal: "https://127.0.0.1/HomeAccess",
+            username: "test-only",
+            password: "test-only",
+          },
+        },
+      ].map(async (c) => {
         const r = await fetch(c.url, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
