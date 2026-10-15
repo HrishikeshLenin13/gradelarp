@@ -4,7 +4,7 @@ import { HacError } from "../../../hac/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const singleton = globalThis as typeof globalThis & {
-  gradelarpMockHac?: MockHacService;
+  gradelarpLiveHac?: LiveHacService;
 };
 const service =
   singleton.gradelarpLiveHac instanceof LiveHacService
