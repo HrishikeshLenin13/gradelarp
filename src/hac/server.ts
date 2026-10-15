@@ -1,27 +1,12 @@
-import { randomBytes } from "node:crypto";
-import { z } from "zod";
-import { DistrictId, FixtureCase, HacError, type HacSession } from "./types";
-import { fixtureHtml } from "./fixtures";
-import { parseFixture } from "./parser";
-const commandSchema = z.discriminatedUnion("action", [
-  z.object({ action: z.literal("status") }).strict(),
-  z
-    .object({
-      action: z.literal("connect"),
-      mode: z.literal("mock"),
-      district: DistrictId,
-      scenario: z.enum(["normal", "auth-error"]).default("normal"),
-    })
-    .strict(),
-  z
-    .object({
-      action: z.literal("sync"),
-      district: DistrictId,
-      scenario: FixtureCase,
-    })
-    .strict(),
-  z.object({ action: z.literal("disconnect") }).strict(),
-]);
+import { randomBytes, createHash } from "node:crypto";
+import { HacError } from "./types";
+import { LiveCommandSchema, type LiveSession } from "./live-types";
+import {
+  connectPortal,
+  refreshPortal,
+  type PortalSession,
+  type TransportFactory,
+} from "./connector";
 const TTL = 30 * 60 * 1000;
 type Entry = { public: LiveSession; connection: PortalSession };
 export class LiveHacService {
