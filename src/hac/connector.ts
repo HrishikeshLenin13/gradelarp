@@ -181,6 +181,7 @@ export async function connectPortal(
         "This guardian account requires student selection. A compatible student-selection adapter is needed before importing its grades.",
         409,
       );
+    stage = "student-identity";
     let studentName = extractName(page.html) || extractName(authenticated.html);
     if (!studentName) {
       const registration = await atStage("student-identity", () =>
