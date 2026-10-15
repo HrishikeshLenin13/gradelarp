@@ -44,6 +44,9 @@ export class MockHacService {
         400,
       );
     const command = parsed.data;
+    const previous = token ? this.sessions.get(token) : undefined;
+    if (command.action === "status")
+      return { session: previous?.public ?? null, clearCookie: !previous };
     if (command.action === "disconnect") {
       if (token) this.sessions.delete(token);
       if (previous) await previous.connection.transport.destroy();
