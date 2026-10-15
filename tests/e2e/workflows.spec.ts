@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { createDemo } from "../../src/lib/demo";
+import { newProfile } from "../../src/product/model";
+import { createDemo } from "../fixtures/demo-data";
 const failures = new WeakMap<Page, string[]>();
 async function saved(page: Page) {
   await expect(page.locator(".product-status-line")).toContainText(
