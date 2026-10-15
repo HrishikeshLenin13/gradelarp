@@ -295,7 +295,7 @@ describe("server-only mock boundary", () => {
       },
       body,
     });
-  it("accepts bounded same-origin POST JSON", async () => {
+  it("accepts same-origin JSON without query secrets", async () =>
     expect(await readCommand(req('{"action":"status"}'))).toEqual({
       action: "status",
     }));
