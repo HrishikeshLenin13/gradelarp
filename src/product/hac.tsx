@@ -194,7 +194,7 @@ export function HacLogin({
             <select
               required
               value={database}
-              disabled={busy}
+              disabled={busy || checking}
               onChange={(e) => setDatabase(e.target.value)}
             >
               <option value="">Choose your district database</option>
