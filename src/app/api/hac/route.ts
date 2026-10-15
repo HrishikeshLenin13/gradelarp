@@ -19,6 +19,7 @@ const headers = {
 };
 export async function POST(request: NextRequest) {
   let isConnect = false;
+  let action: string | undefined;
   try {
     const command = await readCommand(request);
     action = command?.action;
