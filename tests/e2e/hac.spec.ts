@@ -327,7 +327,7 @@ test("connection, preview and imported records fit mobile and pass accessibility
   await page
     .getByRole("button", { name: "Switch to dark mode", exact: true })
     .click();
-  await expect(page.locator(".hac-preview")).toHaveCSS(
+  await expect(page.locator(".hac-source-course").first()).toHaveCSS(
     "background-color",
     "rgb(38, 33, 42)",
   );
