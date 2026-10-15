@@ -139,6 +139,8 @@ export function HacLogin({
             disabled={busy}
             onChange={(e) => {
               setDistrict(e.target.value);
+              setCheckResult("");
+              setDiagnostic("");
               setDatabase("");
               setDatabases([]);
               setError("");
