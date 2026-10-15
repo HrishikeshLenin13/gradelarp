@@ -393,7 +393,7 @@ export function SchoolConnection({
       {error && (
         <div className="hac-notice hac-error" role="alert">
           {error}
-        </div>
+        </p>
       )}
       {source && <SourceGradebook snapshot={source.snapshot} />}
       <details className="hac-account-switch">
