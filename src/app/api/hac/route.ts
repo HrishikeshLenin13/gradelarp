@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         ? error
         : new HacError(
             "CONNECTOR_ERROR",
-            "The mock connector could not complete the request. Saved grades are unchanged.",
+            "The HAC request did not complete. Saved grades are unchanged.",
             500,
           );
     const response = NextResponse.json(
