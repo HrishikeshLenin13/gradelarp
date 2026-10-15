@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import {
   ArrowRight,
+  BookOpen,
   Check,
   Eye,
   EyeOff,
