@@ -50,6 +50,8 @@ async function request(command: unknown, signal?: AbortSignal) {
           message: z.string(),
           details: z
             .object({
+              stage: z.string().optional(),
+              kind: z.string().optional(),
               databases: z
                 .array(z.object({ id: z.string(), name: z.string() }))
                 .optional(),
