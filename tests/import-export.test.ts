@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createDemo } from "../src/lib/demo";
+import { createDemo } from "./fixtures/demo-data";
 import { exportCsv, parseCsv, parseBackup } from "../src/lib/import-export";
 import { courseGrade } from "../src/lib/calculations";
 import { PolicySchema, StateSchema } from "../src/lib/model";
