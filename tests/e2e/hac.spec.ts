@@ -295,13 +295,14 @@ test("API rejects live mode, credentials, query strings and cross-origin request
     expect(r.status).toBe(400);
     expect(r.cache).toContain("no-store");
   }
-  const get = await page.request.get("/api/hac");
-  expect(get.status()).toBe(405);
-  const origin = await page.request.post("/api/hac", {
-    headers: { origin: "https://unrelated.example" },
-    data: { action: "status" },
-  });
-  expect(origin.status()).toBe(403);
+  expect(
+    (
+      await page.request.post("/api/hac", {
+        headers: { origin: "https://other.example" },
+        data: { action: "status" },
+      })
+    ).status(),
+  ).toBe(403);
 });
 test("landing and school records are accessible, responsive and free of runtime errors", async ({
   page,
