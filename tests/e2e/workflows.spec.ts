@@ -550,8 +550,9 @@ test("CSV imports a new profile without erasing demo or manual data; export work
   const data = JSON.parse(await stored(page));
   expect(data.profiles).toHaveLength(3);
   expect(
-    data.profiles.find((p: { state: { demo: boolean } }) => p.state.demo).state
-      .courses,
+    data.profiles.find(
+      (p: { name: string }) => p.name === "Academic test student",
+    ).state.courses,
   ).toHaveLength(6);
 });
 test("invalid CSV and backup reject without overwriting any profile", async ({
