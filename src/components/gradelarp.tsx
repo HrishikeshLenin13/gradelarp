@@ -261,7 +261,7 @@ export function Gradelarp() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setState(createDemo());
+                  setState(emptyState());
                   setLoadError("");
                 }}
               >
