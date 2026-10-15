@@ -110,6 +110,7 @@ export function GradelarpApp() {
     revision = useRef(0),
     sequence = useRef(0),
     loaded = useRef<ProductData | null>(null),
+    liveData = useRef<ProductData | null>(null),
     toast = useRef<ReturnType<typeof setTimeout> | null>(null);
   const systemDark = useSyncExternalStore(
       subscribeSystem,
