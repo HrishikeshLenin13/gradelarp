@@ -574,7 +574,13 @@ export function GradelarpApp() {
                 </div>
               )}
               {view === "overview" ? (
-                state.courses.length ? (
+                profile.hacLive ? (
+                  <SourceGradebook
+                    primary
+                    snapshot={profile.hacLive.snapshot}
+                    onConnect={() => navigate("hac")}
+                  />
+                ) : state.courses.length ? (
                   <>
                     <ExpressiveDashboard
                       state={{
