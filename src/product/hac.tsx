@@ -128,7 +128,12 @@ export function HacLogin({
     } catch (e) {
       if (e instanceof ConnectionError) {
         if (e.databases) setDatabases(e.databases);
-        setDiagnostic([e.code, e.stage, e.kind].filter(Boolean).join(" · "));
+        setDiagnostic(
+          [e.code, e.stage, e.kind].filter(Boolean).join(" · ") +
+            (e.validation?.length
+              ? ` · Record fields: ${e.validation.join(", ")}`
+              : ""),
+        );
       }
       setError(
         e instanceof Error ? e.message : "The connection failed. Try again.",
