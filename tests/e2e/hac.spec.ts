@@ -306,6 +306,9 @@ test("API rejects live mode, credentials, query strings and cross-origin request
 test("connection, preview and imported records fit mobile and pass accessibility in both themes", async ({
   page,
 }, info) => {
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await simulatePortal(page);
   await ready(page);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(
