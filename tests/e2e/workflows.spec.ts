@@ -48,9 +48,6 @@ async function ready(page: Page) {
     .click();
   await expect(page.getByTestId("course-select")).toHaveCount(6);
   await saved(page);
-  await page
-    .getByRole("button", { name: "Dismiss notification", exact: true })
-    .click();
 }
 async function stored(page: Page) {
   return page.evaluate(
