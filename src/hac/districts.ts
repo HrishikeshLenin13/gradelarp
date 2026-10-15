@@ -1,4 +1,4 @@
-import { HacError, type DistrictId } from "./types";
+import { type DistrictId } from "./types";
 export const districts = [
   {
     id: "lisd",
