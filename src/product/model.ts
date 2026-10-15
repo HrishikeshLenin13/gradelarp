@@ -233,7 +233,15 @@ export function newProfile(name = "Student", demo = false): Profile {
 export function migrateLegacy(raw: unknown | null): ProductData {
   const p = newProfile();
   if (raw !== null) {
-    p.state = StateSchema.parse(raw);
+    const legacy = StateSchema.parse(raw);
+    if (legacy.demo)
+      return {
+        format: "gradelarp-product",
+        version: 2,
+        activeProfileId: p.id,
+        profiles: [p],
+      };
+    p.state = legacy;
     p.name = p.state.settings.name;
     const s = p.state.settings;
     if (p.state.courses[0])
