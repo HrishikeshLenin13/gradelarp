@@ -765,11 +765,7 @@ export function GradelarpApp() {
                 />
               )}
               {view === "hac" && (
-                <SchoolConnection
-                  data={data}
-                  profile={profile}
-                  onChange={(next) => changeData(next, true)}
-                />
+                <SchoolConnection profile={profile} onSync={syncSchool} />
               )}
               {view === "data" && (
                 <DataTools
