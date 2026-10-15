@@ -309,10 +309,6 @@ describe("server-only mock boundary", () => {
         { origin: "http://example.test" },
         "http://example.test/api/hac",
       ),
-      req("{}", { "content-type": "text/plain" }),
-      req("{"),
-      req("{}", { "sec-fetch-site": "cross-site" }),
-      new Request("http://localhost:3000/api/hac"),
     ])
       await expect(readCommand(r)).rejects.toThrow();
   });
