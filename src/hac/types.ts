@@ -75,13 +75,6 @@ export const ImportStateSchema = z.object({
   ignored: z.array(id).max(100),
 });
 export type ImportState = z.infer<typeof ImportStateSchema>;
-export const SessionSchema = z.object({
-  district: DistrictId,
-  studentName: z.literal("Jordan · Synthetic student"),
-  expiresAt: z.iso.datetime(),
-  mode: z.literal("mock"),
-});
-export type HacSession = z.infer<typeof SessionSchema>;
 export class HacError extends Error {
   constructor(
     public code: string,
