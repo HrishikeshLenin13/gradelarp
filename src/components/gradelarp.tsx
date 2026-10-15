@@ -64,7 +64,7 @@ import {
   UpcomingWidget,
   upcoming,
 } from "./widgets";
-import { createDemo, emptyState } from "@/lib/demo";
+import { emptyState } from "@/lib/demo";
 import { provider } from "@/lib/persistence";
 import {
   StateSchema,
