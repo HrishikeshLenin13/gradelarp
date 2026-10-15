@@ -48,11 +48,52 @@ export class MockHacService {
       if (token) this.sessions.delete(token);
       return { session: null, clearCookie: true };
     }
-    const session = token ? this.sessions.get(token) : undefined;
-    if (command.action === "status")
-      return { session: session ?? null, clearCookie: !session };
-    if (command.action === "connect") {
-      if (this.sessions.size >= 512 || this.attempts.length >= 120)
+    const key = createHash("sha256")
+      .update(`${command.action}:${client}`)
+      .digest("hex");
+    const limit = this.attempts.get(key);
+    const max = command.action === "connect" ? 5 : 30;
+    if (limit && limit.count >= max)
+      throw new HacError(
+        "RATE_LIMIT",
+        "Too many attempts. Wait a minute before trying again.",
+        429,
+      );
+    if (
+      this.active >= 10 ||
+      this.sessions.size >= 200 ||
+      (!limit && this.attempts.size >= 2000)
+    )
+      throw new HacError(
+        "BUSY",
+        "The connector is busy. Try again shortly.",
+        503,
+      );
+    this.attempts.set(key, {
+      count: (limit?.count ?? 0) + 1,
+      until: limit?.until ?? now + 60_000,
+    });
+    this.active++;
+    try {
+      if (command.action === "connect") {
+        const result = await connectPortal(command, this.factory);
+        if (token) this.sessions.delete(token);
+        if (previous) await previous.connection.transport.destroy();
+        const next: LiveSession = {
+          mode: "live",
+          portal: result.connection.portal,
+          studentId: result.connection.studentId,
+          studentName: result.connection.studentName,
+          expiresAt: new Date(this.clock() + TTL).toISOString(),
+        };
+        const newToken = randomBytes(32).toString("hex");
+        this.sessions.set(newToken, {
+          public: next,
+          connection: result.connection,
+        });
+        return { session: next, snapshot: result.snapshot, token: newToken };
+      }
+      if (!previous)
         throw new HacError(
           "SESSION_EXPIRED",
           "Your HAC session ended. Sign in again; saved grades are unchanged.",
