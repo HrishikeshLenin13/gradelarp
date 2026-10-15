@@ -677,7 +677,7 @@ export function Gradelarp() {
                     }}
                     onDemo={() =>
                       commit(
-                        createDemo(),
+                        emptyState(),
                         "Sample workspace loaded. This is demo data.",
                       )
                     }
