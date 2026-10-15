@@ -371,7 +371,7 @@ export function GradelarpApp() {
           <span>{profile.name.slice(0, 2).toUpperCase()}</span>
           <div>
             <b>{profile.name}</b>
-            <small>{state.demo ? "Demo profile" : "Local student"}</small>
+            <small>{profile.hacLive ? "HAC student" : "Local student"}</small>
           </div>
         </button>
       </div>
