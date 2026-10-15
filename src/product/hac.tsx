@@ -391,7 +391,7 @@ export function SchoolConnection({
         </section>
       </div>
       {error && (
-        <div className="hac-notice hac-error" role="alert">
+        <p className="hac-login-error" role="alert">
           {error}
         </p>
       )}
