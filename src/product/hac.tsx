@@ -164,6 +164,8 @@ export function HacLogin({
                 autoComplete="url"
                 onChange={(e) => {
                   setPortal(e.target.value);
+                  setCheckResult("");
+                  setDiagnostic("");
                   setConfirmed(false);
                   setError("");
                 }}
