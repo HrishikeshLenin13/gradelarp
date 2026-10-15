@@ -1,5 +1,7 @@
 import { z } from "zod";
 const text = z.string().trim().min(1).max(300);
+// Source display text is not a short manual-entry label. Keep it intact.
+const sourceLabel = z.string().trim().min(1).max(16_384);
 export const SourceAssignmentSchema = z.object({
   id: text,
   name: sourceLabel,
