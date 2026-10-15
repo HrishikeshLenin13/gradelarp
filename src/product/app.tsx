@@ -95,6 +95,7 @@ export function GradelarpApp() {
     [retry, setRetry] = useState(0),
     [saveError, setSaveError] = useState(""),
     [saved, setSaved] = useState("Loading local grades…");
+  const [entry, setEntry] = useState(false);
   const [view, setView] = useState<View>("overview"),
     [semester, setSemester] = useState(currentSemester),
     [selected, setSelected] = useState("");
