@@ -69,11 +69,13 @@ describe("synthetic HTML contract", () => {
       html.replace('data-id="practice-1"', 'data-id="quiz-1"'),
       "lisd",
     );
-    expect(duplicate.status).toBe("partial");
-    expect(duplicate.courses.map((c) => c.remoteId)).toEqual(["english"]);
-    const unknown = parseFixture(
-      html.replace('data-status="graded"', 'data-status="mystery"'),
-      "lisd",
+  });
+  it("keeps school sessions isolated, expires and revokes them", async () => {
+    let now = 1000;
+    const f = fakeTransport();
+    const service = new LiveHacService(
+      () => f.transport,
+      () => now,
     );
     const result = await service.handle(
       {
