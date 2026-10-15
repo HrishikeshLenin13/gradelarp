@@ -248,7 +248,11 @@ export function HacLogin({
             {error}
           </p>
         )}
-        <Button type="submit" disabled={busy} className="hac-connect-button">
+        <Button
+          type="submit"
+          disabled={busy || checking}
+          className="hac-connect-button"
+        >
           {busy ? (
             <>
               <RefreshCw size={17} />
