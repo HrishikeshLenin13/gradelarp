@@ -14,21 +14,12 @@ import { Button } from "@/components/ui/button";
 import { courseGrade } from "@/lib/calculations";
 import { districts, districtConfig } from "@/hac/districts";
 import {
-  HacError,
-  SessionSchema,
-  SnapshotSchema,
-  type HacSession,
-  type HacSnapshot,
-  type DistrictId,
-  type FixtureCase,
-} from "@/hac/types";
-import {
-  applyImport,
-  newSandbox,
-  previewImport,
-  removeImported,
-} from "@/hac/sync";
-import { type ProductData, type Profile } from "./model";
+  LiveResponseSchema,
+  type LiveSession,
+  type LiveSnapshot,
+} from "@/hac/live-types";
+import { districts } from "@/hac/districts";
+import { type Profile } from "./model";
 import { Confirm } from "./forms";
 class ConnectionError extends Error {
   constructor(
