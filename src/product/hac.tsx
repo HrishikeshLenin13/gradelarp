@@ -62,7 +62,6 @@ function time(value: string | null | undefined) {
   return value ? new Date(value).toLocaleString() : "Not imported yet";
 }
 export function SchoolConnection({
-  data,
   profile,
   onSync,
   onManual,
