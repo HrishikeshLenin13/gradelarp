@@ -135,7 +135,7 @@ export class DirectPortalTransport implements PortalTransport {
       const addresses = await Promise.race([
         lookup(url.hostname, { all: true, verbatim: true }),
         new Promise<never>((_, reject) => {
-          if (signal.aborted)
+          onAbort = () =>
             reject(
               new HacError(
                 "TIMEOUT",
