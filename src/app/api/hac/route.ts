@@ -42,6 +42,12 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error) {
     const e = connectionError(error, "request");
+    if (action === "connect" || action === "sync")
+      recordDiagnostic({
+        code: e.code,
+        stage: e.details?.stage,
+        ...(e.details?.validation ? { validation: e.details.validation } : {}),
+      });
     const response = NextResponse.json(
       {
         error: {
