@@ -1,5 +1,6 @@
 import { load } from "cheerio";
-import { HacError } from "./types";
+import { HacError, type HacStage } from "./types";
+import { atStage, connectionError } from "./errors";
 import {
   DirectPortalTransport,
   normalizePortal,
