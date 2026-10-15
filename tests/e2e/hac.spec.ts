@@ -336,7 +336,7 @@ test("connection, preview and imported records fit mobile and pass accessibility
     .getByRole("heading", { name: "A clearer connection to your classes." })
     .click();
   await page.screenshot({
-    path: `artifacts/hac-2026-10-14/${info.project.name}-preview-dark.png`,
+    path: `artifacts/hac-live-2026-10-15/${info.project.name}-source-dark.png`,
     fullPage: true,
   });
   expect(errors).toEqual([]);
