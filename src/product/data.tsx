@@ -281,8 +281,8 @@ export function DataTools({
           Open school connection
         </Button>
         <p className="helper">
-          Explore district selection, mock sessions, and synthetic grade imports
-          in a separate sandbox. Live school authentication stays off.
+          Sign in directly to your district’s HAC portal and sync
+          school-reported grades. Your password is not saved.
         </p>
       </section>
       <section className="panel danger-zone">
