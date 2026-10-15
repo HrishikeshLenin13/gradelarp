@@ -333,7 +333,7 @@ test("connection, preview and imported records fit mobile and pass accessibility
   );
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   await page
-    .getByRole("heading", { name: "A clearer connection to your classes." })
+    .getByRole("heading", { name: "Browser Test Student’s gradebook" })
     .click();
   await page.screenshot({
     path: `artifacts/hac-live-2026-10-15/${info.project.name}-source-dark.png`,
