@@ -268,7 +268,11 @@ export function HacLogin({
         official HAC website.
       </p>
       {onManual && (
-        <button className="hac-manual-link" disabled={busy} onClick={onManual}>
+        <button
+          className="hac-manual-link"
+          disabled={busy || checking}
+          onClick={onManual}
+        >
           Continue with manual grades instead
         </button>
       )}
