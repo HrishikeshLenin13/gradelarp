@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { CourseSchema } from "../lib/model";
 export const DistrictId = z.enum(["lisd", "rrisd"]);
 export type DistrictId = z.infer<typeof DistrictId>;
 const id = z.string().regex(/^[a-zA-Z0-9_-]{1,80}$/);
