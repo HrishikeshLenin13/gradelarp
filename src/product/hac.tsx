@@ -59,6 +59,7 @@ async function request(command: unknown, signal?: AbortSignal) {
             .object({
               stage: z.string().optional(),
               kind: z.string().optional(),
+              validation: z.array(z.string()).max(8).optional(),
               databases: z
                 .array(z.object({ id: z.string(), name: z.string() }))
                 .optional(),
