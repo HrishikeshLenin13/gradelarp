@@ -302,7 +302,7 @@ describe("server-only mock boundary", () => {
   });
   it("rejects cross-origin requests, URL queries, plain HTTP on remote hosts, wrong content type and bad JSON", async () => {
     for (const r of [
-      req("{}", { origin: "https://other.test" }),
+      req("{}", { origin: "https://other.example" }),
       req("{}", {}, "http://localhost:3000/api/hac?pass=test"),
       req("{}", { "content-type": "text/plain" }),
       req(" ".repeat(2049)),
