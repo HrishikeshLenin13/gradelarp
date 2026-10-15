@@ -87,6 +87,7 @@ export class HacError extends Error {
     public code: string,
     message: string,
     public status = 422,
+    public details?: { databases?: { id: string; name: string }[] },
   ) {
     super(message);
   }
