@@ -198,6 +198,7 @@ export function GradelarpApp() {
       notify(parsed.error.issues[0].message);
       return;
     }
+    liveData.current = parsed.data;
     setSaved("Saving changes…");
     setData(parsed.data);
   }
