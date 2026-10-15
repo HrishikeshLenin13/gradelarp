@@ -13,6 +13,7 @@ import {
   ProductSchema,
   newProfile,
   parseProductBackup,
+  type ProductData,
 } from "../src/product/model";
 import { LOGIN_HTML, gradebook } from "./fixtures/hac-pages";
 const portal = "https://hac.example.edu/HomeAccess";
