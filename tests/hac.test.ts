@@ -2,13 +2,15 @@ import { describe, it, expect } from "vitest";
 import { fixtureHtml } from "../src/hac/fixtures";
 import { parseFixture } from "../src/hac/parser";
 import {
-  applyImport,
-  newSandbox,
-  previewImport,
-  removeImported,
-} from "../src/hac/sync";
-import { validateDestination } from "../src/hac/districts";
-import { MockHacService, readCommand } from "../src/hac/server";
+  DirectPortalTransport,
+  isPublicAddress,
+  normalizePortal,
+  validatePortalRequest,
+  type PortalTransport,
+} from "../src/hac/transport";
+import { parseLiveAssignments, identity } from "../src/hac/live-parser";
+import { LiveHacService, readCommand } from "../src/hac/server";
+import { applyLiveSnapshot } from "../src/hac/live-sync";
 import {
   newProfile,
   removeDemonstrations,
