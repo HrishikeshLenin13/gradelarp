@@ -363,7 +363,7 @@ export function Profiles({
                   <span>
                     <strong>{p.name}</strong>
                     <small>
-                      {p.state.demo ? "Demo profile" : "Manual / imported"} ·{" "}
+                      {p.hacLive ? "HAC student" : "Manual / imported"} ·{" "}
                       {p.state.courses.length} courses
                     </small>
                   </span>
