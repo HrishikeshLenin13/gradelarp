@@ -659,8 +659,8 @@ export function GradelarpApp() {
                         <Plus size={17} />
                         Add your first course
                       </Button>
-                      <Button variant="outline" onClick={openDemo}>
-                        Explore separate demo
+                      <Button variant="outline" onClick={() => navigate("hac")}>
+                        Connect HAC
                       </Button>
                     </div>
                     <div className="product-onboarding-bottom">
