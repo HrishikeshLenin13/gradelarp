@@ -27,6 +27,7 @@ export class HacError extends Error {
     public details?: { databases?: { id: string; name: string }[] },
   ) {
     super(message);
+    this.name = "HacError";
   }
 }
 
