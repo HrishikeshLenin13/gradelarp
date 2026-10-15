@@ -145,6 +145,7 @@ export async function connectPortal(
     const login = buildLogin(initial.html, initial.url, portal, input.database);
     login.fields.set("LogOnDetails.UserName", input.username);
     login.fields.set("LogOnDetails.Password", input.password);
+    stage = "sign-in";
     let authenticated;
     try {
       authenticated = await atStage("sign-in", () =>
