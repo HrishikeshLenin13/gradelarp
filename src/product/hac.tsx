@@ -90,8 +90,10 @@ export function SchoolConnection({
     request({ action: "status" }, controller.signal)
       .then((r) => setSession(r.session))
       .catch((e) => {
-        if (!controller.signal.aborted)
-          setError(e instanceof Error ? e.message : "Session check failed.");
+        if (!c.signal.aborted)
+          setError(
+            e instanceof Error ? e.message : "The session check failed.",
+          );
       })
       .finally(() => {
         if (!c.signal.aborted) setBusy(false);
