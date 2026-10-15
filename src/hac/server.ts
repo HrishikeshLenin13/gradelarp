@@ -95,7 +95,9 @@ export class LiveHacService {
         );
       return {
         session: previous.public,
-        snapshot: await refreshPortal(previous.connection),
+        snapshot: await atStage("refresh", () =>
+          refreshPortal(previous.connection),
+        ),
       };
     } catch (error) {
       if (
