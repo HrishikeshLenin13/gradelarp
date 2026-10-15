@@ -151,10 +151,9 @@ export function SchoolConnection({
           "Disconnected. Your imported records remain on this device.",
         );
     } catch (e) {
-      if (e instanceof HacError && e.status === 401) setSession(null);
-      setError(
-        e instanceof Error ? e.message : "The connector request failed.",
-      );
+      if (e instanceof ConnectionError && e.code === "SESSION_EXPIRED")
+        setSession(null);
+      setError(e instanceof Error ? e.message : "The HAC request failed.");
     } finally {
       setBusy(false);
     }
