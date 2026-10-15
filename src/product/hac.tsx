@@ -659,7 +659,7 @@ export function SourceGradebook({
               {course.categories
                 .map(
                   (c) =>
-                    `${c.name}${c.weight === null ? " (weight not reported)" : ` ${c.weight}%`}`,
+                    `${c.name}${c.weightText !== undefined ? (c.weightText ? ` · weight ${c.weightText}` : " (weight not reported)") : c.percentText === undefined ? (c.weight === null ? " (weight not reported)" : ` · weight ${c.weight}`) : ""}${c.percentText ? ` · share ${c.percentText}` : ""}`,
                 )
                 .join(" · ")}
             </p>
