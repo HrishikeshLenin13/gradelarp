@@ -124,6 +124,7 @@ export function GradelarpApp() {
       .then((result) => {
         if (!active) return;
         loaded.current = result.data;
+        liveData.current = result.data;
         revision.current = result.revision;
         setData(result.data);
         const p = result.data.profiles.find(
