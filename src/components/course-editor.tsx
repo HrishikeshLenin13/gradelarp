@@ -105,7 +105,7 @@ export function CourseEditor({
                 aria-label="Course name"
                 value={course.name}
                 onChange={(e) => update({ name: e.target.value })}
-                placeholder="e.g. AP Calculus AB"
+                placeholder="Course name from your school"
               />
             </label>
             <label>
