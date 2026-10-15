@@ -64,6 +64,8 @@ async function request(command: unknown, signal?: AbortSignal) {
         : "The HAC server returned an unexpected response.",
       error.success ? error.data.error.code : "RESPONSE",
       error.success ? error.data.error.details?.databases : undefined,
+      error.success ? error.data.error.details?.stage : undefined,
+      error.success ? error.data.error.details?.kind : undefined,
     );
   }
   return LiveResponseSchema.parse(body);
