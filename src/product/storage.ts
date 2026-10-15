@@ -59,7 +59,7 @@ export const productProvider = {
     return envelope;
   },
   async save(data: ProductData, expectedRevision: number): Promise<number> {
-    const valid = ProductSchema.parse(data);
+    const valid = removeDemonstrations(ProductSchema.parse(data));
     const d = await db();
     const tx = d.transaction("workspace", "readwrite");
     const current = await tx.store.get("current");
