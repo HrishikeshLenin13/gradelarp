@@ -100,7 +100,7 @@ export class LiveHacService {
     } catch (error) {
       if (
         command.action === "sync" &&
-        error instanceof HacError &&
+        isHacError(error) &&
         error.status === 401 &&
         token
       ) {
