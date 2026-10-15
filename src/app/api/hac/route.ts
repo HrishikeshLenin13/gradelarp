@@ -44,7 +44,13 @@ export async function POST(request: NextRequest) {
             500,
           );
     const response = NextResponse.json(
-      { error: { code: e.code, message: e.message } },
+      {
+        error: {
+          code: e.code,
+          message: e.message,
+          ...(e.details ? { details: e.details } : {}),
+        },
+      },
       { status: e.status, headers },
     );
     if (e.status === 401 && !isConnect)
