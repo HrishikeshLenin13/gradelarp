@@ -143,19 +143,8 @@ export class DirectPortalTransport implements PortalTransport {
                 504,
               ),
             );
-          else
-            signal.addEventListener(
-              "abort",
-              () =>
-                reject(
-                  new HacError(
-                    "TIMEOUT",
-                    "HAC took too long to respond. Try again.",
-                    504,
-                  ),
-                ),
-              { once: true },
-            );
+          if (signal.aborted) onAbort();
+          else signal.addEventListener("abort", onAbort, { once: true });
         }),
       ]).finally(() => {
         if (onAbort) signal.removeEventListener("abort", onAbort);
