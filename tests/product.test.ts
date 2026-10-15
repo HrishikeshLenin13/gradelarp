@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createDemo, emptyState } from "../src/lib/demo";
+import { createDemo, emptyState } from "./fixtures/demo-data";
 import { courseGrade, requiredScore, gpa } from "../src/lib/calculations";
 import { defaultPolicy, type Course } from "../src/lib/model";
 import {
