@@ -96,7 +96,7 @@ export function SchoolConnection({
       .finally(() => {
         if (!controller.signal.aborted) setBusy(false);
       });
-    return () => controller.abort();
+    return () => c.abort();
   }, []);
   useEffect(() => {
     if (!session) return;
