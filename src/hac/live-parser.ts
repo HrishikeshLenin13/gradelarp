@@ -76,7 +76,7 @@ export function parseLiveAssignments(
           .join(" "),
       )
     )
-      return LiveSnapshotSchema.parse({
+      return validateSnapshot({
         mode: "live",
         portal,
         studentId,
