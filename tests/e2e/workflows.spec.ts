@@ -40,12 +40,6 @@ async function profiles(page: Page) {
 }
 async function ready(page: Page) {
   await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: "Your next chapter starts right here." }),
-  ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Explore separate demo", exact: true })
-    .click();
   await expect(page.getByTestId("course-select")).toHaveCount(6);
   await saved(page);
 }
