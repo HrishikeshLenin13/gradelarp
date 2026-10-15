@@ -209,6 +209,8 @@ export function GradelarpApp() {
       });
   }
   function changeData(next: ProductData, keepView = false) {
+    if (!next.profiles.find((p) => p.id === next.activeProfileId)?.hacLive)
+      rememberManualEntry();
     const p = next.profiles.find((p) => p.id === next.activeProfileId)!;
     if (next.activeProfileId !== data?.activeProfileId) {
       setSemester(p.state.courses[0]?.semester ?? currentSemester());
