@@ -194,10 +194,11 @@ export function SchoolConnection({
           <span className="hac-mode">
             <ShieldCheck size={15} /> Mock connection · no school login
           </span>
-          <h2>A clearer connection to your classes.</h2>
-          <p>
-            Try the whole import experience with a synthetic student. Preview
-            courses, explore your grades, and keep your own work untouched.
+          <h2>{session.studentName}</h2>
+          <p>{new URL(session.portal).hostname}</p>
+          <p className="helper">
+            Session ends {new Date(session.expiresAt).toLocaleTimeString()}.
+            Your saved grades remain after disconnecting.
           </p>
         </div>
         <div className="product-actions">
