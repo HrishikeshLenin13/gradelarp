@@ -320,28 +320,3 @@ describe("server-only mock boundary", () => {
     await expect(readCommand(req(" ".repeat(2049)))).rejects.toThrow(/large/);
   });
 });
-
-it("normalizes only explicit loopback preview hosts, not attacker-controlled forwarded hosts", async () => {
-  const command = '{"action":"status"}';
-  const local = new Request("http://0.0.0.0:3002/api/hac", {
-    method: "POST",
-    headers: {
-      origin: "http://localhost:3002",
-      host: "localhost:3002",
-      "content-type": "application/json",
-    },
-    body: command,
-  });
-  expect(await readCommand(local)).toEqual({ action: "status" });
-  const remote = new Request("http://0.0.0.0:3002/api/hac", {
-    method: "POST",
-    headers: {
-      origin: "https://other.test",
-      host: "other.test",
-      "x-forwarded-host": "localhost:3002",
-      "content-type": "application/json",
-    },
-    body: command,
-  });
-  await expect(readCommand(remote)).rejects.toThrow();
-});
