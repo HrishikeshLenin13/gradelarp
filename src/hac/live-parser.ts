@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { load } from "cheerio";
 import { HacError } from "./types";
+import { validationFields } from "./errors";
 import {
   LiveSnapshotSchema,
   type LiveSnapshot,
