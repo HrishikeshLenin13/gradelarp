@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { LiveHacService, readCommand } from "../../../hac/server";
-import { HacError } from "../../../hac/types";
+import { connectionError } from "../../../hac/errors";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const singleton = globalThis as typeof globalThis & {
