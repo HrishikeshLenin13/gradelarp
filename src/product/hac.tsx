@@ -130,8 +130,6 @@ export function SchoolConnection({
   async function run(command: unknown) {
     setBusy(true);
     setError("");
-    setMessage("");
-    setSnapshot(null);
     try {
       const r = await request({ action });
       setSession(r.session);
