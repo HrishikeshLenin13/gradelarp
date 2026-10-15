@@ -75,7 +75,23 @@ describe("synthetic HTML contract", () => {
       html.replace('data-status="graded"', 'data-status="mystery"'),
       "lisd",
     );
-    expect(unknown.status).toBe("partial");
+    const result = await service.handle(
+      {
+        action: "connect",
+        portal,
+        username: "test-user",
+        password: "test-only",
+      },
+      undefined,
+      "client-a",
+    );
+    expect(result.token).toMatch(/^[a-f0-9]{64}$/);
+    expect(JSON.stringify(result.session)).not.toContain("test-only");
+    now += 30 * 60 * 1000;
+    expect(
+      (await service.handle({ action: "status" }, result.token)).session,
+    ).toBeNull();
+    expect(f.transport.destroy).toHaveBeenCalled();
   });
   it("rate-limits failed sign-ins without logging credentials", async () => {
     const f = fakeTransport({ rejected: true }),
