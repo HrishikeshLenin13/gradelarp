@@ -29,7 +29,7 @@ function checkInteractive(html: string) {
       409,
     );
 }
-function extractName(html: string) {
+export function extractName(html: string) {
   const $ = load(html);
   // Selector priority matters: a combined selector uses document order, not
   // the priority of the explicit student-name field over generic menu spans.
