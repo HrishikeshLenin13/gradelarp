@@ -48,8 +48,7 @@ async function request(command: unknown, signal?: AbortSignal) {
     const error = z
       .object({ error: z.object({ code: z.string(), message: z.string() }) })
       .safeParse(body);
-    throw new HacError(
-      error.success ? error.data.error.code : "RESPONSE",
+    throw new ConnectionError(
       error.success
         ? error.data.error.message
         : "The HAC server returned an unexpected response.",
