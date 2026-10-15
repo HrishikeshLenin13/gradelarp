@@ -33,3 +33,10 @@ See [HAC_INTEGRATION.md](HAC_INTEGRATION.md) for exact flow, security boundaries
 - A DNS lookup failure reproduces the old generic HTTP 500; the new result is `DNS` / `login-page`, HTTP 502. This does not establish the cause of the user's original attempt.
 - Public GET and empty-account-field POST transport checks pass both preset district portals; these checks are not successful account authentication.
 - Current commands, test counts, source checkpoint and independent-copy rollback: `artifacts/hac-login-fix-2026-10-15/VERIFICATION.txt`.
+
+## Source-record compatibility follow-up
+
+- Source category relative weights and percentages are separate; weights above 100 no longer reject the entire gradebook or receive an invented percent sign.
+- Longer source labels and raw possible-point text survive source-profile storage and backup round trips.
+- Source field-name-only diagnostics identify any remaining schema mismatch. Actual account-specific retry remains the integration confirmation.
+- Research: `research/hac/GRADEWAY_COMPARISON.md`; observed test/rollback results: `artifacts/hac-records-fix-2026-10-15/VERIFICATION.txt`.
