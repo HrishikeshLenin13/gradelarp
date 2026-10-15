@@ -86,8 +86,8 @@ export function SchoolConnection({
     name: string;
   } | null>(null);
   useEffect(() => {
-    const controller = new AbortController();
-    request({ action: "status" }, controller.signal)
+    const c = new AbortController();
+    request({ action: "status" }, c.signal)
       .then((r) => setSession(r.session))
       .catch((e) => {
         if (!c.signal.aborted)
