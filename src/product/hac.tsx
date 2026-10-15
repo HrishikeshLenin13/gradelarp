@@ -75,6 +75,7 @@ async function request(command: unknown, signal?: AbortSignal) {
       error.success ? error.data.error.details?.databases : undefined,
       error.success ? error.data.error.details?.stage : undefined,
       error.success ? error.data.error.details?.kind : undefined,
+      error.success ? error.data.error.details?.validation : undefined,
     );
   }
   return LiveResponseSchema.parse(body);
