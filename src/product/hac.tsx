@@ -30,10 +30,15 @@ import {
 } from "@/hac/sync";
 import { type ProductData, type Profile } from "./model";
 import { Confirm } from "./forms";
-const responseSchema = z.object({
-  session: SessionSchema.nullable(),
-  snapshot: SnapshotSchema.optional(),
-});
+class ConnectionError extends Error {
+  constructor(
+    message: string,
+    public code: string,
+    public databases?: { id: string; name: string }[],
+  ) {
+    super(message);
+  }
+}
 async function request(command: unknown, signal?: AbortSignal) {
   const response = await fetch("/api/hac", {
     method: "POST",
