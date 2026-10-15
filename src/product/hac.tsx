@@ -151,7 +151,12 @@ export function HacLogin({
     } catch (e) {
       setError(e instanceof Error ? e.message : "District connection failed.");
       if (e instanceof ConnectionError) {
-        setDiagnostic([e.code, e.stage, e.kind].filter(Boolean).join(" · "));
+        setDiagnostic(
+          [e.code, e.stage, e.kind].filter(Boolean).join(" · ") +
+            (e.validation?.length
+              ? ` · Record fields: ${e.validation.join(", ")}`
+              : ""),
+        );
         if (e.databases) setDatabases(e.databases);
       }
     } finally {
