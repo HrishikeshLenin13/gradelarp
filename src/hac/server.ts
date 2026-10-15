@@ -100,6 +100,8 @@ export class MockHacService {
     } catch (error) {
       if (error instanceof HacError && error.code === "AUTH_FAILED" && token)
         this.sessions.delete(token);
+        if (previous) await previous.connection.transport.destroy();
+      }
       throw error;
     } finally {
       this.active--;
