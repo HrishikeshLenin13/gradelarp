@@ -103,9 +103,8 @@ export function SchoolConnection({
     const timer = setTimeout(
       () => {
         setSession(null);
-        setSnapshot(null);
-        setMessage(
-          "Your mock session ended. Reconnect to refresh; saved imports are unchanged.",
+        setError(
+          "Your HAC session ended. Sign in again to refresh; saved grades remain.",
         );
       },
       Math.max(0, Date.parse(session.expiresAt) - Date.now()),
