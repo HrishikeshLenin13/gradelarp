@@ -46,6 +46,7 @@ export class MockHacService {
     const command = parsed.data;
     if (command.action === "disconnect") {
       if (token) this.sessions.delete(token);
+      if (previous) await previous.connection.transport.destroy();
       return { session: null, clearCookie: true };
     }
     const key = createHash("sha256")
