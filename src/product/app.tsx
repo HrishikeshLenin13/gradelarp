@@ -129,6 +129,7 @@ export function GradelarpApp() {
         const p = result.data.profiles.find(
           (p) => p.id === result.data.activeProfileId,
         )!;
+        setEntry(!p.hacLive && !p.state.courses.length && !manualEntryChosen());
         setSemester(p.state.courses[0]?.semester ?? currentSemester());
         setSelected(p.state.courses[0]?.id ?? "");
         setSaved("Saved on this device");
