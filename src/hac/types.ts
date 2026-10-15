@@ -19,6 +19,15 @@ export const ImportStateSchema = z.object({
   ignored: z.array(id).max(100),
 });
 export type ImportState = z.infer<typeof ImportStateSchema>;
+export type HacStage =
+  | "request"
+  | "login-page"
+  | "sign-in"
+  | "gradebook"
+  | "student-identity"
+  | "parse-records"
+  | "refresh";
+const errorBrand = Symbol.for("gradelarp.hac.error");
 export class HacError extends Error {
   readonly [errorBrand] = true;
   constructor(
