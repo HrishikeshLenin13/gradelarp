@@ -84,6 +84,20 @@ const descriptions: Record<View, string> = {
   hac: "A thoughtful connection, with your work kept intact.",
   data: "Your data belongs to you. Keep a copy, wherever you go.",
 };
+function manualEntryChosen() {
+  try {
+    return sessionStorage.getItem("gradelarp-manual-entry") === "1";
+  } catch {
+    return false;
+  }
+}
+function rememberManualEntry() {
+  try {
+    sessionStorage.setItem("gradelarp-manual-entry", "1");
+  } catch {
+    /* Manual entry still works for this visit. */
+  }
+}
 function subscribeSystem(listener: () => void) {
   const q = window.matchMedia("(prefers-color-scheme: dark)");
   q.addEventListener("change", listener);
