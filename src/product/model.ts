@@ -267,7 +267,7 @@ export function migrateLegacy(raw: unknown | null): ProductData {
 export function parseProductBackup(text: string): ProductData {
   const raw = JSON.parse(text);
   return raw.format === "gradelarp-product"
-    ? ProductSchema.parse(raw)
+    ? removeDemonstrations(ProductSchema.parse(raw))
     : migrateLegacy(raw);
 }
 export function localDate(date = new Date()) {
