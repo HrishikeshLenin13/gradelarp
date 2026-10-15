@@ -71,3 +71,12 @@ The previous 86-file source checkpoint has SHA-256 `2f8342ad48b89758fbeda8993fdd
 ```text
 Continue Gradelarp’s direct HAC flow. Preserve the no-demo entry experience, genuine browser records, immutable manual scenarios and original math. Credentials belong only in the in-app POST flow and must never enter chat, logs, URLs or saved fixtures. Verify current public forms without submitting credentials; use test-only sanitized HTML for authenticated/error parsing tests. Preserve school-reported values and stop on unknown layouts or required interactive auth. Do not infer district credits/GPA rules. Run lint/type/unit, public GET-only preflight, production browser tests and marked-copy rollback; record observed results and remaining unverified account-specific behavior. Do not deploy.
 ```
+
+
+## Connection diagnostics follow-up (2026-10-15)
+
+The reported generic error was reproduced with an unresolved public hostname: `ENOTFOUND` escaped the transport as a raw Node error and became HTTP 500. This is a confirmed cause of that message, not proof that it caused the user's account-specific attempt. The connector now classifies DNS, timeout, network, TLS, schema and unexpected runtime failures without exposing raw error messages or source records. Error details include the failing step (`login-page`, `sign-in`, `gradebook`, `student-identity`, `parse-records`, or `refresh`). Typed errors survive Next dev module re-evaluation. DNS abort listeners are removed when lookup settles, and socket timeouts remain timeouts rather than generic network errors.
+
+The **Check district connection** button accepts only a portal URL, GETs its public form, validates the current same-origin action/CSRF field and discards its cookie jar. It never accepts credentials or asserts account authentication. Probe requests have a separate retry limit. Sign-in failures show a copyable code/step; credentials remain cleared after a sign-in attempt.
+
+The running Next route reached both preset district forms. A separate real transport check sent EMPTY account fields with each form's current CSRF cookie/token: both returned HTTP 200 with the login form still present. No account credentials or authenticated academic pages were requested. Current authenticated account sync, district-specific gradebook markup and the user's original failure cause still require a private in-app retry and its displayed connection details. Evidence: `artifacts/hac-login-fix-2026-10-15/VERIFICATION.txt`.
