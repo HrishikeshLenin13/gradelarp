@@ -40,7 +40,7 @@ export function defaultPreferences(direction: Direction): LabPreferences {
 }
 export function createLabWorkspace(direction: Direction): LabWorkspaceData {
   return {
-    state: createDemo(),
+    state: emptyState(),
     preferences: defaultPreferences(direction),
     completed: [],
   };
