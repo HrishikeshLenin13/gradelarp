@@ -188,6 +188,24 @@ export function HacLogin({
             third-party grade API.
           </span>
         </div>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={
+            busy ||
+            checking ||
+            !destination ||
+            (district === "other" && !confirmed)
+          }
+          onClick={checkPortal}
+        >
+          {checking ? "Checking district…" : "Check district connection"}
+        </Button>
+        {checkResult && (
+          <p className="hac-login-footnote" role="status">
+            {checkResult}
+          </p>
+        )}
         {databases.length > 0 && (
           <label className="field">
             <span>District database</span>
