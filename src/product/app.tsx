@@ -651,8 +651,8 @@ export function GradelarpApp() {
                     </h1>
                     <p>
                       A home for your grades, your plans, and the possibilities
-                      ahead. Start with your real courses, or explore a clearly
-                      labeled demo.
+                      ahead. Connect your school or start with your own courses.
+                      No sample data is added.
                     </p>
                     <div className="flex">
                       <Button onClick={() => setEditor(newCourse(semester))}>
