@@ -260,6 +260,7 @@ export function parseLiveAssignments(
               name: cs[ni],
               weight: wi < 0 ? null : number(cs[wi] ?? ""),
             });
+          }
         }
     }
     courses.push({
