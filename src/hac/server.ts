@@ -46,7 +46,8 @@ export class LiveHacService {
       .update(`${command.action}:${client}`)
       .digest("hex");
     const limit = this.attempts.get(key);
-    const max = command.action === "connect" ? 5 : 30;
+    const max =
+      command.action === "connect" ? 5 : command.action === "probe" ? 10 : 30;
     if (limit && limit.count >= max)
       throw new HacError(
         "RATE_LIMIT",
