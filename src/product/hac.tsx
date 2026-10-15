@@ -66,7 +66,6 @@ export function SchoolConnection({
   profile,
   onChange,
 }: {
-  data: ProductData;
   profile: Profile;
   onSync: (s: LiveSnapshot) => void;
   onManual?: () => void;
