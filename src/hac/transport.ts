@@ -157,7 +157,9 @@ export class DirectPortalTransport implements PortalTransport {
               { once: true },
             );
         }),
-      ]);
+      ]).finally(() => {
+        if (onAbort) signal.removeEventListener("abort", onAbort);
+      });
       if (
         !addresses.length ||
         addresses.some((a) => !isPublicAddress(a.address))
