@@ -20,7 +20,8 @@ export async function POST(request: NextRequest) {
     const { token, clearCookie, ...result } = service.handle(
       command,
       request.cookies.get(cookieName)?.value,
-    ) as ReturnType<MockHacService["handle"]> & {
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local",
+    )) as Awaited<ReturnType<LiveHacService["handle"]>> & {
       token?: string;
       clearCookie?: boolean;
     };
