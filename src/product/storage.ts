@@ -1,5 +1,10 @@
 import { openDB, type DBSchema, type IDBPDatabase } from "idb";
-import { ProductSchema, migrateLegacy, type ProductData } from "./model";
+import {
+  ProductSchema,
+  migrateLegacy,
+  removeDemonstrations,
+  type ProductData,
+} from "./model";
 export const PRODUCT_DATABASE = "gradelarp-product-v2";
 interface Envelope {
   revision: number;
