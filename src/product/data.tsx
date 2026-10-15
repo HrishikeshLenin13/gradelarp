@@ -230,7 +230,10 @@ export function DataTools({
           </div>
           <div>
             <span>Current courses</span>
-            <strong>{profile.state.courses.length}</strong>
+            <strong>
+              {profile.state.courses.length +
+                (profile.hacLive?.snapshot.courses.length ?? 0)}
+            </strong>
           </div>
           <div>
             <span>Saved scenarios</span>
