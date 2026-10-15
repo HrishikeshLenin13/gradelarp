@@ -56,7 +56,7 @@ async function request(command: unknown, signal?: AbortSignal) {
       response.status,
     );
   }
-  return responseSchema.parse(body);
+  return LiveResponseSchema.parse(body);
 }
 export function HacLogin({
   onSync,
