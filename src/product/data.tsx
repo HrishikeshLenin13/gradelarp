@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
-import { Upload, Download, ShieldCheck, Plus } from "lucide-react";
+import { Upload, Download, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
