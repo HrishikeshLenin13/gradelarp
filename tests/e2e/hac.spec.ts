@@ -477,7 +477,7 @@ test("landing and school records are accessible, responsive and free of runtime 
     .getByRole("heading", { name: "Browser Test Student’s gradebook" })
     .click();
   await page.screenshot({
-    path: `artifacts/hac-live-2026-10-15/${info.project.name}-source-dark.png`,
+    path: `artifacts/hac-records-fix-2026-10-15/test-only-${info.project.name}-source-dark.png`,
     fullPage: true,
   });
   expect(errors).toEqual([]);
