@@ -266,3 +266,25 @@ export async function refreshPortal(
     connection.studentId,
   );
 }
+
+/** Public form check only: no username/password is accepted or submitted. */
+export async function probePortal(
+  portalInput: string,
+  factory: TransportFactory = (portal) => new DirectPortalTransport(portal),
+) {
+  const portal = normalizePortal(portalInput),
+    transport = factory(portal);
+  try {
+    const page = await atStage("login-page", () =>
+      transport.page(`${portal}/Account/LogOn`, {
+        signal: AbortSignal.timeout(20_000),
+      }),
+    );
+    await atStage("login-page", async () =>
+      buildLogin(page.html, page.url, portal),
+    );
+    return { portal, ready: true as const };
+  } finally {
+    await transport.destroy();
+  }
+}
