@@ -64,10 +64,9 @@ describe("synthetic HTML contract", () => {
         html.replace('data-course="english"', 'data-course="algebra"'),
         "lisd",
       ),
-    ).toThrow(/duplicate/);
-    const duplicate = parseFixture(
-      html.replace('data-id="practice-1"', 'data-id="quiz-1"'),
-      "lisd",
+    });
+    await expect(refreshPortal(result.connection)).rejects.toThrow(
+      /student could not be verified/,
     );
   });
   it("keeps school sessions isolated, expires and revokes them", async () => {
