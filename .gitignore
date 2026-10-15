@@ -5,4 +5,9 @@ out/
 *.tsbuildinfo
 playwright-report/
 test-results/
+.playwright-mcp/
+artifacts/
+research/hac/v2/
+research/hac/python/
 .DS_Store
+*.log
