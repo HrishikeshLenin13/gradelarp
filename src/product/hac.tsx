@@ -230,7 +230,7 @@ export function HacLogin({
               required
               maxLength={500}
               value={password}
-              disabled={busy}
+              disabled={busy || checking}
               onChange={(e) => setPassword(e.target.value)}
             />
             <button
