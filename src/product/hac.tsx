@@ -111,8 +111,10 @@ export function HacLogin({
         throw new Error("HAC returned no gradebook. No records were saved.");
       onSync(result.snapshot);
     } catch (e) {
-      if (e instanceof ConnectionError && e.databases)
-        setDatabases(e.databases);
+      if (e instanceof ConnectionError) {
+        if (e.databases) setDatabases(e.databases);
+        setDiagnostic([e.code, e.stage, e.kind].filter(Boolean).join(" · "));
+      }
       setError(
         e instanceof Error ? e.message : "The connection failed. Try again.",
       );
