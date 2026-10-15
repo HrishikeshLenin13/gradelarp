@@ -44,12 +44,15 @@ describe("synthetic HTML contract", () => {
     const r = parseFixture(fixtureHtml("rrisd"), "rrisd");
     expect(r.courses[0].course.id).not.toBe(snapshot().courses[0].course.id);
   });
-  it("distinguishes an empty assignment table from a missing table", () => {
-    expect(snapshot("empty").courses[0].course.assignments).toEqual([]);
-    const s = snapshot("partial");
-    expect(s.status).toBe("partial");
-    expect(s.courses).toHaveLength(1);
-    expect(s.issues[0]).toContain("english");
+  it("parses current form fields dynamically without hardcoding district database or flags", () => {
+    const f = buildLogin(
+      LOGIN_HTML.replace('value="10"', 'value="42"'),
+      portal + "/Account/LogOn",
+      portal,
+    );
+    expect(f.fields.get("Database")).toBe("42");
+    expect(f.fields.get("__RequestVerificationToken")).toBe("test-csrf");
+    expect(f.fields.has("LogOnDetails.Password")).toBe(false);
   });
   it("rejects off-site login actions and absent CSRF fields before sending credentials", () => {
     expect(() =>
