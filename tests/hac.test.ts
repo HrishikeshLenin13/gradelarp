@@ -51,10 +51,68 @@ describe("synthetic HTML contract", () => {
     expect(s.courses).toHaveLength(1);
     expect(s.issues[0]).toContain("english");
   });
-  it.each(["auth-error", "malformed", "district-mismatch"] as const)(
-    "rejects %s instead of reporting sync success",
-    (scenario) => {
-      expect(() => snapshot(scenario)).toThrow();
+  it("rejects off-site login actions and absent CSRF fields before sending credentials", () => {
+    expect(() =>
+      buildLogin(
+        LOGIN_HTML.replace(
+          'action="/HomeAccess/Account/LogOn?ReturnUrl=%2FHomeAccess"',
+          'action="https://other.example/HomeAccess/Account/LogOn"',
+        ),
+        portal + "/Account/LogOn",
+        portal,
+      ),
+    ).toThrow(/outside/);
+    expect(() =>
+      buildLogin(
+        LOGIN_HTML.replace('name="__RequestVerificationToken"', 'name="other"'),
+        portal + "/Account/LogOn",
+        portal,
+      ),
+    ).toThrow(/verification/);
+  });
+  it("requires an explicit database choice for multi-district portals", () => {
+    const html = LOGIN_HTML.replace(
+      '<input type="hidden" name="Database" value="10">',
+      '<select name="Database"><option value="10">One</option><option value="20">Two</option></select>',
+    );
+    expect(() => buildLogin(html, portal + "/Account/LogOn", portal)).toThrow(
+      /multiple/,
+    );
+    expect(
+      buildLogin(html, portal + "/Account/LogOn", portal, "20").fields.get(
+        "Database",
+      ),
+    ).toBe("20");
+  });
+  it("POSTs credentials only to the selected form and returns a validated real-mode snapshot", async () => {
+    const { transport, calls } = fakeTransport();
+    const result = await connectPortal(
+      { portal, username: "test-user", password: "test-only-not-real" },
+      () => transport,
+    );
+    expect(calls).toHaveLength(3);
+    expect(calls[1].body?.["LogOnDetails.Password"]).toBe("test-only-not-real");
+    expect(
+      calls.every(
+        (c) =>
+          !c.url.includes("test-only-not-real") && !c.url.includes("test-user"),
+      ),
+    ).toBe(true);
+    expect(result.snapshot.mode).toBe("live");
+    expect(result.snapshot.courses[0].average).toBe(88);
+    expect(result.connection).not.toHaveProperty("password");
+  });
+  it.each([{ rejected: true }, { challenge: true }])(
+    "does not turn rejected/challenged sign-in into success: %j",
+    async (options) => {
+      const { transport } = fakeTransport(options);
+      await expect(
+        connectPortal(
+          { portal, username: "test-user", password: "test-only" },
+          () => transport,
+        ),
+      ).rejects.toThrow();
+      expect(transport.destroy).toHaveBeenCalled();
     },
   );
   it("refreshes through the existing school session with no stored password", async () => {
