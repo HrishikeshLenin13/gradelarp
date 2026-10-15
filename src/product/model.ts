@@ -293,3 +293,17 @@ export function recordState(state: AppState): AppState {
   };
 }
 import { snapshotScores } from "../lib/calculations";
+
+/** Remove explicitly marked demonstration profiles, never genuine manual records. */
+export function removeDemonstrations(data: ProductData): ProductData {
+  let profiles = data.profiles.filter((p) => !p.state.demo && !p.hac);
+  if (profiles.length === data.profiles.length) return data;
+  if (!profiles.length) profiles = [newProfile()];
+  return ProductSchema.parse({
+    ...data,
+    profiles,
+    activeProfileId: profiles.some((p) => p.id === data.activeProfileId)
+      ? data.activeProfileId
+      : profiles[0].id,
+  });
+}
