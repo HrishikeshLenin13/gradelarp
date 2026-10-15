@@ -882,7 +882,7 @@ test("all destinations and appearance pass accessibility checks in light and dar
   await appearance(page);
   await axe(page);
 });
-test("legacy migration is byte-preserving and design lab edits cannot alter the real product", async ({
+test("retired design routes cannot replace the genuine product or seed sample grades", async ({
   page,
 }) => {
   const before = await stored(page);
