@@ -1,0 +1,55 @@
+{
+  "history": "Reconstructed from saved local source checkpoints, not original Git commits.",
+  "authorDates": "Preserved file-modification timestamps; not invented per-edit timestamps.",
+  "checkpoints": [
+    {
+      "tag": "checkpoint/01-dashboard",
+      "source": "artifacts/MODIFIED_FILE.tar.gz",
+      "sha256": "997dba2510f6bafe469b1cefa486b7a47b43c897092b6d4958d61fffdfb83311",
+      "files": 34,
+      "lastRecordedFileChange": "2026-10-13T21:25:22.327465-05:00"
+    },
+    {
+      "tag": "checkpoint/02-redesign",
+      "source": "artifacts/redesign-2026-10-13/MODIFIED_FILE.tar.gz",
+      "sha256": "0ba20f37edc6824412bbb673752f383ed7a2cb9107f6b07665bc811e99bfa9ad",
+      "files": 59,
+      "lastRecordedFileChange": "2026-10-13T22:55:13.053120-05:00"
+    },
+    {
+      "tag": "checkpoint/03-workspace",
+      "source": "artifacts/product-2026-10-14/MODIFIED_FILE.tar.gz",
+      "sha256": "05f9c833abe13baae597485688287bb40e6d539b65a159943934999fd8a6a5ba",
+      "files": 74,
+      "lastRecordedFileChange": "2026-10-14T10:49:20.249712-05:00"
+    },
+    {
+      "tag": "checkpoint/04-hac-import",
+      "source": "artifacts/hac-2026-10-14/MODIFIED_FILE.tar.gz",
+      "sha256": "136c67a2e1760d8919ed2b3ab5a0504fcc65d145b583979ace62ccd35be3b01a",
+      "files": 86,
+      "lastRecordedFileChange": "2026-10-14T22:35:20.972114-05:00"
+    },
+    {
+      "tag": "checkpoint/05-hac-live",
+      "source": "artifacts/hac-live-2026-10-15/MODIFIED_FILE.tar.gz",
+      "sha256": "709f2882cb5130ae8deca2192e4cc5e5d1872b94ec80857c74a677592865a25e",
+      "files": 93,
+      "lastRecordedFileChange": "2026-10-14T23:17:55.710741-05:00"
+    },
+    {
+      "tag": "checkpoint/06-hac-login",
+      "source": "artifacts/hac-login-fix-2026-10-15/MODIFIED_FILE.tar.gz",
+      "sha256": "c7ed7308bbb5fff2ccadd2924e1a9bf304f74868bdb2ca4ae8197f3abbe7c83c",
+      "files": 97,
+      "lastRecordedFileChange": "2026-10-14T23:39:02.129022-05:00"
+    },
+    {
+      "tag": "checkpoint/07-hac-records",
+      "source": "artifacts/hac-records-fix-2026-10-15/MODIFIED_FILE.tar.gz",
+      "sha256": "da8a594c4fbdb67e5653af408309542e112e5d331bb5a68ca7c380ad0b948358",
+      "files": 99,
+      "lastRecordedFileChange": "2026-10-15T00:36:32.344471-05:00"
+    }
+  ]
+}
