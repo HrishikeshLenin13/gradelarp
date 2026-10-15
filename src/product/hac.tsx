@@ -32,6 +32,11 @@ class ConnectionError extends Error {
     super(message);
   }
 }
+function connectionMessage(error: unknown) {
+  if (error instanceof ConnectionError)
+    return `${error.message} Connection details: ${[error.code, error.stage, error.kind].filter(Boolean).join(" · ")}`;
+  return error instanceof Error ? error.message : "The HAC connection failed.";
+}
 async function request(command: unknown, signal?: AbortSignal) {
   const response = await fetch("/api/hac", {
     method: "POST",
