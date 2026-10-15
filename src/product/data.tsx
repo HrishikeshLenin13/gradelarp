@@ -243,8 +243,8 @@ export function DataTools({
         </div>
         <p className="helper">
           Browser cleanup, private browsing, or a different localhost port can
-          make your data unavailable. Keep a downloaded backup. Demo profiles
-          are explicitly separate from manual student data.
+          make your data unavailable. Keep a downloaded backup. School-synced
+          and manual records remain distinct.
         </p>
         <div className="flex">
           <Button
