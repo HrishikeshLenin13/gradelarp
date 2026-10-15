@@ -162,9 +162,9 @@ export async function connectPortal(
         "HAC did not accept this sign-in. Check your district, username and password in the official portal before retrying.",
         401,
       );
-    const page = await transport.page(
-      `${portal}/Content/Student/Assignments.aspx`,
-      { signal },
+    stage = "gradebook";
+    const page = await atStage("gradebook", () =>
+      transport.page(`${portal}/Content/Student/Assignments.aspx`, { signal }),
     );
     checkInteractive(page.html);
     if (loginForm(page.html))
