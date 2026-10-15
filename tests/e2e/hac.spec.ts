@@ -218,6 +218,12 @@ test("one sign-in automatically saves school-reported records, clears password a
   ).toBeVisible();
   await expect(page.getByText("88.00", { exact: true })).toBeVisible();
   await expect(page.getByText("EX / 10", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Major · weight 200 · share 66.67%", { exact: false }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(source.courses[0].assignments[0].name, { exact: true }),
+  ).toBeVisible();
   await expect(page.locator(".product-status-line")).toContainText(
     "Saved on this device",
   );
