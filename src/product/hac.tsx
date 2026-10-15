@@ -200,13 +200,19 @@ export function SchoolConnection({
             courses, explore your grades, and keep your own work untouched.
           </p>
         </div>
-        <div className="hac-intro-note">
-          <Link2 size={28} />
-          <strong>Your school. Your choice.</strong>
-          <p>
-            Live HAC access stays off. This sandbox never contacts a district or
-            asks for a password.
-          </p>
+        <div className="product-actions">
+          <Button disabled={busy} onClick={() => run("sync")}>
+            <RefreshCw size={16} />
+            {busy ? "Syncing…" : "Sync now"}
+          </Button>
+          <Button
+            variant="outline"
+            disabled={busy}
+            onClick={() => setDisconnect(true)}
+          >
+            <Unplug size={16} />
+            Disconnect
+          </Button>
         </div>
       </section>
       {error && (
