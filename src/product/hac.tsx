@@ -70,14 +70,8 @@ export function SchoolConnection({
   profile: Profile;
   onChange: (next: ProductData) => void;
 }) {
-  const [district, setDistrict] = useState<DistrictId>(
-    profile.hac?.district ?? "lisd",
-  );
-  const [search, setSearch] = useState("");
-  const [session, setSession] = useState<HacSession | null>(null);
-  const [snapshot, setSnapshot] = useState<HacSnapshot | null>(null);
-  const [scenario, setScenario] = useState<FixtureCase>("normal");
-  const [busy, setBusy] = useState(true),
+  const [session, setSession] = useState<LiveSession | null>(null),
+    [busy, setBusy] = useState(true),
     [error, setError] = useState(""),
     [disconnect, setDisconnect] = useState(false);
   useEffect(() => {
