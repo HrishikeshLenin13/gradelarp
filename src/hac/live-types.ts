@@ -28,8 +28,10 @@ export const SourceCourseSchema = z.object({
   categories: z
     .array(
       z.object({
-        name: text,
-        weight: z.number().finite().min(0).max(100).nullable(),
+        name: sourceLabel,
+        weight: z.number().finite().min(0).nullable(),
+        weightText: z.string().max(2048).optional(),
+        percentText: z.string().max(2048).optional(),
       }),
     )
     .max(100),
