@@ -54,9 +54,9 @@ export class MockHacService {
     if (command.action === "connect") {
       if (this.sessions.size >= 512 || this.attempts.length >= 120)
         throw new HacError(
-          "RATE_LIMIT",
-          "The mock connector is busy. Try again in one minute.",
-          429,
+          "SESSION_EXPIRED",
+          "Your HAC session ended. Sign in again; saved grades are unchanged.",
+          401,
         );
       return {
         session: previous.public,
