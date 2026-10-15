@@ -63,7 +63,7 @@ export function GET() {
     {
       error: {
         code: "METHOD",
-        message: "GET requests are disabled. Use the in-app mock connector.",
+        message: "GET requests are disabled. Use the HAC sign-in form.",
       },
     },
     { status: 405, headers: { ...headers, Allow: "POST" } },
