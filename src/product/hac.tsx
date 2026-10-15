@@ -79,12 +79,7 @@ export function SchoolConnection({
   const [scenario, setScenario] = useState<FixtureCase>("normal");
   const [busy, setBusy] = useState(true),
     [error, setError] = useState(""),
-    [message, setMessage] = useState("");
-  const [pending, setPending] = useState<{
-    remoteId: string;
-    deleteCourse: boolean;
-    name: string;
-  } | null>(null);
+    [disconnect, setDisconnect] = useState(false);
   useEffect(() => {
     const c = new AbortController();
     request({ action: "status" }, c.signal)
