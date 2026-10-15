@@ -404,7 +404,7 @@ export function SchoolConnection({
     } catch (e) {
       if (e instanceof ConnectionError && e.code === "SESSION_EXPIRED")
         setSession(null);
-      setError(e instanceof Error ? e.message : "The HAC request failed.");
+      setError(connectionMessage(e));
     } finally {
       setBusy(false);
     }
