@@ -135,21 +135,7 @@ export function SchoolConnection({
     try {
       const r = await request(command);
       setSession(r.session);
-      if (r.snapshot) {
-        setSnapshot(r.snapshot);
-        setMessage(
-          r.snapshot.status === "partial"
-            ? "Partial preview ready. Unavailable courses will be kept unchanged."
-            : "Preview ready. Nothing has been imported yet.",
-        );
-      } else if (r.session)
-        setMessage(
-          "Mock session connected. Preview the sample records before importing.",
-        );
-      else
-        setMessage(
-          "Disconnected. Your imported records remain on this device.",
-        );
+      if (r.snapshot) onSync(r.snapshot);
     } catch (e) {
       if (e instanceof ConnectionError && e.code === "SESSION_EXPIRED")
         setSession(null);
