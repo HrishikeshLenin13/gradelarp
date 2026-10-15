@@ -11,8 +11,6 @@ import {
   School,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { courseGrade } from "@/lib/calculations";
-import { districts, districtConfig } from "@/hac/districts";
 import {
   LiveResponseSchema,
   type LiveSession,
