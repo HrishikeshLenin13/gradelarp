@@ -636,7 +636,13 @@ export function SourceGradebook({
                     <div className="hac-source-score">
                       <strong>
                         {a.score || "Not graded"}
-                        {a.possible !== null ? ` / ${a.possible}` : ""}
+                        {a.possibleText !== undefined
+                          ? a.possibleText
+                            ? ` / ${a.possibleText}`
+                            : ""
+                          : a.possible !== null
+                            ? ` / ${a.possible}`
+                            : ""}
                       </strong>
                       <span>
                         {a.status === "unknown"
