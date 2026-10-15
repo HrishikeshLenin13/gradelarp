@@ -124,7 +124,7 @@ export function Gradelarp() {
       .load()
       .then((value) => {
         if (!alive) return;
-        const initial = value ?? createDemo();
+        const initial = value ?? emptyState();
         setState(initial);
         if (initial.courses[0]) setSemester(initial.courses[0].semester);
       })
