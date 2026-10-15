@@ -43,7 +43,12 @@ const source: LiveSnapshot = {
         },
       ],
       categories: [
-        { name: "Major", weight: 60 },
+        {
+          name: "Major",
+          weight: 200,
+          weightText: "200",
+          percentText: "66.67%",
+        },
         { name: "Daily", weight: 40 },
       ],
     },
