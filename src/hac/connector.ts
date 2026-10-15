@@ -147,10 +147,12 @@ export async function connectPortal(
     login.fields.set("LogOnDetails.Password", input.password);
     let authenticated;
     try {
-      authenticated = await transport.page(login.action, {
-        body: login.fields,
-        signal,
-      });
+      authenticated = await atStage("sign-in", () =>
+        transport.page(login.action, {
+          body: login.fields,
+          signal,
+        }),
+      );
     } finally {
       login.fields.delete("LogOnDetails.UserName");
       login.fields.delete("LogOnDetails.Password");
