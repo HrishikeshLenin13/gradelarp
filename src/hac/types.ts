@@ -24,7 +24,11 @@ export class HacError extends Error {
     public code: string,
     message: string,
     public status = 422,
-    public details?: { databases?: { id: string; name: string }[] },
+    public details?: {
+      databases?: { id: string; name: string }[];
+      stage?: HacStage;
+      kind?: string;
+    },
   ) {
     super(message);
     this.name = "HacError";
