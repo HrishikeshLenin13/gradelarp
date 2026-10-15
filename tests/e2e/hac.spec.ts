@@ -100,7 +100,8 @@ async function simulatePortal(
   {
     failure = false,
     partial = false,
-  }: { failure?: boolean; partial?: boolean } = {},
+    syncFailure = false,
+  }: { failure?: boolean; partial?: boolean; syncFailure?: boolean } = {},
 ) {
   let connected = false;
   const requests: Record<string, unknown>[] = [];
