@@ -92,4 +92,9 @@ The pre-product checkpoint has 59 files and SHA-256 manifest in `artifacts/produ
 
 ## Deliberately unavailable
 
-HAC connection, automatic school synchronization, remote accounts/cloud sync, school-verified LISD/RRISD GPA/rank rules, official transcripts, school holiday inference, extra credit above possible points and automatic drop-lowest/category policies. The UI labels the applicable limitations rather than showing fake controls or official claims. No publishing/pushing/deployment occurred.
+Live HAC connection, automatic school synchronization, remote accounts/cloud sync, school-verified LISD/RRISD GPA/rank rules, official transcripts, school holiday inference, extra credit above possible points and automatic drop-lowest/category policies. The UI labels the applicable limitations rather than showing fake controls or official claims. No publishing/pushing/deployment occurred.
+
+
+## HAC connector update — 2026-10-14
+
+A separate, mock-only **School connection** workspace now supports LISD/RRISD selection, ephemeral server sessions, validated synthetic HTML parsing, explicit course/assignment import previews, idempotent refresh, local-edit conflicts, disconnect and imported-record management. Imports stay in labeled sandbox profiles; real/manual data and saved scenarios are preserved. Transcript/rank previews are synthetic reference values. Live school login and deployment remain off. See [HAC_INTEGRATION.md](HAC_INTEGRATION.md) and [the source audit](research/hac/SOURCE_AUDIT.md) for implementation details and remaining live-auth prerequisites. Final test evidence is in `artifacts/hac-2026-10-14/VERIFICATION.txt`.
