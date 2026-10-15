@@ -238,7 +238,7 @@ export function DataTools({
           </div>
           <div>
             <span>Data source</span>
-            <strong>{profile.state.demo ? "Demo" : "Manual / imported"}</strong>
+            <strong>{profile.hacLive ? "HAC" : "Manual / imported"}</strong>
           </div>
         </div>
         <p className="helper">
