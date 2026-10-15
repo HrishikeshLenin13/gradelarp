@@ -20,16 +20,16 @@
 | Profiles / backups   | Separate manual/demo students, switching/rename/delete confirmation, full/profile JSON, legacy/full restore as new profiles, CSV new/append import             | Round-trip unit/browser tests; original-profile retention; invalid-file rejection   |
 | Storage robustness   | Atomic versioned saves, serial queue, completion feedback, stale-tab rejection and unsaved export                                                              | Concurrent-tab browser regression                                                   |
 
+| School connection | Mock-only LISD/RRISD onboarding, synthetic sessions, explicit previews/imports, refresh/conflicts, disconnect and record management; real profiles remain isolated | 25 HAC unit cases and 16 desktop/mobile browser cases |
+
 ## Verification state
 
-- Baseline: **54 unit tests passed** on the preserved independent copy.
-- Current unit milestone: **89 tests passed**; lint/type checks and Webpack production build pass.
-- Full production + historical design-lab desktop/mobile regression suite: **80 passed, 0 failed, 2 intentionally skipped duplicate viewport sweeps**. The desktop project runs those tablet/wide sweeps; all product workflows run separately on mobile. Literal results are recorded in `artifacts/product-2026-10-14/VERIFICATION.txt`.
-- All 18 requested user workflows have explicit browser coverage. Accessibility scans cover every main destination in both themes; viewport checks include mobile, tablet, desktop and wide desktop.
-- The audit repaired mobile dialog sizing, hidden upload-input overflow, per-semester date saving, assignment field labels and scenario update/delete behavior. Tests also account for completed tasks leaving the Open filter and target the visible approval notice. All formerly failing cases were rerun; original failed logs remain available.
-- Manual grade entry computes **86.0%** from 9/10 major work at 60% and 4/5 daily work at 40%, persists after reload, and stays separate from demo profiles.
-- The independent rollback restores all **59 original file hashes** and passes **54 original unit tests**. The active app remains changed.
-- Localhost:3000 was opened in an isolated browser: real Expressive root, no horizontal overflow, no browser runtime errors. No user browser records were used to seed tests.
+- Pre-HAC checkpoint: 74 source files preserved with SHA-256 hashes; 89 unit tests passed before this extension.
+- Final checks: **114 unit tests passed**, lint/TypeScript and the production build passed; the complete desktop/mobile suite recorded **96 passed, 0 failed, 2 skipped duplicate viewport sweeps**. The final regression record is in `artifacts/hac-2026-10-14/VERIFICATION.txt`. This record is generated only after all required checks pass.
+- All 18 original workflows retain browser coverage. The new HAC suite adds synthetic imports, idempotent refresh, failure/partial states, preserved local edits/scenarios, session expiry/revocation, record management, mobile layout and both-theme accessibility checks.
+- Manual grade entry still computes 86.0% from 9/10 major work at 60% and 4/5 daily work at 40%, independently of demo data. Original calculation/model/import-export files are hash-unchanged.
+- Independent source rollback restores the pre-HAC Expressive product and its 89 tests. The active app remains modified; browser databases are untouched.
+- Localhost:3000 is checked in an isolated browser; genuine student records are not used to seed tests.
 
 ## Explicitly unavailable / not claimed
 
@@ -40,3 +40,8 @@
 - Cross-browser/device sync: use full JSON export/import. The application uses browser-origin IndexedDB, not a cloud service.
 
 No requested local/manual feature is represented by a fake button or fabricated calculation. See the final verification record for observed test results rather than inferring test completion from this checklist.
+
+
+## HAC connector update — 2026-10-14
+
+A separate, mock-only **School connection** workspace now supports LISD/RRISD selection, ephemeral server sessions, validated synthetic HTML parsing, explicit course/assignment import previews, idempotent refresh, local-edit conflicts, disconnect and imported-record management. Imports stay in labeled sandbox profiles; real/manual data and saved scenarios are preserved. Transcript/rank previews are synthetic reference values. Live school login and deployment remain off. See [HAC_INTEGRATION.md](HAC_INTEGRATION.md) and [the source audit](research/hac/SOURCE_AUDIT.md) for implementation details and remaining live-auth prerequisites. Final test evidence is in `artifacts/hac-2026-10-14/VERIFICATION.txt`.
