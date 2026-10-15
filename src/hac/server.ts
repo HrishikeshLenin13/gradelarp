@@ -101,6 +101,8 @@ export class MockHacService {
       if (error instanceof HacError && error.code === "AUTH_FAILED" && token)
         this.sessions.delete(token);
       throw error;
+    } finally {
+      this.active--;
     }
   }
 }
