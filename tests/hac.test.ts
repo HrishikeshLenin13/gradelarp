@@ -57,12 +57,20 @@ describe("synthetic HTML contract", () => {
       expect(() => snapshot(scenario)).toThrow();
     },
   );
-  it("rejects duplicate courses, duplicate assignments and unknown statuses", () => {
-    const html = fixtureHtml("lisd");
-    expect(() =>
-      parseFixture(
-        html.replace('data-course="english"', 'data-course="algebra"'),
-        "lisd",
+  it("refreshes through the existing school session with no stored password", async () => {
+    const { transport, calls } = fakeTransport();
+    const result = await connectPortal(
+      { portal, username: "test-user", password: "test-only" },
+      () => transport,
+    );
+    await refreshPortal(result.connection);
+    expect(calls[3].body).toBeUndefined();
+    transport.page = async (url) => ({
+      url,
+      status: 200,
+      html: gradebook().replace(
+        '<div class="sg-banner-menu-container"><span>Test Student</span></div>',
+        "",
       ),
     });
     await expect(refreshPortal(result.connection)).rejects.toThrow(
