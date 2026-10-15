@@ -636,29 +636,11 @@ export function SchoolConnection({
       </section>
       {pending && existing && (
         <Confirm
-          title={`${pending.deleteCourse ? "Remove" : "Detach"} ${pending.name}?`}
-          description={
-            pending.deleteCourse
-              ? "This removes this imported course and its assignments from this sandbox only, and excludes it from future refreshes. Saved scenarios are retained but may reference a missing course. Export a backup first if needed."
-              : "This preserves the course and scenarios as local records, stops managing it, and excludes the source course from future refreshes."
-          }
-          action={pending.deleteCourse ? "Remove course" : "Keep local copy"}
-          onClose={() => setPending(null)}
-          onConfirm={() => {
-            const next = removeImported(
-              existing,
-              pending.remoteId,
-              pending.deleteCourse,
-            );
-            onChange({
-              ...data,
-              profiles: data.profiles.map((p) => (p.id === next.id ? next : p)),
-            });
-            setSnapshot(null);
-            setMessage(
-              "Imported-record preferences saved. Other profiles are unchanged.",
-            );
-          }}
+          title="Disconnect HAC?"
+          description="This closes Gradelarp’s server session. Synced academic records remain on this device; your school account and school records are unchanged."
+          action="Disconnect"
+          onConfirm={() => run("disconnect")}
+          onClose={() => setDisconnect(false)}
         />
       )}
     </div>
