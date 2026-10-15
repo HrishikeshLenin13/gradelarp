@@ -4,6 +4,9 @@ import { z } from "zod";
 import {
   ArrowRight,
   Check,
+  Eye,
+  EyeOff,
+  GraduationCap,
   Link2,
   RefreshCw,
   ShieldCheck,
