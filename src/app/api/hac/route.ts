@@ -17,6 +17,21 @@ const headers = {
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "no-referrer",
 };
+function recordDiagnostic(value: {
+  code: string;
+  stage?: string;
+  validation?: string[];
+}) {
+  if (process.env.NODE_ENV !== "development") return;
+  try {
+    writeFileSync(
+      join(process.cwd(), ".next", "hac-validation-diagnostic.json"),
+      JSON.stringify(value),
+    );
+  } catch {
+    /* Diagnostic metadata must not affect a sign-in response. */
+  }
+}
 export async function POST(request: NextRequest) {
   let isConnect = false;
   let action: string | undefined;
