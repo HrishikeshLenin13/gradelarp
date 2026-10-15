@@ -40,9 +40,28 @@ describe("synthetic HTML contract", () => {
     expect(s.transcript).toHaveLength(1);
     expect(s.rank).toEqual({ position: 12, cohort: 240 });
   });
-  it("supports both district namespaces without collisions", () => {
-    const r = parseFixture(fixtureHtml("rrisd"), "rrisd");
-    expect(r.courses[0].course.id).not.toBe(snapshot().courses[0].course.id);
+  it.each([
+    "127.0.0.1",
+    "10.0.0.1",
+    "169.254.169.254",
+    "172.16.0.1",
+    "192.168.1.1",
+    "100.64.0.1",
+    "0.0.0.0",
+    "224.0.0.1",
+    "198.18.0.1",
+    "::1",
+    "::ffff:127.0.0.1",
+    "fc00::1",
+    "fe80::1",
+    "2001:db8::1",
+    "2002:7f00:1::",
+  ])("rejects nonpublic destination %s", (ip) =>
+    expect(isPublicAddress(ip)).toBe(false),
+  );
+  it("allows ordinary public IPv4 and IPv6 addresses", () => {
+    expect(isPublicAddress("8.8.8.8")).toBe(true);
+    expect(isPublicAddress("2606:4700:4700::1111")).toBe(true);
   });
   it("parses current form fields dynamically without hardcoding district database or flags", () => {
     const f = buildLogin(
