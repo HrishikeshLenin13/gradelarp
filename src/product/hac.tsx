@@ -46,7 +46,19 @@ async function request(command: unknown, signal?: AbortSignal) {
   const body = await response.json();
   if (!response.ok) {
     const error = z
-      .object({ error: z.object({ code: z.string(), message: z.string() }) })
+      .object({
+        error: z.object({
+          code: z.string(),
+          message: z.string(),
+          details: z
+            .object({
+              databases: z
+                .array(z.object({ id: z.string(), name: z.string() }))
+                .optional(),
+            })
+            .optional(),
+        }),
+      })
       .safeParse(body);
     throw new ConnectionError(
       error.success
