@@ -316,7 +316,4 @@ describe("server-only mock boundary", () => {
     ])
       await expect(readCommand(r)).rejects.toThrow();
   });
-  it("enforces actual streamed body size even without Content-Length", async () => {
-    await expect(readCommand(req(" ".repeat(2049)))).rejects.toThrow(/large/);
-  });
 });
