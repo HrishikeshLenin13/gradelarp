@@ -304,6 +304,8 @@ describe("server-only mock boundary", () => {
     for (const r of [
       req("{}", { origin: "https://other.test" }),
       req("{}", {}, "http://localhost:3000/api/hac?pass=test"),
+      req("{}", { "content-type": "text/plain" }),
+      req(" ".repeat(2049)),
       req(
         "{}",
         { origin: "http://remote.example" },
