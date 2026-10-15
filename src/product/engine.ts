@@ -11,13 +11,16 @@ export function applyScenario(
 ): Course {
   if (scenario.courseId !== course.id)
     throw new Error("This scenario belongs to another course.");
-  if (
-    new Set(scenario.changes.map((x) => x.assignmentId)).size !==
-    scenario.changes.length
-  )
+  const changesById = new Map(
+    scenario.changes.map((change) => [change.assignmentId, change]),
+  );
+  if (changesById.size !== scenario.changes.length)
     throw new Error("Duplicate assignment changes.");
+  const assignmentIds = new Set(
+    course.assignments.map((assignment) => assignment.id),
+  );
   for (const change of scenario.changes)
-    if (!course.assignments.some((a) => a.id === change.assignmentId))
+    if (!assignmentIds.has(change.assignmentId))
       throw new Error(
         "An assignment in this scenario was deleted. Reset or rebuild the scenario.",
       );
@@ -25,7 +28,7 @@ export function applyScenario(
     ...course,
     assignments: [
       ...course.assignments.map((a) => {
-        const c = scenario.changes.find((x) => x.assignmentId === a.id);
+        const c = changesById.get(a.id);
         return c ? { ...a, earned: c.earned, status: c.status } : a;
       }),
       ...scenario.additions,
