@@ -20,6 +20,7 @@ export const ImportStateSchema = z.object({
 });
 export type ImportState = z.infer<typeof ImportStateSchema>;
 export class HacError extends Error {
+  readonly [errorBrand] = true;
   constructor(
     public code: string,
     message: string,
