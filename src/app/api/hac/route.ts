@@ -17,7 +17,8 @@ const headers = {
 export async function POST(request: NextRequest) {
   try {
     const command = await readCommand(request);
-    const { token, clearCookie, ...result } = service.handle(
+    isConnect = command?.action === "connect";
+    const { token, clearCookie, ...result } = (await service.handle(
       command,
       request.cookies.get(cookieName)?.value,
       request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local",
