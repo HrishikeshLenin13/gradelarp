@@ -196,7 +196,7 @@ export function parseLiveAssignments(
         const status: SourceCourse["assignments"][number]["status"] =
           /^(?:m|missing)$/i.test(statusText)
             ? "missing"
-            : /^(?:e|ex|exempt|excused)$/i.test(statusText)
+            : /^(?:e|ex|exc|exempt|excused)$/i.test(statusText)
               ? "exempt"
               : /^(?:d|dropped)$/i.test(statusText)
                 ? "dropped"
