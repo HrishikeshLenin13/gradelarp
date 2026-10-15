@@ -321,7 +321,31 @@ test("connection, preview and imported records fit mobile and pass accessibility
     .getByRole("heading", { name: "A clearer connection to your classes." })
     .click();
   await page.screenshot({
-    path: `artifacts/hac-2026-10-14/${info.project.name}-preview-light.png`,
+    path: `artifacts/hac-live-2026-10-15/${info.project.name}-landing.png`,
+    fullPage: true,
+  });
+  await fill(page);
+  await page
+    .getByRole("button", { name: "Show password", exact: true })
+    .click();
+  await expect(
+    page.getByLabel("HAC password", { exact: true }),
+  ).toHaveAttribute("type", "text");
+  await page
+    .getByRole("button", { name: "Hide password", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Sign in & sync", exact: true })
+    .click();
+  await expect(page.locator(".product-view")).toHaveCSS("opacity", "1");
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth + 1,
+    ),
+  ).toBe(true);
+  await page.screenshot({
+    path: `artifacts/hac-live-2026-10-15/${info.project.name}-source-gradebook.png`,
     fullPage: true,
   });
   await page
