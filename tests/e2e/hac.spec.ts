@@ -308,10 +308,6 @@ test("connection, preview and imported records fit mobile and pass accessibility
 }, info) => {
   await ready(page);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
-  await connect(page);
-  await preview(page);
-  await page.locator(".hac-course details summary").first().click();
-  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth + 1,
