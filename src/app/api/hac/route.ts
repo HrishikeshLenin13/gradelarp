@@ -41,14 +41,7 @@ export async function POST(request: NextRequest) {
       });
     return response;
   } catch (error) {
-    const e =
-      error instanceof HacError
-        ? error
-        : new HacError(
-            "CONNECTOR_ERROR",
-            "The HAC request did not complete. Saved grades are unchanged.",
-            500,
-          );
+    const e = connectionError(error, "request");
     const response = NextResponse.json(
       {
         error: {
