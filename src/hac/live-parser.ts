@@ -124,7 +124,13 @@ export function parseLiveAssignments(
         422,
       );
     ids.add(id);
-    let averageText = clean(header.find("span.sg-header-heading").text());
+    const overall = section.find("[id*='lblOverallAverage']").first();
+    let averageText = clean(
+      (overall.length
+        ? overall
+        : header.find("span.sg-header-heading").first()
+      ).text(),
+    );
     averageText = averageText
       .replace(/^.*?(?:class|course)?\s*average\s*:?\s*/i, "")
       .trim();
