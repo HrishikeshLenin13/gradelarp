@@ -692,40 +692,75 @@ export function GradelarpApp() {
                   </section>
                 )
               ) : null}
-              {view === "courses" && (
-                <CoursesPanel
-                  courses={courses}
-                  policy={state.policy}
-                  onOpen={setEditor}
-                  onAdd={() => setEditor(newCourse(semester))}
-                />
-              )}
-              {view === "whatif" && (
-                <WhatIf
-                  courses={state.courses}
-                  selectedId={selectedId}
-                  onSelect={select}
-                  scenarios={profile.scenarios}
-                  onSave={(s) => {
-                    updateProfile({
-                      ...profile,
-                      scenarios: profile.scenarios.some((x) => x.id === s.id)
-                        ? profile.scenarios.map((x) => (x.id === s.id ? s : x))
-                        : [...profile.scenarios, s],
-                    });
-                    notify("Scenario saved. Real grades unchanged.");
-                  }}
-                  onDelete={setDeleteScenario}
-                />
-              )}
-              {view === "gpa" && (
-                <GpaPlanner
-                  key={profile.id + semester}
-                  profile={profile}
-                  semester={semester}
-                  onUpdate={updateProfile}
-                />
-              )}
+              {view === "courses" &&
+                (profile.hacLive ? (
+                  <SourceGradebook
+                    snapshot={profile.hacLive.snapshot}
+                    onConnect={() => navigate("hac")}
+                  />
+                ) : (
+                  <CoursesPanel
+                    courses={courses}
+                    policy={state.policy}
+                    onOpen={setEditor}
+                    onAdd={() => setEditor(newCourse(semester))}
+                  />
+                ))}
+              {view === "whatif" &&
+                (profile.hacLive ? (
+                  <section className="panel">
+                    <h2>What-if needs confirmed grading rules.</h2>
+                    <p className="helper">
+                      Your school-reported grades remain unchanged. Use a
+                      separate manual profile with your teacher’s category
+                      weights and scoring rules to make planning estimates.
+                    </p>
+                    <Button variant="outline" onClick={() => setProfiles(true)}>
+                      Open student profiles
+                    </Button>
+                  </section>
+                ) : (
+                  <WhatIf
+                    courses={state.courses}
+                    selectedId={selectedId}
+                    onSelect={select}
+                    scenarios={profile.scenarios}
+                    onSave={(s) => {
+                      updateProfile({
+                        ...profile,
+                        scenarios: profile.scenarios.some((x) => x.id === s.id)
+                          ? profile.scenarios.map((x) =>
+                              x.id === s.id ? s : x,
+                            )
+                          : [...profile.scenarios, s],
+                      });
+                      notify("Scenario saved. Real grades unchanged.");
+                    }}
+                    onDelete={setDeleteScenario}
+                  />
+                ))}
+              {view === "gpa" &&
+                (profile.hacLive ? (
+                  <section className="panel">
+                    <h2>GPA needs confirmed course credits.</h2>
+                    <p className="helper">
+                      HAC grades alone do not establish credits, course level,
+                      or district GPA policy. Use a separate manual profile with
+                      verified inputs for custom planning; no GPA is invented
+                      from this sync.
+                    </p>
+                    <Button variant="outline" onClick={() => setProfiles(true)}>
+                      Open student profiles
+                    </Button>
+                  </section>
+                ) : (
+                  <GpaPlanner
+                    key={profile.id + semester}
+                    profile={profile}
+                    semester={semester}
+                    onUpdate={updateProfile}
+                  />
+                ))}
               {view === "trends" && (
                 <>
                   <section className="panel product-chart-panel">
