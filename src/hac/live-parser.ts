@@ -255,7 +255,9 @@ export function parseLiveAssignments(
             .children("td")
             .toArray()
             .map((c) => clean($(c).text()));
-          if (cs[ni] && !/^total$/i.test(cs[ni]))
+          if (cs[ni] && !/^totals?\s*:?$/i.test(cs[ni])) {
+            const rawWeight =
+              wi >= 0 ? (cs[wi] ?? "") : pi >= 0 ? (cs[pi] ?? "") : "";
             categories.push({
               name: cs[ni],
               weight: number(rawWeight),
