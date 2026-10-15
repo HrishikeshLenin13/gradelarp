@@ -281,7 +281,7 @@ export function parseLiveAssignments(
       "No course passed source validation. Saved grades are unchanged.",
       422,
     );
-  return LiveSnapshotSchema.parse({
+  return validateSnapshot({
     mode: "live",
     portal,
     studentId,
