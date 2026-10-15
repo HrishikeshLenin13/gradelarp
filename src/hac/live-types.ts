@@ -8,6 +8,7 @@ export const SourceAssignmentSchema = z.object({
   score: z.string().max(100),
   earned: z.number().finite().nonnegative().nullable(),
   possible: z.number().finite().positive().nullable(),
+  possibleText: z.string().max(2048).optional(),
   status: z.enum([
     "graded",
     "missing",
