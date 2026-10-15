@@ -22,7 +22,7 @@ export const SourceCourseSchema = z.object({
   name: text,
   teacher: z.string().max(160),
   average: z.number().finite().min(0).max(1000).nullable(),
-  averageText: z.string().max(100),
+  averageText: z.string().max(2048),
   assignmentsAvailable: z.boolean(),
   assignments: z.array(SourceAssignmentSchema).max(10000),
   categories: z
