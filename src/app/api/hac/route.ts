@@ -30,6 +30,8 @@ export async function POST(request: NextRequest) {
       token?: string;
       clearCookie?: boolean;
     };
+    if (result.snapshot)
+      recordDiagnostic({ code: "SYNC_OK", stage: "complete" });
     const response = NextResponse.json(result, { headers });
     if (token || clearCookie)
       response.cookies.set(cookieName, token ?? "", {
