@@ -216,7 +216,7 @@ export function HacLogin({
             required
             maxLength={200}
             value={username}
-            disabled={busy}
+            disabled={busy || checking}
             onChange={(e) => setUsername(e.target.value)}
           />
         </label>
