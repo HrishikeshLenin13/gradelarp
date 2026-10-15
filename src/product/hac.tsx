@@ -246,6 +246,11 @@ export function HacLogin({
         {error && (
           <p className="hac-login-error" role="alert">
             {error}
+            {diagnostic && (
+              <small style={{ display: "block", marginTop: 8 }}>
+                Connection details: {diagnostic}
+              </small>
+            )}
           </p>
         )}
         <Button
