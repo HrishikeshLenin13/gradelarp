@@ -213,8 +213,8 @@ export async function connectPortal(
       snapshot,
     };
   } catch (error) {
-    await transport.destroy();
-    throw error;
+    await transport.destroy().catch(() => {});
+    throw connectionError(error, stage);
   }
 }
 export async function refreshPortal(
