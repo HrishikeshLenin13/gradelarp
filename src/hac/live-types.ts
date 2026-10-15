@@ -2,10 +2,10 @@ import { z } from "zod";
 const text = z.string().trim().min(1).max(300);
 export const SourceAssignmentSchema = z.object({
   id: text,
-  name: text,
-  category: z.string().max(160),
-  due: z.string().max(80).nullable(),
-  score: z.string().max(100),
+  name: sourceLabel,
+  category: z.string().max(4096),
+  due: z.string().max(512).nullable(),
+  score: z.string().max(2048),
   earned: z.number().finite().nonnegative().nullable(),
   possible: z.number().finite().positive().nullable(),
   possibleText: z.string().max(2048).optional(),
