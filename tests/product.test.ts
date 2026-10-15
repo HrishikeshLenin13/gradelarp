@@ -22,6 +22,15 @@ import {
   bellStatus,
   transcriptCourses,
 } from "../src/product/engine";
+const newProfile = (name = "Student", testFixture = false) => {
+  const p = blankProfile(name);
+  if (testFixture) {
+    p.state = createDemo();
+    p.name = name;
+    p.state.settings.name = name;
+  }
+  return p;
+};
 const course = () => createDemo().courses[0];
 const scenario = (c: Course) => ({
   courseId: c.id,
