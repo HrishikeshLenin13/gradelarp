@@ -577,3 +577,43 @@ test("refresh failure exposes its step while preserving saved source records", a
     page.getByRole("button", { name: "Sync now", exact: true }),
   ).toBeEnabled();
 });
+
+test("source validation shows field names only and leaves the local gradebook unchanged", async ({
+  page,
+}) => {
+  await page.route("**/api/hac", async (route) => {
+    const command = route.request().postDataJSON();
+    await route.fulfill({
+      status: command.action === "connect" ? 422 : 200,
+      contentType: "application/json",
+      body: JSON.stringify(
+        command.action === "connect"
+          ? {
+              error: {
+                code: "SOURCE_VALIDATION",
+                message:
+                  "HAC returned records that need a parser adjustment. Your existing grades are unchanged.",
+                details: {
+                  stage: "parse-records",
+                  validation: ["courses[].assignments[].name:too_big"],
+                },
+              },
+            }
+          : { session: null },
+      ),
+    });
+  });
+  await ready(page);
+  await fill(page);
+  const before = await stored(page);
+  await page
+    .getByRole("button", { name: "Sign in & sync", exact: true })
+    .click();
+  await expect(page.locator(".hac-login-error")).toContainText(
+    "Record fields: courses[].assignments[].name:too_big",
+  );
+  await expect(page.getByLabel("HAC password", { exact: true })).toHaveValue(
+    "",
+  );
+  expect(await stored(page)).toEqual(before);
+});
