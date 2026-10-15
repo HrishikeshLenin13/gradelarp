@@ -778,7 +778,6 @@ export function GradelarpApp() {
                   onChange={changeData}
                   onConnection={() => navigate("hac")}
                   onProfiles={() => setProfiles(true)}
-                  onDemo={openDemo}
                   notify={notify}
                 />
               )}
