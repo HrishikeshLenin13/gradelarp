@@ -1,4 +1,4 @@
-import { DesignComparison } from "@/design-lab/comparison";
-export default function DesignLabPage() {
-  return <DesignComparison />;
+import { redirect } from "next/navigation";
+export default function Page() {
+  redirect("/");
 }
