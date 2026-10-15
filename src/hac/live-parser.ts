@@ -247,8 +247,18 @@ export function parseLiveAssignments(
             .toArray()
             .map((c) => clean($(c).text()).toLowerCase())
         : [];
-      const ni = heads.findIndex((h) => /category/.test(h)),
-        wi = heads.findIndex((h) => /weight|percent/.test(h));
+      const normalized = heads.map((h) => h.replace(/[^a-z0-9]/g, ""));
+      const ni = normalized.findIndex((h) =>
+        /^(?:category|categoryname)$/.test(h),
+      );
+      const wi = normalized.findIndex((h) =>
+        /^(?:weight|categoryweight|weighting)$/.test(h),
+      );
+      const pi = normalized.findIndex((h) =>
+        /^(?:percent|percentage|categorypercent|categorypercentage|weightpercent|weightpercentage)$/.test(
+          h,
+        ),
+      );
       if (ni >= 0)
         for (const row of rows.filter((r) => r !== hr)) {
           const cs = $(row)
