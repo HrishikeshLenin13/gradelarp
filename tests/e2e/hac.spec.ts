@@ -118,6 +118,15 @@ async function simulatePortal(
             "HAC did not accept this sign-in. Check your district, username and password.",
         },
       };
+    } else if (command.action === "sync" && syncFailure) {
+      status = 502;
+      body = {
+        error: {
+          code: "DNS",
+          message: "The district HAC address could not be found.",
+          details: { stage: "refresh" },
+        },
+      };
     } else if (command.action === "disconnect") {
       connected = false;
       body = { session: null };
