@@ -140,6 +140,7 @@ export async function connectPortal(
   const portal = normalizePortal(input.portal),
     transport = factory(portal),
     signal = AbortSignal.timeout(40_000);
+  let stage: HacStage = "login-page";
   try {
     const initial = await atStage("login-page", () =>
       transport.page(`${portal}/Account/LogOn`, { signal }),
