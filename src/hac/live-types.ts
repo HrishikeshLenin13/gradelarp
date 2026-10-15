@@ -77,6 +77,9 @@ export const LiveResponseSchema = z.object({
 export const LiveCommandSchema = z.discriminatedUnion("action", [
   z.object({ action: z.literal("status") }).strict(),
   z
+    .object({ action: z.literal("probe"), portal: z.string().min(1).max(500) })
+    .strict(),
+  z
     .object({
       action: z.literal("connect"),
       portal: z.string().min(1).max(500),
