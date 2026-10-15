@@ -1,5 +1,6 @@
 import { randomBytes, createHash } from "node:crypto";
-import { HacError } from "./types";
+import { HacError, isHacError } from "./types";
+import { atStage } from "./errors";
 import { LiveCommandSchema, type LiveSession } from "./live-types";
 import {
   connectPortal,
