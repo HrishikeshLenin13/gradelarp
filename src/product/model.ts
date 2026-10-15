@@ -205,14 +205,7 @@ export function newProfile(name = "Student", demo = false): Profile {
     name,
     state,
     preferences: { ...defaultPreferences },
-    periods: demo
-      ? {
-          [state.courses[0].semester]: {
-            start: state.settings.semesterStart,
-            end: state.settings.semesterEnd,
-          },
-        }
-      : {},
+    periods: {},
     scenarios: [],
     tasks: [],
     completedAssignments: [],
