@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { LiveHacService, readCommand } from "../../../hac/server";
 import { connectionError } from "../../../hac/errors";
 export const runtime = "nodejs";
