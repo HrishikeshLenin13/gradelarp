@@ -40,6 +40,10 @@ async function legacyRaw(): Promise<unknown | null> {
 export const productProvider = {
   async load(): Promise<Envelope> {
     const d = await db();
+    await purgeMarkedLegacy();
+    const preserved = await d.get("preservation", "legacy-original");
+    if ((preserved as { demo?: boolean } | undefined)?.demo === true)
+      await d.delete("preservation", "legacy-original");
     const existing = await d.get("workspace", "current");
     if (existing) {
       const parsed = ProductSchema.parse(existing.data),
