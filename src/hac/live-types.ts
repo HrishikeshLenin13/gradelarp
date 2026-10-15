@@ -40,7 +40,7 @@ export const LiveSnapshotSchema = z
     portal: z.url(),
     studentId: text,
     studentName: text,
-    term: z.string().max(160),
+    term: z.string().max(2048),
     fetchedAt: z.iso.datetime(),
     status: z.enum(["complete", "partial"]),
     issues: z.array(z.string().max(20_000)).max(500),
