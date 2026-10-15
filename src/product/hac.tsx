@@ -120,6 +120,27 @@ export function HacLogin({
       setBusy(false);
     }
   }
+  async function checkPortal() {
+    setChecking(true);
+    setCheckResult("");
+    setError("");
+    setDiagnostic("");
+    try {
+      const result = await request({ action: "probe", portal: destination });
+      if (result.portalCheck?.ready)
+        setCheckResult(
+          "District login page reached. You can now sign in below. This check does not sign into your account.",
+        );
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "District connection failed.");
+      if (e instanceof ConnectionError) {
+        setDiagnostic([e.code, e.stage, e.kind].filter(Boolean).join(" · "));
+        if (e.databases) setDatabases(e.databases);
+      }
+    } finally {
+      setChecking(false);
+    }
+  }
   return (
     <section
       className={`hac-login-card ${compact ? "is-compact" : ""}`}
