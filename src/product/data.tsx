@@ -247,10 +247,6 @@ export function DataTools({
           are explicitly separate from manual student data.
         </p>
         <div className="flex">
-          <Button variant="outline" onClick={onDemo}>
-            <Plus size={15} />
-            Open separate demo
-          </Button>
           <Button
             variant="outline"
             onClick={async () => {
