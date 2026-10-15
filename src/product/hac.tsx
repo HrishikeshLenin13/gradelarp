@@ -30,6 +30,7 @@ class ConnectionError extends Error {
     public databases?: { id: string; name: string }[],
     public stage?: string,
     public kind?: string,
+    public validation?: string[],
   ) {
     super(message);
   }
