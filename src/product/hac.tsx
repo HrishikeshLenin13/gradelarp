@@ -58,8 +58,289 @@ async function request(command: unknown, signal?: AbortSignal) {
   }
   return responseSchema.parse(body);
 }
-function time(value: string | null | undefined) {
-  return value ? new Date(value).toLocaleString() : "Not imported yet";
+export function HacLogin({
+  onSync,
+  onManual,
+  compact = false,
+}: {
+  onSync: (s: LiveSnapshot) => void;
+  onManual?: () => void;
+  compact?: boolean;
+}) {
+  const [district, setDistrict] = useState("lisd"),
+    [portal, setPortal] = useState("");
+  const [username, setUsername] = useState(""),
+    [password, setPassword] = useState(""),
+    [show, setShow] = useState(false),
+    [database, setDatabase] = useState("");
+  const [databases, setDatabases] = useState<{ id: string; name: string }[]>(
+      [],
+    ),
+    [confirmed, setConfirmed] = useState(false);
+  const [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  const preset = districts.find((d) => d.id === district);
+  const destination = preset
+    ? `https://${preset.host}/HomeAccess`
+    : portal.trim();
+  async function connect(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setBusy(true);
+    const secret = password;
+    setPassword("");
+    try {
+      const result = await request({
+        action: "connect",
+        portal: destination,
+        username,
+        password: secret,
+        ...(database ? { database } : {}),
+      });
+      if (!result.snapshot)
+        throw new Error("HAC returned no gradebook. No records were saved.");
+      onSync(result.snapshot);
+    } catch (e) {
+      if (e instanceof ConnectionError && e.databases)
+        setDatabases(e.databases);
+      setError(
+        e instanceof Error ? e.message : "The connection failed. Try again.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <section
+      className={`hac-login-card ${compact ? "is-compact" : ""}`}
+      aria-labelledby="hac-login-title"
+    >
+      <div className="hac-login-mark">
+        <Link2 size={21} />
+      </div>
+      <h2 id="hac-login-title">Your grades, connected.</h2>
+      <p>Sign in with your school’s Home Access Center account.</p>
+      <form onSubmit={connect} aria-busy={busy}>
+        <label className="field">
+          <span>School district</span>
+          <select
+            aria-label="School district"
+            value={district}
+            disabled={busy}
+            onChange={(e) => {
+              setDistrict(e.target.value);
+              setDatabase("");
+              setDatabases([]);
+              setError("");
+              setConfirmed(false);
+            }}
+          >
+            <option value="lisd">Leander ISD · LISD</option>
+            <option value="rrisd">Round Rock ISD · RRISD</option>
+            <option value="other">Another HAC district</option>
+          </select>
+        </label>
+        {district === "other" && (
+          <>
+            <label className="field">
+              <span>Official HAC portal address</span>
+              <input
+                type="url"
+                inputMode="url"
+                placeholder="https://your-district.org/HomeAccess"
+                required
+                value={portal}
+                disabled={busy}
+                autoComplete="url"
+                onChange={(e) => {
+                  setPortal(e.target.value);
+                  setConfirmed(false);
+                  setError("");
+                }}
+              />
+            </label>
+            <label className="hac-confirm">
+              <input
+                type="checkbox"
+                checked={confirmed}
+                required
+                disabled={busy}
+                onChange={(e) => setConfirmed(e.target.checked)}
+              />
+              <span>I checked this is my district’s official HAC address.</span>
+            </label>
+          </>
+        )}
+        <div className="hac-destination">
+          <ShieldCheck size={15} />
+          <span>
+            Direct to {preset?.host ?? "the HAC portal you select"}. No
+            third-party grade API.
+          </span>
+        </div>
+        {databases.length > 0 && (
+          <label className="field">
+            <span>District database</span>
+            <select
+              required
+              value={database}
+              disabled={busy}
+              onChange={(e) => setDatabase(e.target.value)}
+            >
+              <option value="">Choose your district database</option>
+              {databases.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        <label className="field">
+          <span>HAC username</span>
+          <input
+            name="username"
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
+            required
+            maxLength={200}
+            value={username}
+            disabled={busy}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </label>
+        <label className="field">
+          <span>HAC password</span>
+          <span className="hac-password">
+            <input
+              name="password"
+              type={show ? "text" : "password"}
+              autoComplete="current-password"
+              required
+              maxLength={500}
+              value={password}
+              disabled={busy}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              aria-label={show ? "Hide password" : "Show password"}
+              aria-pressed={show}
+              onClick={() => setShow(!show)}
+            >
+              {show ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </span>
+        </label>
+        {error && (
+          <p className="hac-login-error" role="alert">
+            {error}
+          </p>
+        )}
+        <Button type="submit" disabled={busy} className="hac-connect-button">
+          {busy ? (
+            <>
+              <RefreshCw size={17} />
+              Signing in and syncing…
+            </>
+          ) : (
+            <>
+              Sign in & sync
+              <ArrowRight size={17} />
+            </>
+          )}
+        </Button>
+      </form>
+      <p className="hac-login-footnote">
+        Your password is used for this sign-in, not saved by Gradelarp. Synced
+        grades stay in this browser. District verification steps may require the
+        official HAC website.
+      </p>
+      {onManual && (
+        <button className="hac-manual-link" disabled={busy} onClick={onManual}>
+          Continue with manual grades instead
+        </button>
+      )}
+    </section>
+  );
+}
+export function HacWelcome({
+  onSync,
+  onManual,
+}: {
+  onSync: (s: LiveSnapshot) => void;
+  onManual: () => void;
+}) {
+  return (
+    <main className="hac-entry" data-testid="hac-entry">
+      <header className="hac-entry-header">
+        <Link href="/" aria-label="Gradelarp home">
+          g<span>gradelarp.</span>
+        </Link>
+        <span>A little clarity. A lot of potential.</span>
+      </header>
+      <div className="hac-entry-layout">
+        <section className="hac-entry-story">
+          <span className="hac-entry-kicker">
+            Your semester, in perspective.
+          </span>
+          <h1>
+            Less checking.
+            <br />
+            More understanding.
+          </h1>
+          <p>
+            A calmer home for your grades. Connect HAC to see what your school
+            reports, keep track of assignments, and make room for what comes
+            next.
+          </p>
+          <ul>
+            <li>
+              <BookOpen size={20} />
+              <div>
+                <strong>Your grades, together</strong>
+                <span>
+                  Course averages and assignment scores from your school.
+                </span>
+              </div>
+            </li>
+            <li>
+              <GraduationCap size={20} />
+              <div>
+                <strong>Plan with perspective</strong>
+                <span>
+                  Manual what-if tools and custom GPA planning, without changing
+                  school records.
+                </span>
+              </div>
+            </li>
+            <li>
+              <ShieldCheck size={20} />
+              <div>
+                <strong>A direct connection</strong>
+                <span>
+                  Your sign-in goes to your district’s HAC portal. Your password
+                  isn’t stored.
+                </span>
+              </div>
+            </li>
+          </ul>
+          <p className="hac-entry-note">
+            No sample grades. No invented progress. Just your school’s data and
+            your own plans.
+          </p>
+        </section>
+        <HacLogin onSync={onSync} onManual={onManual} />
+      </div>
+      <footer className="hac-entry-footer">
+        <span>gradelarp.</span>
+        <span>
+          School-reported grades stay distinct from planning estimates.
+        </span>
+      </footer>
+    </main>
+  );
 }
 export function SchoolConnection({
   profile,
