@@ -31,13 +31,28 @@ function checkInteractive(html: string) {
 }
 function extractName(html: string) {
   const $ = load(html);
-  return clean(
-    $(
-      "#plnMain_lblRegStudentName,.sg-banner-menu-studentname,[id$='_lblStudentName'],.sg-banner-menu-container span",
-    )
-      .first()
-      .text(),
-  ).replace(/^student\s*name\s*:?\s*/i, "");
+  // Selector priority matters: a combined selector uses document order, not
+  // the priority of the explicit student-name field over generic menu spans.
+  for (const selector of [
+    "#plnMain_lblRegStudentName",
+    ".sg-banner-menu-studentname",
+    "[id$='_lblStudentName']",
+  ]) {
+    const name = clean($(selector).first().text()).replace(
+      /^student\s*name\s*:?\s*/i,
+      "",
+    );
+    if (name) return name;
+  }
+  const spans = $(".sg-banner-menu-container")
+    .first()
+    .find("span")
+    .filter(
+      (_, el) => $(el).find("span").length === 0 && clean($(el).text()) !== "",
+    );
+  return spans.length === 1
+    ? clean(spans.first().text()).replace(/^student\s*name\s*:?\s*/i, "")
+    : "";
 }
 export function buildLogin(
   html: string,
