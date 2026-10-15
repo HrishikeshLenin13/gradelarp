@@ -38,6 +38,7 @@ export class HacError extends Error {
       databases?: { id: string; name: string }[];
       stage?: HacStage;
       kind?: string;
+      validation?: string[];
     },
   ) {
     super(message);
