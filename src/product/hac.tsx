@@ -664,3 +664,130 @@ export function SchoolConnection({
     </div>
   );
 }
+export function SourceGradebook({
+  snapshot,
+  onConnect,
+  primary = false,
+}: {
+  snapshot: LiveSnapshot;
+  onConnect?: () => void;
+  primary?: boolean;
+}) {
+  const Heading = primary ? "h1" : "h2";
+  const CourseHeading = primary ? "h2" : "h3";
+  return (
+    <div className="product-stack hac-source-gradebook">
+      <header className="hac-source-header">
+        <div>
+          <span className="hac-live-tag">School-reported records</span>
+          <Heading>{snapshot.studentName}’s gradebook</Heading>
+          <p>
+            {new URL(snapshot.portal).hostname}
+            {snapshot.term ? ` · ${snapshot.term}` : ""}
+          </p>
+          <p className="helper">
+            Last {snapshot.status === "partial" ? "partial " : ""}sync:{" "}
+            {new Date(snapshot.fetchedAt).toLocaleString()}
+          </p>
+        </div>
+        {onConnect && (
+          <Button variant="outline" onClick={onConnect}>
+            <RefreshCw size={15} />
+            Manage connection
+          </Button>
+        )}
+      </header>
+      {snapshot.issues.map((issue, i) => (
+        <p className="hac-notice" key={i}>
+          {issue}
+        </p>
+      ))}
+      {!snapshot.courses.length && (
+        <section className="panel">
+          <CourseHeading>No published courses yet.</CourseHeading>
+          <p>
+            HAC returned an explicitly empty gradebook. Check the official
+            portal or sync again later.
+          </p>
+        </section>
+      )}
+      {snapshot.courses.map((course) => (
+        <section key={course.id} className="panel hac-source-course">
+          <div className="hac-source-course-top">
+            <div>
+              <CourseHeading>{course.name}</CourseHeading>
+              {course.teacher && <p>{course.teacher}</p>}
+            </div>
+            <div className="hac-school-average">
+              <strong>{course.averageText || "Not reported"}</strong>
+              <span>HAC average</span>
+            </div>
+          </div>
+          {!course.assignmentsAvailable && (
+            <p className="hac-notice">
+              Assignment data was unavailable on this sync. Any listed
+              assignments are from the previous successful sync.
+            </p>
+          )}
+          <details open>
+            <summary>
+              {course.assignments.length} published assignment
+              {course.assignments.length === 1 ? "" : "s"}
+            </summary>
+            {course.assignments.length ? (
+              <ul className="hac-source-assignments">
+                {course.assignments.map((a) => (
+                  <li key={a.id}>
+                    <div>
+                      <strong>{a.name}</strong>
+                      <span>
+                        {[
+                          a.category,
+                          a.due ? `Due ${a.due}` : "Date not reported",
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </span>
+                    </div>
+                    <div className="hac-source-score">
+                      <strong>
+                        {a.score || "Not graded"}
+                        {a.possible !== null ? ` / ${a.possible}` : ""}
+                      </strong>
+                      <span>
+                        {a.status === "unknown"
+                          ? "School mark retained"
+                          : a.status}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="helper">
+                No published assignment rows were returned. No scores were
+                filled in.
+              </p>
+            )}
+          </details>
+          {course.categories.length > 0 && (
+            <p className="helper">
+              {course.categories
+                .map(
+                  (c) =>
+                    `${c.name}${c.weight === null ? " (weight not reported)" : ` ${c.weight}%`}`,
+                )
+                .join(" · ")}
+            </p>
+          )}
+        </section>
+      ))}
+      <p className="helper hac-accuracy-note">
+        Averages above are reported by HAC, not recalculated from visible
+        assignments. Unpublished work can affect them. GPA, credits, and course
+        policies are not inferred from a course name; manual planning tools use
+        only the records and rules you enter.
+      </p>
+    </div>
+  );
+}
