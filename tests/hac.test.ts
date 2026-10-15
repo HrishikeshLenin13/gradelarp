@@ -80,9 +80,45 @@ describe("synthetic HTML contract", () => {
   it("rejects oversized pages and invalid scores without turning them into zeros", () => {
     expect(() => parseFixture(" ".repeat(1_000_001), "lisd")).toThrow(/limit/);
     expect(
-      parseFixture(
-        fixtureHtml("lisd").replace('data-earned="85"', 'data-earned="NaN"'),
-        "lisd",
+      parseLiveAssignments(
+        gradebook().replace("Course: Algebra II", "Coursework I"),
+        portal,
+        "Test Student",
+        "id",
+      ).courses[0].name,
+    ).toBe("Coursework I");
+    expect(c.assignments[0].earned).toBe(85);
+    expect(c.assignments[1].status).toBe("exempt");
+    expect(c.assignments[1].score).toBe("EX");
+    expect(c.assignments[2].due).toBeNull();
+    expect(c.assignments[2].earned).toBeNull();
+    expect(c.categories[0].weight).toBe(60);
+  });
+  it("does not guess an unknown mark into zero", () => {
+    const s = parseLiveAssignments(
+      gradebook({ score: "NG*" }),
+      portal,
+      "Test Student",
+      "id",
+    );
+    expect(s.courses[0].assignments[0].earned).toBeNull();
+    expect(s.courses[0].assignments[0].score).toBe("NG*");
+  });
+  it("distinguishes explicit empty records, missing tables, login expiry and malformed pages", () => {
+    expect(
+      parseLiveAssignments(
+        gradebook({ empty: true }),
+        portal,
+        "Test Student",
+        "id",
+      ).courses,
+    ).toEqual([]);
+    expect(
+      parseLiveAssignments(
+        gradebook({ missing: true }),
+        portal,
+        "Test Student",
+        "id",
       ).status,
     ).toBe("partial");
     expect(() =>
