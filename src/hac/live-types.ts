@@ -43,7 +43,7 @@ export const LiveSnapshotSchema = z
     term: z.string().max(160),
     fetchedAt: z.iso.datetime(),
     status: z.enum(["complete", "partial"]),
-    issues: z.array(z.string().max(500)).max(100),
+    issues: z.array(z.string().max(20_000)).max(500),
     courses: z.array(SourceCourseSchema).max(500),
   })
   .superRefine((s, ctx) => {
