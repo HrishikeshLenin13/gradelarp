@@ -252,8 +252,12 @@ export class DirectPortalTransport implements PortalTransport {
             );
           },
         );
-        req.setTimeout(12_000, () => req.destroy(new Error("timeout")));
-        req.on("error", () =>
+        let timedOut = false;
+        req.setTimeout(12_000, () => {
+          timedOut = true;
+          req.destroy();
+        });
+        req.on("error", (error) =>
           reject(
             signal.aborted || timedOut
               ? new HacError(
