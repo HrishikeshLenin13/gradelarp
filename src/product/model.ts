@@ -197,8 +197,8 @@ export const ProductSchema = z
       ctx.addIssue({ code: "custom", message: "Active profile is missing." });
   });
 export type ProductData = z.infer<typeof ProductSchema>;
-export function newProfile(name = "Student", demo = false): Profile {
-  const state = demo ? createDemo() : emptyState();
+export function newProfile(name = "Student"): Profile {
+  const state = emptyState();
   state.settings.name = name;
   return {
     id: uid(),
