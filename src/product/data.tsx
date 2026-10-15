@@ -154,8 +154,7 @@ export function DataTools({
             onClick={() =>
               download(
                 "gradelarp-template.csv",
-                csvHeaders.join(",") +
-                  "\nBiology,Ms. Smith,Regular,Fall 2026,0.5,weighted,Major grades,60,Unit 1 test,92,100,graded,2026-10-12\nBiology,Ms. Smith,Regular,Fall 2026,0.5,weighted,Daily work,40,Lab notebook,45,50,graded,2026-10-13\n",
+                csvHeaders.join(",") + "\n",
                 "text/csv",
               )
             }
