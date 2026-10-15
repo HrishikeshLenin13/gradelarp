@@ -468,3 +468,98 @@ test("landing and school records are accessible, responsive and free of runtime 
   });
   expect(errors).toEqual([]);
 });
+
+test("district check excludes filled credentials and never reports authenticated sync", async ({
+  page,
+}) => {
+  const sent: unknown[] = [];
+  await page.route("**/api/hac", async (route) => {
+    const command = route.request().postDataJSON();
+    sent.push(command);
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        session: null,
+        ...(command.action === "probe"
+          ? { portalCheck: { portal, ready: true } }
+          : {}),
+      }),
+    });
+  });
+  await ready(page);
+  await fill(page);
+  await page
+    .getByRole("button", { name: "Check district connection", exact: true })
+    .click();
+  await expect(page.getByRole("status")).toContainText(
+    "This check does not sign into your account",
+  );
+  expect(sent).toContainEqual({ action: "probe", portal });
+  expect(JSON.stringify(sent)).not.toContain("not-a-real-password");
+  expect(JSON.stringify(sent)).not.toContain("browser-test-only");
+  expect((await stored(page)).profiles).toHaveLength(1);
+  await page
+    .getByLabel("School district", { exact: true })
+    .selectOption("rrisd");
+  await expect(
+    page.getByText("District login page reached.", { exact: false }),
+  ).toHaveCount(0);
+});
+test("district failure displays code and step without importing records", async ({
+  page,
+}) => {
+  await page.route("**/api/hac", async (route) => {
+    const command = route.request().postDataJSON();
+    await route.fulfill({
+      status: command.action === "probe" ? 502 : 200,
+      contentType: "application/json",
+      body: JSON.stringify(
+        command.action === "probe"
+          ? {
+              error: {
+                code: "DNS",
+                message: "The district HAC address could not be found.",
+                details: { stage: "login-page" },
+              },
+            }
+          : { session: null },
+      ),
+    });
+  });
+  await ready(page);
+  await page
+    .getByRole("button", { name: "Check district connection", exact: true })
+    .click();
+  await expect(page.locator(".hac-login-error")).toContainText(
+    "Connection details: DNS · login-page",
+  );
+  expect((await stored(page)).profiles).toHaveLength(1);
+  await expect(
+    page.getByRole("button", { name: "Sign in & sync", exact: true }),
+  ).toBeEnabled();
+});
+
+test("refresh failure exposes its step while preserving saved source records", async ({
+  page,
+}) => {
+  await simulatePortal(page, { syncFailure: true });
+  await ready(page);
+  await fill(page);
+  await page
+    .getByRole("button", { name: "Sign in & sync", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Browser Test Student’s gradebook" }),
+  ).toBeVisible();
+  const before = (await stored(page)).profiles[1].hacLive;
+  await nav(page, "School connection");
+  await page.getByRole("button", { name: "Sync now", exact: true }).click();
+  await expect(page.locator(".hac-login-error")).toContainText(
+    "Connection details: DNS · refresh",
+  );
+  expect((await stored(page)).profiles[1].hacLive).toEqual(before);
+  await expect(
+    page.getByRole("button", { name: "Sync now", exact: true }),
+  ).toBeEnabled();
+});
