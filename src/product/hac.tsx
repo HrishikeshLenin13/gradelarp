@@ -133,7 +133,7 @@ export function SchoolConnection({
     setMessage("");
     setSnapshot(null);
     try {
-      const r = await request(command);
+      const r = await request({ action });
       setSession(r.session);
       if (r.snapshot) onSync(r.snapshot);
     } catch (e) {
