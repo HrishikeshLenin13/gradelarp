@@ -88,7 +88,10 @@ export function HacLogin({
     ),
     [confirmed, setConfirmed] = useState(false);
   const [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [diagnostic, setDiagnostic] = useState(""),
+    [checking, setChecking] = useState(false),
+    [checkResult, setCheckResult] = useState("");
   const preset = districts.find((d) => d.id === district);
   const destination = preset
     ? `https://${preset.host}/HomeAccess`
