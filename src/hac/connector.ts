@@ -141,8 +141,12 @@ export async function connectPortal(
     transport = factory(portal),
     signal = AbortSignal.timeout(40_000);
   try {
-    const initial = await transport.page(`${portal}/Account/LogOn`, { signal });
-    const login = buildLogin(initial.html, initial.url, portal, input.database);
+    const initial = await atStage("login-page", () =>
+      transport.page(`${portal}/Account/LogOn`, { signal }),
+    );
+    const login = await atStage("login-page", async () =>
+      buildLogin(initial.html, initial.url, portal, input.database),
+    );
     login.fields.set("LogOnDetails.UserName", input.username);
     login.fields.set("LogOnDetails.Password", input.password);
     stage = "sign-in";
