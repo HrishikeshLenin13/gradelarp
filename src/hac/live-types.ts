@@ -72,6 +72,7 @@ export const LiveConnectionSchema = z.object({
 });
 export const LiveResponseSchema = z.object({
   session: LiveSessionSchema.nullable(),
+  portalCheck: z.object({ portal: z.url(), ready: z.literal(true) }).optional(),
   snapshot: LiveSnapshotSchema.optional(),
 });
 export const LiveCommandSchema = z.discriminatedUnion("action", [
