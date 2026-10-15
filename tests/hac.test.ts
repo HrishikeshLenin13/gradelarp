@@ -1,6 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { fixtureHtml } from "../src/hac/fixtures";
-import { parseFixture } from "../src/hac/parser";
+import { describe, it, expect, vi } from "vitest";
+import { buildLogin, connectPortal, refreshPortal } from "../src/hac/connector";
 import {
   DirectPortalTransport,
   isPublicAddress,
