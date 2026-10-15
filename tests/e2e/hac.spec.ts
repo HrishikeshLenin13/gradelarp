@@ -23,7 +23,7 @@ const source: LiveSnapshot = {
       assignments: [
         {
           id: "assignment-1",
-          name: "Published test",
+          name: "Teacher-provided assignment instructions ".repeat(20).trim(),
           category: "Major",
           due: "10/12/2026",
           score: "85",
