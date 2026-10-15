@@ -98,7 +98,12 @@ export class MockHacService {
         ),
       };
     } catch (error) {
-      if (error instanceof HacError && error.code === "AUTH_FAILED" && token)
+      if (
+        command.action === "sync" &&
+        error instanceof HacError &&
+        error.status === 401 &&
+        token
+      ) {
         this.sessions.delete(token);
         if (previous) await previous.connection.transport.destroy();
       }
