@@ -462,7 +462,7 @@ test("landing and school records are accessible, responsive and free of runtime 
     ),
   ).toBe(true);
   await page.screenshot({
-    path: `artifacts/hac-live-2026-10-15/${info.project.name}-source-gradebook.png`,
+    path: `artifacts/hac-records-fix-2026-10-15/test-only-${info.project.name}-source-gradebook.png`,
     fullPage: true,
   });
   await page
