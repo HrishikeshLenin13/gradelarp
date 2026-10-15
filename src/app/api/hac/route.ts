@@ -15,6 +15,7 @@ const headers = {
   "Referrer-Policy": "no-referrer",
 };
 export async function POST(request: NextRequest) {
+  let isConnect = false;
   try {
     const command = await readCommand(request);
     isConnect = command?.action === "connect";
