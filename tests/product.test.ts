@@ -5,7 +5,7 @@ import { defaultPolicy, type Course } from "../src/lib/model";
 import {
   migrateLegacy,
   ProductSchema,
-  newProfile,
+  newProfile as blankProfile,
   ProfileSchema,
   parseProductBackup,
   recordState,
