@@ -174,7 +174,7 @@ export function HacLogin({
                 type="checkbox"
                 checked={confirmed}
                 required
-                disabled={busy}
+                disabled={busy || checking}
                 onChange={(e) => setConfirmed(e.target.checked)}
               />
               <span>I checked this is my district’s official HAC address.</span>
