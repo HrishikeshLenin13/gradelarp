@@ -41,8 +41,23 @@ export const productProvider = {
   async load(): Promise<Envelope> {
     const d = await db();
     const existing = await d.get("workspace", "current");
-    if (existing)
-      return { ...existing, data: ProductSchema.parse(existing.data) };
+    if (existing) {
+      const parsed = ProductSchema.parse(existing.data),
+        clean = removeDemonstrations(parsed);
+      if (clean !== parsed) {
+        const tx = d.transaction("workspace", "readwrite");
+        const latest = await tx.store.get("current");
+        if (latest && latest.revision === existing.revision) {
+          const next = { revision: existing.revision + 1, data: clean };
+          await tx.store.put(next, "current");
+          await tx.done;
+          return next;
+        }
+        await tx.done;
+        return this.load();
+      }
+      return { ...existing, data: clean };
+    }
     const raw = await legacyRaw();
     const data = migrateLegacy(raw);
     const tx = d.transaction(["workspace", "preservation"], "readwrite");
