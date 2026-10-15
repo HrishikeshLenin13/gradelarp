@@ -29,6 +29,7 @@ const source: LiveSnapshot = {
           score: "85",
           earned: 85,
           possible: 100,
+          possibleText: "100.00",
           status: "graded",
         },
         {
