@@ -180,7 +180,9 @@ export function parseLiveAssignments(
         const cells = $(row)
           .children("td")
           .toArray()
-          .map((c) => clean($(c).text()));
+          .map((c) =>
+            clean($(c).clone().find("script,style").remove().end().text()),
+          );
         if (cells.length < headers.length)
           throw new HacError(
             "ASSIGNMENT_COLUMNS",
