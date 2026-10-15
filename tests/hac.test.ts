@@ -10,7 +10,6 @@ import {
 import { validateDestination } from "../src/hac/districts";
 import { MockHacService, readCommand } from "../src/hac/server";
 import {
-  ProductSchema,
   newProfile,
   removeDemonstrations,
   parseProductBackup,
