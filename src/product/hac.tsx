@@ -64,7 +64,8 @@ function time(value: string | null | undefined) {
 export function SchoolConnection({
   data,
   profile,
-  onChange,
+  onSync,
+  onManual,
 }: {
   profile: Profile;
   onSync: (s: LiveSnapshot) => void;
