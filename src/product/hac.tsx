@@ -96,6 +96,7 @@ export function HacLogin({
   async function connect(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setDiagnostic("");
     setBusy(true);
     const secret = password;
     setPassword("");
