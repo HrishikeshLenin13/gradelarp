@@ -887,6 +887,7 @@ test("legacy migration is byte-preserving and design lab edits cannot alter the 
 }) => {
   const before = await stored(page);
   await page.goto("/design-lab/expressive");
+  await expect(page).toHaveURL(/\/$/);
   await expect(page.getByTestId("course-select")).toHaveCount(6);
   expect(await stored(page)).toBe(before);
 });
