@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { MockHacService, readCommand } from "../../../hac/server";
+import { LiveHacService, readCommand } from "../../../hac/server";
 import { HacError } from "../../../hac/types";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
