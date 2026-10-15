@@ -303,7 +303,7 @@ test("API rejects live mode, credentials, query strings and cross-origin request
   });
   expect(origin.status()).toBe(403);
 });
-test("connection, preview and imported records fit mobile and pass accessibility in both themes", async ({
+test("landing and school records are accessible, responsive and free of runtime errors", async ({
   page,
 }, info) => {
   const errors: string[] = [];
