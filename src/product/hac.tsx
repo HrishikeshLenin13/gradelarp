@@ -191,8 +191,9 @@ export function SchoolConnection({
     <div className="product-stack hac-workspace">
       <section className="hac-intro">
         <div>
-          <span className="hac-mode">
-            <ShieldCheck size={15} /> Mock connection · no school login
+          <span className="hac-live-tag">
+            <Check size={15} />
+            Connected to HAC
           </span>
           <h2>{session.studentName}</h2>
           <p>{new URL(session.portal).hostname}</p>
