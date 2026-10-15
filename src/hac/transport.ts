@@ -132,6 +132,7 @@ export class DirectPortalTransport implements PortalTransport {
     for (let redirects = 0; redirects <= 5; redirects++) {
       url = validatePortalRequest(this.origin, url);
       signal.throwIfAborted();
+      let onAbort: (() => void) | undefined;
       const addresses = await Promise.race([
         lookup(url.hostname, { all: true, verbatim: true }),
         new Promise<never>((_, reject) => {
