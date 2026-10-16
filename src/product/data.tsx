@@ -17,6 +17,7 @@ import {
   type Profile,
   type ProductData,
 } from "./model";
+import { exportSourceCsv } from "./source-export";
 import { productProvider } from "./storage";
 import { Confirm } from "./forms";
 export function DataTools({
@@ -75,7 +76,7 @@ export function DataTools({
         activeProfileId: profiles[0].id,
       };
     } else if (pending.courses) {
-      if (destination === "append") {
+      if (destination === "append" && !profile.hacLive) {
         next = {
           ...data,
           profiles: data.profiles.map((p) =>
@@ -121,8 +122,8 @@ export function DataTools({
       <div className="inline-notice">
         <ShieldCheck size={18} />
         <span>
-          Your grades stay in this browser. No cloud uploads, school passwords,
-          or live HAC sync.
+          Backups stay on your device and never include your HAC password.
+          School connections use your selected district portal.
         </span>
         <span className="pill">Local-first</span>
       </div>
@@ -165,8 +166,9 @@ export function DataTools({
           <h2>Always yours to keep.</h2>
           <p>
             A full backup includes every student profile, grade, scenario,
-            setting, HAC source record, and academic record. CSV exports manual
-            planning assignments only.
+            setting, HAC source record, history and academic record. HAC CSV
+            exports preserve school-reported values; use JSON to restore a
+            complete workspace.
           </p>
           <div className="flex">
             <Button
@@ -181,16 +183,25 @@ export function DataTools({
             </Button>
             <Button
               variant="outline"
-              disabled={!profile.state.courses.length}
+              disabled={
+                !(
+                  profile.hacLive?.snapshot.courses.length ??
+                  profile.state.courses.length
+                )
+              }
               onClick={() =>
                 download(
-                  "gradelarp-grades.csv",
-                  exportCsv(profile.state.courses),
+                  profile.hacLive
+                    ? "gradelarp-hac-records.csv"
+                    : "gradelarp-grades.csv",
+                  profile.hacLive
+                    ? exportSourceCsv(profile.hacLive.snapshot)
+                    : exportCsv(profile.state.courses),
                   "text/csv",
                 )
               }
             >
-              Export CSV
+              {profile.hacLive ? "Export HAC CSV" : "Export CSV"}
             </Button>
           </div>
           <Button
@@ -308,8 +319,9 @@ export function DataTools({
             <div className="product-import-preview">
               {pending.profiles?.map((p) => (
                 <p key={p.id}>
-                  <strong>{p.name}</strong> · {p.state.courses.length} courses ·{" "}
-                  {p.scenarios.length} scenarios
+                  <strong>{p.name}</strong> ·{" "}
+                  {p.hacLive?.snapshot.courses.length ?? p.state.courses.length}{" "}
+                  courses · {p.scenarios.length} scenarios
                 </p>
               ))}
               {pending.courses?.map((c) => (
@@ -329,7 +341,10 @@ export function DataTools({
                   <option value="new">
                     New separate profile (preserves current)
                   </option>
-                  <option value="append" disabled={profile.state.demo}>
+                  <option
+                    value="append"
+                    disabled={profile.state.demo || Boolean(profile.hacLive)}
+                  >
                     Append courses to current profile
                   </option>
                 </select>
