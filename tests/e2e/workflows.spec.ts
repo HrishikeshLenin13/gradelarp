@@ -9,6 +9,7 @@ async function saved(page: Page) {
   );
 }
 async function nav(page: Page, name: string) {
+  await expect(page.locator(".product-root")).toBeVisible();
   const toggle = page.getByRole("button", {
     name: "Open navigation",
     exact: true,
@@ -79,7 +80,7 @@ async function ready(page: Page) {
       profiles: [manual, fixture],
     },
   );
-  await page.goto("/");
+  await page.goto("/app");
   await expect(page.getByTestId("course-select")).toHaveCount(6);
   await saved(page);
 }
@@ -135,7 +136,7 @@ test.afterEach(async ({ page }) => {
 test("Expressive is the real root app with computed grades, selection, and no redirect", async ({
   page,
 }, info) => {
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/app$/);
   await expect(
     page.getByRole("button", { name: "Weighted GPA Local estimate 4.42" }),
   ).toBeVisible();
@@ -493,6 +494,7 @@ test("keyboard widget drag reorders and persists", async ({ page }) => {
     "activity",
   ]);
   await page.reload();
+  await expect(page.locator("[data-widget]")).toHaveCount(order.length);
   expect(
     await page
       .locator("[data-widget]")
@@ -922,7 +924,7 @@ test("retired design routes cannot replace the genuine product or seed sample gr
 }) => {
   const before = await stored(page);
   await page.goto("/design-lab/expressive");
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/app$/);
   await expect(page.getByTestId("course-select")).toHaveCount(6);
   expect(await stored(page)).toBe(before);
 });
@@ -956,7 +958,7 @@ test("cold upgrade preserves an existing real gradebook verbatim", async ({
       }),
     legacy,
   );
-  await page.goto(baseURL + "/");
+  await page.goto(baseURL + "/app");
   await expect(page.getByTestId("course-select").first()).toContainText(
     "Real Calculus",
   );
@@ -988,7 +990,7 @@ test("concurrent tabs detect stale writes instead of silently overwriting grades
   context,
 }) => {
   const second = await context.newPage();
-  await second.goto("/");
+  await second.goto("/app");
   await expect(second.getByTestId("course-select")).toHaveCount(6);
   await openCourse(page);
   await page.getByLabel("Assignment 1 earned", { exact: true }).fill("100");

@@ -56,7 +56,7 @@ const source: LiveSnapshot = {
   ],
 };
 async function ready(page: Page) {
-  await page.goto("/");
+  await page.goto("/app");
   await expect(page.getByTestId("hac-entry")).toBeVisible();
 }
 async function fill(page: Page) {
@@ -248,6 +248,56 @@ test("one sign-in automatically saves school-reported records, clears password a
     page.getByRole("heading", { name: "Browser Test Student’s gradebook" }),
   ).toBeVisible();
 });
+test("landing sign-in enters the real workspace and returning students keep their synced records", async ({
+  page,
+}) => {
+  const requests = await simulatePortal(page);
+  await page.goto("/");
+  await expect(page.getByTestId("study")).toHaveAttribute(
+    "data-webgl",
+    "ready",
+    { timeout: 45000 },
+  );
+  const entryLinks = page.locator('a[href="/app"]');
+  await expect(entryLinks).toHaveCount(3);
+  await page
+    .locator(".opening-description")
+    .getByRole("link", { name: "Open Gradelarp", exact: false })
+    .click();
+  await expect(page).toHaveURL(/\/app$/);
+  await expect(page.getByTestId("hac-entry")).toBeVisible();
+  await fill(page);
+  await page
+    .getByRole("button", { name: "Sign in & sync", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Browser Test Student’s gradebook" }),
+  ).toBeVisible();
+  await expect(page.getByText("88.00", { exact: true })).toBeVisible();
+  await expect(page.locator(".product-status-line")).toContainText(
+    "Saved on this device",
+  );
+  expect(requests.filter((r) => r.action === "connect")).toHaveLength(1);
+  const menu = page.getByRole("button", {
+    name: "Open navigation",
+    exact: true,
+  });
+  if (await menu.isVisible()) await menu.click();
+  await page.getByRole("link", { name: "Gradelarp home", exact: true }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByTestId("study")).toHaveAttribute(
+    "data-webgl",
+    "ready",
+    { timeout: 45000 },
+  );
+  await page.getByRole("link", { name: "Open app", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Browser Test Student’s gradebook" }),
+  ).toBeVisible();
+  await expect(page.getByTestId("hac-entry")).toHaveCount(0);
+  await expect(page.getByText("88.00", { exact: true })).toBeVisible();
+  expect(requests.filter((r) => r.action === "connect")).toHaveLength(1);
+});
 test("another district supports a user-confirmed official HAC URL rather than a hosted third-party API", async ({
   page,
 }) => {
@@ -363,7 +413,7 @@ test("stored marked samples are removed but genuine manual grades survive", asyn
       profiles: [real, sample],
     },
   );
-  await page.goto("/");
+  await page.goto("/app");
   await expect(page.getByTestId("hac-entry")).toBeVisible();
   expect((await stored(page)).profiles).toEqual([real]);
 });
@@ -628,4 +678,147 @@ test("source validation shows field names only and leaves the local gradebook un
     "",
   );
   expect(await stored(page)).toEqual(before);
+});
+
+test("source sync feeds the planner, grade history, teachers and search without changing school marks", async ({
+  page,
+}, info) => {
+  let connected = false,
+    revision = 0;
+  const pending = {
+    id: "due-source",
+    name: "Review quadratic functions",
+    category: "Daily",
+    due: "10/16/2026",
+    score: "",
+    earned: null,
+    possible: 10,
+    status: "ungraded" as const,
+  };
+  await page.route("**/api/hac", async (route) => {
+    const command = route.request().postDataJSON();
+    if (command.action === "connect") connected = true;
+    if (command.action === "sync") revision++;
+    const session = connected
+      ? {
+          mode: "live",
+          portal,
+          studentId: source.studentId,
+          studentName: source.studentName,
+          expiresAt: new Date(Date.now() + 1800000).toISOString(),
+        }
+      : null;
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        session,
+        ...(command.action === "connect" || command.action === "sync"
+          ? {
+              snapshot: {
+                ...source,
+                fetchedAt: `2026-10-15T12:0${revision}:00Z`,
+                courses: [
+                  {
+                    ...source.courses[0],
+                    average: revision ? 91 : 88,
+                    averageText: revision ? "91.00" : "88.00",
+                    assignments: [...source.courses[0].assignments, pending],
+                  },
+                ],
+              },
+            }
+          : {}),
+      }),
+    });
+  });
+  await ready(page);
+  await fill(page);
+  await page
+    .getByRole("button", { name: "Sign in & sync", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Browser Test Student’s gradebook" }),
+  ).toBeVisible();
+  await nav(page, "Assignment planner");
+  await expect(page.getByText(pending.name, { exact: true })).toBeVisible();
+  await page
+    .getByRole("combobox", { name: "Show tasks", exact: true })
+    .selectOption("all");
+  await page
+    .getByRole("checkbox", { name: `Complete ${pending.name}`, exact: true })
+    .check();
+  await expect(page.locator(".product-status-line")).toContainText(
+    "Saved on this device",
+  );
+  expect(
+    (
+      await stored(page)
+    ).profiles[1].hacLive!.snapshot.courses[0].assignments.find(
+      (a) => a.id === pending.id,
+    )!.status,
+  ).toBe("ungraded");
+  await nav(page, "Academic tools");
+  await page.getByRole("button", { name: "Teachers", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Teacher from source", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Add teacher contact", exact: true }),
+  ).toBeEnabled();
+  await nav(page, "Grade history");
+  await expect(
+    page.getByText("One real snapshot is available.", { exact: false }),
+  ).toBeVisible();
+  await nav(page, "School connection");
+  await page.getByRole("button", { name: "Sync now", exact: true }).click();
+  await expect(page.getByText("91.00", { exact: true })).toBeVisible();
+  await nav(page, "Grade history");
+  await expect(page.locator(".product-source-history tbody tr")).toHaveCount(2);
+  await expect(page.locator(".product-source-history")).toContainText("88.00");
+  await expect(page.locator(".product-source-history")).toContainText("91.00");
+  await page
+    .getByRole("button", { name: "Search workspace", exact: true })
+    .click();
+  await page
+    .getByRole("textbox", { name: "Search workspace", exact: true })
+    .fill("Algebra");
+  await page
+    .getByRole("dialog")
+    .getByRole("button", {
+      name: /Algebra II.*School-reported course/,
+      exact: false,
+    })
+    .click();
+  await expect(page.locator(".product-view")).toHaveAttribute(
+    "data-view",
+    "courses",
+  );
+  await page
+    .getByRole("textbox", { name: "Search school records", exact: true })
+    .fill("quadratic");
+  await expect(page.getByText(pending.name, { exact: true })).toBeVisible();
+  await expect(
+    page.getByText(source.courses[0].assignments[0].name, { exact: true }),
+  ).toHaveCount(0);
+  await expect(page.getByText("91.00", { exact: true })).toBeVisible();
+  await page
+    .getByRole("textbox", { name: "Search school records", exact: true })
+    .fill("not-a-school-record");
+  await expect(
+    page.getByRole("button", { name: "Clear filters", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Clear filters", exact: true })
+    .click();
+  await page.screenshot({
+    path: `artifacts/integration-2026-10-15/${info.project.name}-synced-gradebook.png`,
+  });
+  await nav(page, "Data & backups");
+  const exportReady = page.waitForEvent("download");
+  await page
+    .getByRole("button", { name: "Export HAC CSV", exact: true })
+    .click();
+  const exported = await exportReady;
+  expect(exported.suggestedFilename()).toBe("gradelarp-hac-records.csv");
 });

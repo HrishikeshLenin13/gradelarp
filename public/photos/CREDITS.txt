@@ -1,0 +1,29 @@
+GRADELARP — REAL PHOTOGRAPHY SOURCES
+
+Both files are real photographs from Unsplash, not AI-generated images.
+The publication dates and camera metadata below are shown on the original photo pages.
+Images are locally hosted derivatives, resized for the landing preview. No application screenshots or real student records are pictured.
+
+study-writing.jpg
+Photographer: Aaron Burden
+Photo: Pen on white lined paper selective focus photography / Fountain pen on a journal
+Original: https://unsplash.com/photos/pen-on-white-lined-paper-selective-focus-photography-CKlHKtCJZKk
+Published: May 7, 2016 (UTC)
+Camera: Panasonic DMC-GX7
+Asset: https://images.unsplash.com/photo-1462642109801-4ac2971a3a51
+Use in Gradelarp: real note-taking and studying context in the horizontal editorial spread.
+
+library-books.jpg
+Photographer: Kimberly Farmer
+Photo: Shallow focus photography of books
+Original: https://unsplash.com/photos/shallow-focus-photography-of-books-lUaaKCUANVI
+Published: June 16, 2017 (UTC)
+Camera: Nikon D3200
+Asset: https://images.unsplash.com/photo-1497633762265-9d179a990aa6
+Use in Gradelarp: school books in a desk print and the horizontal editorial spread.
+
+License for both photographs: Unsplash License
+https://unsplash.com/license
+Downloaded October 15, 2026. Free use including commercial use under this license; images are not sold or compiled as a competing stock-photo service. Attribution appears in the page and this file.
+
+The 3D gradebook is newly authored code geometry and printed interface-like artwork, not an AI-generated photograph and not an application screenshot. All marks are intentionally blank; no grades or student data were invented.

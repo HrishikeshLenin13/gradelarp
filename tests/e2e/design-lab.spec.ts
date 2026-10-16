@@ -9,7 +9,7 @@ for (const path of [
     page,
   }) => {
     await page.goto(path);
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/app$/);
     await expect(
       page.getByRole("heading", { name: "Less checking. More understanding." }),
     ).toBeVisible();

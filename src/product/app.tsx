@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { SourceHistory } from "./source-history";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MotionConfig, motion, useReducedMotion } from "motion/react";
@@ -359,6 +360,15 @@ export function GradelarpApp() {
         <Brand />
         <span>gradelarp.</span>
       </button>
+      <Link
+        className={cn(styles.navItem, "product-website-link")}
+        href="/"
+        aria-label="Gradelarp home"
+        title="Gradelarp home"
+      >
+        <ArrowLeft size={18} />
+        <span>Website</span>
+      </Link>
       <div className={styles.navCaption}>Academic workspace</div>
       <nav aria-label="Main navigation">
         {pages.map((p) => (

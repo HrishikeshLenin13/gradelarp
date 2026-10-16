@@ -1,0 +1,1824 @@
+.shell {
+  color-scheme: dark;
+  --cream: #ffefd8;
+  --brown: #1d160f;
+  --muted: #bcac99;
+}
+.shell :global(*) {
+  box-sizing: border-box;
+}
+.shell {
+  margin: 0;
+  background: var(--brown);
+  color: var(--cream);
+  font-family: "DM Sans Variable", Arial, sans-serif;
+}
+.shell {
+  overflow-x: clip;
+}
+.shell :global(button),
+.shell :global(a) {
+  -webkit-tap-highlight-color: transparent;
+}
+.shell :global(button) {
+  font: inherit;
+  cursor: pointer;
+}
+.shell :global(a) {
+  color: inherit;
+  text-decoration: none;
+}
+.shell :global(button) {
+  color: inherit;
+}
+.shell :global(button:focus-visible),
+.shell :global(a:focus-visible) {
+  outline: 2px solid #ffd59b;
+  outline-offset: 6px;
+}
+.shell :global(.story-runway) {
+  height: 6300svh;
+}
+.shell :global(.story-viewport) {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 520px;
+  overflow: clip;
+  background: radial-gradient(ellipse at 18% 84%, #724326, #1c1713 65%);
+}
+.shell :global(.gradelarp-study) {
+  --intro: 1;
+  --desk: 1;
+  --p: 0;
+}
+.shell :global(.scene-host) {
+  position: absolute;
+  inset: 0;
+}
+.shell :global(.scene-host > div) {
+  height: 100% !important;
+}
+.shell :global(.film-grain) {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.065;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.6' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.shell :global(.atmosphere) {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 42%,
+    #190e0745 100%
+  );
+  opacity: calc(0.3 + (1 - var(--desk)) * 0.7);
+}
+.shell :global(.study-header) {
+  position: absolute;
+  top: 23px;
+  left: 3.2%;
+  right: 3.2%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 8;
+}
+.shell :global(.compact-brand) {
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: 29px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -1.8px;
+  opacity: calc(1 - var(--intro));
+}
+.shell :global(.origin-dot) {
+  position: absolute;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  top: 2px;
+  border-radius: 50%;
+  background: var(--cream);
+  opacity: var(--intro);
+  pointer-events: none;
+}
+.shell :global(.study-header nav) {
+  display: flex;
+  gap: 25px;
+}
+.shell :global(.study-header nav button) {
+  background: none;
+  border: 0;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 0 0 3px;
+}
+.shell :global(.study-header nav button[aria-current="true"]) {
+  border-bottom: 2px dotted #ffefd888;
+}
+.shell :global(.mobile-menu) {
+  display: none;
+}
+.shell :global(.side-rail) {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 60px;
+  height: 200px;
+  background: var(--cream);
+  color: #17100b;
+  z-index: 7;
+  writing-mode: vertical-rl;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  padding: 29px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(calc(var(--p) * (100svh - 200px)));
+}
+.shell :global(.side-rail span) {
+  font-size: 10px;
+}
+.shell :global(.side-rail i) {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: #df8741;
+  transform: scaleY(0);
+  transform-origin: top;
+}
+.shell :global(.story-copy) {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  opacity: var(--opacity, 0);
+  transform: translateY(var(--offset, 0px));
+  pointer-events: none;
+}
+.shell :global(.story-copy button),
+.shell :global(.story-copy a) {
+  pointer-events: auto;
+}
+.shell :global(.story-copy[inert] button),
+.shell :global(.story-copy[inert] a) {
+  pointer-events: none;
+}
+.shell :global(.opening) {
+  --opacity: 1;
+  opacity: var(--intro);
+  transform: none;
+}
+.shell :global(.opening h1) {
+  font-size: clamp(100px, 12.6vw, 240px);
+  font-weight: 950;
+  letter-spacing: -0.065em;
+  line-height: 0.86;
+  margin: 0;
+  position: absolute;
+  top: 67px;
+  left: 3.05%;
+  text-transform: uppercase;
+}
+.shell :global(.opening-caption) {
+  position: absolute;
+  left: 25.6%;
+  top: 38px;
+  font-size: 15px;
+  font-weight: 850;
+  text-transform: uppercase;
+  margin: 0;
+  letter-spacing: -0.45px;
+}
+.shell :global(.opening-description) {
+  position: absolute;
+  right: 4.7%;
+  top: 43%;
+  width: 31%;
+  font-size: clamp(19px, 1.92vw, 37px);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.28;
+  margin: 0;
+  text-wrap: pretty;
+}
+.shell :global(.opening-credit) {
+  position: absolute;
+  bottom: 25px;
+  left: 3.2%;
+  width: 266px;
+  min-height: 309px;
+  padding: 20px 17px;
+  background: #c7a47d3d;
+  border: 1px solid #e7c7a62b;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 62px;
+  backdrop-filter: blur(2px);
+}
+.shell :global(.opening-credit > strong) {
+  font-size: 23px;
+  line-height: 1.13;
+  font-weight: 800;
+  letter-spacing: -0.065em;
+}
+.shell :global(.opening-credit > div) {
+  border-top: 2px dotted #f3d7b56b;
+  padding-top: 18px;
+  text-align: right;
+}
+.shell :global(.opening-credit span) {
+  font-size: 10px;
+}
+.shell :global(.opening-credit p) {
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 650;
+  margin: 7px 0 0;
+}
+.shell :global(.opening-preview) {
+  position: absolute;
+  right: 3.2%;
+  bottom: 25px;
+  width: 154px;
+  height: 90px;
+  background: #402a1cd9;
+  border: 1px solid #d6ac6c;
+  border-radius: 15px;
+  box-shadow: 0 0 18px #d8902f25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  overflow: hidden;
+}
+.shell :global(.opening-preview strong) {
+  font-size: 12px;
+  text-align: left;
+  line-height: 1.3;
+}
+.shell :global(.opening-preview strong span) {
+  font-size: 17px;
+  margin-left: 4px;
+}
+.shell :global(.thumbnail-disc) {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #9f692f;
+  border: 5px solid #c29053;
+  box-shadow: inset 2px 3px 4px #3b201e66;
+  transform: rotateX(30deg);
+}
+.shell :global(.scroll-cue) {
+  position: absolute;
+  z-index: 8;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: none;
+  border: 0;
+  white-space: nowrap;
+}
+.shell :global(.scroll-cue > span) {
+  width: 23px;
+  height: 23px;
+  border: 1px dashed #ffefd877;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: 400;
+}
+.shell :global(.study-disclosure) {
+  position: absolute;
+  left: 3.2%;
+  bottom: 8px;
+  font-size: 7px;
+  background: none;
+  padding: 0;
+  border: 0;
+  opacity: calc(0.2 + (1 - var(--intro)) * 0.3);
+  z-index: 9;
+}
+.shell :global(.statement h2) {
+  position: absolute;
+  left: 9%;
+  top: 68%;
+  margin: 0;
+  font-size: clamp(30px, 3.5vw, 70px);
+  letter-spacing: -0.055em;
+  line-height: 1.03;
+  font-weight: 800;
+}
+.shell :global(.statement > p) {
+  position: absolute;
+  right: 6.5%;
+  top: 67%;
+  width: 23%;
+  margin: 0;
+  font-size: clamp(18px, 2vw, 35px);
+  letter-spacing: -0.045em;
+  line-height: 1.25;
+  font-weight: 650;
+}
+.shell :global(.portable > p) {
+  position: absolute;
+  left: 3.2%;
+  top: 41%;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+.shell :global(.portable h2) {
+  position: absolute;
+  top: 26%;
+  left: 70%;
+  font-size: clamp(90px, 12vw, 220px);
+  font-weight: 700;
+  letter-spacing: -0.075em;
+  line-height: 0.95;
+  white-space: nowrap;
+  margin: 0;
+}
+.shell :global(.diagram-frame) {
+  position: absolute;
+  left: 34.5%;
+  top: 25%;
+  width: 31%;
+  height: 50%;
+  border: 1px dashed #ead9c5b0;
+}
+.shell :global(.diagram-circle) {
+  position: absolute;
+  inset: 6% 2%;
+  border: 1px dashed #ead9c55a;
+  border-radius: 50%;
+}
+.shell :global(.diagram-frame > i) {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #ead9c5;
+}
+.shell :global(.diagram-frame > i:nth-child(1)) {
+  top: 12px;
+  right: 12px;
+  border-radius: 50%;
+}
+.shell :global(.diagram-frame > i:nth-child(2)) {
+  top: 50%;
+  left: -4px;
+}
+.shell :global(.diagram-frame > i:nth-child(3)) {
+  top: 50%;
+  right: -4px;
+}
+.shell :global(.diagram-frame > i:nth-child(4)) {
+  bottom: -4px;
+  left: 50%;
+}
+.shell :global(.spec-label) {
+  position: absolute;
+  bottom: 14%;
+  left: 36%;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #cfbba7;
+}
+.shell :global(.precision > p) {
+  position: absolute;
+  left: 3.2%;
+  top: 24%;
+  font-size: 14px;
+  font-weight: 750;
+}
+.shell :global(.precision h2) {
+  position: absolute;
+  left: 3.2%;
+  top: 27%;
+  font-size: clamp(45px, 5vw, 90px);
+  letter-spacing: -0.06em;
+  line-height: 1;
+  margin: 0;
+  font-weight: 750;
+}
+.shell :global(.blueprint) {
+  position: absolute;
+  left: 55%;
+  width: 30%;
+  height: 70%;
+  top: 16%;
+  border: 1px dashed #e3af7355;
+  transform: rotateY(-25deg) rotateZ(4deg);
+  color: #ef8a43;
+}
+.shell :global(.blueprint-ring) {
+  position: absolute;
+  width: 84%;
+  height: 49%;
+  left: 8%;
+  border: 1px solid #c971364d;
+  border-radius: 50%;
+}
+.shell :global(.blueprint-ring.one) {
+  top: 9%;
+  box-shadow:
+    0 8px 0 #c9713622,
+    0 16px 0 #c9713622;
+}
+.shell :global(.blueprint-ring.two) {
+  top: 29%;
+}
+.shell :global(.blueprint-ring.three) {
+  top: 42%;
+}
+.shell :global(.blueprint > span) {
+  position: absolute;
+  bottom: 25%;
+  left: 10%;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.shell :global(.blueprint i) {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left: 1px dashed #e3af7355;
+}
+.shell :global(.precision-notes) {
+  position: absolute;
+  bottom: 16%;
+  left: 3.2%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+  color: #c9ad8f;
+}
+.shell :global(.editorial h2) {
+  position: absolute;
+  left: 4%;
+  top: 17%;
+  font-size: clamp(45px, 6vw, 110px);
+  font-weight: 750;
+  letter-spacing: -0.07em;
+  line-height: 0.97;
+  margin: 0;
+}
+.shell :global(.editorial > p) {
+  position: absolute;
+  bottom: 15%;
+  right: 8%;
+  font-size: 25px;
+  line-height: 1.25;
+  text-align: right;
+  font-weight: 600;
+}
+.shell :global(.editorial-line) {
+  position: absolute;
+  left: 4%;
+  right: 6%;
+  top: 74%;
+  border-top: 1px dotted #f4dfc147;
+}
+.shell :global(.editorial-no) {
+  position: absolute;
+  bottom: 15%;
+  left: 4%;
+  font-family: Georgia, serif;
+  font-size: 50px;
+}
+.shell :global(.products > div:first-child) {
+  position: absolute;
+  left: 4%;
+  top: 18%;
+  max-width: 40%;
+}
+.shell :global(.products h2) {
+  font-size: clamp(48px, 6vw, 110px);
+  font-weight: 750;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  margin: 15px 0 25px;
+}
+.shell :global(.products > div > p:first-child) {
+  font-size: 13px;
+  font-weight: 750;
+}
+.shell :global(.product-options) {
+  display: flex;
+  gap: 8px;
+}
+.shell :global(.product-options button) {
+  background: #352419;
+  border: 1px solid #9e7b584d;
+  border-radius: 24px;
+  padding: 12px 17px;
+  min-width: 95px;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+.shell :global(.product-options button[aria-pressed="true"]) {
+  background: var(--cream);
+  color: #22170e;
+  border-color: var(--cream);
+}
+.shell :global(.product-options button > span) {
+  font-size: 8px;
+}
+.shell :global(.product-description) {
+  font-size: 14px;
+  max-width: 290px;
+  line-height: 1.6;
+  margin-top: 22px;
+  color: #c4ac94;
+}
+.shell :global(.product-facts) {
+  position: absolute;
+  bottom: 15%;
+  right: 5%;
+  display: flex;
+  gap: 40px;
+}
+.shell :global(.product-facts > span) {
+  font-size: 9px;
+  color: #bea78d;
+  display: flex;
+  gap: 15px;
+  flex-direction: column;
+}
+.shell :global(.product-facts strong) {
+  font-size: 16px;
+  color: var(--cream);
+  font-weight: 500;
+}
+.shell :global(.closing h2) {
+  position: absolute;
+  top: 14%;
+  right: 4%;
+  font-size: clamp(45px, 5.5vw, 100px);
+  letter-spacing: -0.065em;
+  line-height: 1.02;
+  margin: 0;
+  font-weight: 750;
+  text-align: right;
+}
+.shell :global(.closing > p) {
+  position: absolute;
+  right: 4%;
+  top: 48%;
+  max-width: 330px;
+  text-align: right;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #bba289;
+}
+.shell :global(.closing-actions) {
+  position: absolute;
+  right: 4%;
+  top: 59%;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+.shell :global(.closing-actions button) {
+  background: #49301e;
+  border: 1px solid #7c5232;
+  border-radius: 40px;
+  padding: 17px 24px;
+  font-size: 11px;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+.shell :global(.closing-actions a) {
+  font-size: 11px;
+}
+.shell :global(.closing-word) {
+  position: absolute;
+  bottom: 8%;
+  left: 3.2%;
+  font-size: clamp(100px, 20vw, 370px);
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.075em;
+  color: #ffefd81a;
+  pointer-events: none;
+}
+.shell :global(.loading-scene) {
+  position: absolute;
+  inset: 0;
+  background: #1a140f;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+.shell :global(.loading-scene strong) {
+  font-size: 80px;
+  font-weight: 900;
+  letter-spacing: -5px;
+}
+.shell :global(.loading-scene span) {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.shell :global(.study-dialog) {
+  background: #261b12;
+  color: var(--cream);
+  border: 1px solid #8c6744;
+  border-radius: 12px;
+  padding: 40px;
+  max-width: 500px;
+  width: calc(100% - 32px);
+}
+.shell :global(.study-dialog::backdrop) {
+  background: #140c08cc;
+  backdrop-filter: blur(5px);
+}
+.shell :global(.study-dialog > span) {
+  font-size: 9px;
+  color: #c2a484;
+}
+.shell :global(.study-dialog h2) {
+  font-size: 35px;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  font-weight: 550;
+}
+.shell :global(.study-dialog p) {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #bda58d;
+}
+.shell :global(.study-dialog > a) {
+  display: block;
+  font-size: 11px;
+  margin-top: 20px;
+}
+.shell :global(.dialog-close) {
+  position: absolute;
+  top: 14px;
+  right: 15px;
+  border: 0;
+  background: none;
+  font-size: 25px;
+}
+.shell :global(.scene-fallback) {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: #3d2b1d;
+  color: #e6c8a1;
+  font-size: 13px;
+  padding: 30px;
+  text-align: center;
+}
+.shell :global(.scene-fallback > span) {
+  font-size: 60px;
+  font-weight: 900;
+}
+.shell :global(.fallback-coaster) {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: #a16c35;
+  border: 18px solid #c18a4c;
+  box-shadow:
+    inset 8px 8px 30px #54301855,
+    10px 25px 40px #0003;
+  margin: 30px;
+}
+.shell :global(.sr-only) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+@media (min-width: 1800px) {
+  .shell :global(.opening-credit) {
+    width: 330px;
+    min-height: 365px;
+    padding: 25px;
+  }
+  .shell :global(.opening-credit > strong) {
+    font-size: 29px;
+  }
+  .shell :global(.opening h1) {
+    top: 82px;
+  }
+  .shell :global(.opening-description) {
+    right: 6%;
+    max-width: 650px;
+  }
+  .shell :global(.opening-caption) {
+    font-size: 18px;
+    top: 43px;
+  }
+  .shell :global(.study-header) {
+    top: 30px;
+  }
+}
+@media (max-width: 760px) {
+  .shell :global(.story-runway) {
+    height: 4200svh;
+  }
+  .shell :global(.story-viewport) {
+    min-height: 560px;
+  }
+  .shell :global(.study-header) {
+    top: 20px;
+    left: 5%;
+    right: 5%;
+  }
+  .shell :global(.study-header nav) {
+    gap: 13px;
+  }
+  .shell :global(.study-header nav button) {
+    font-size: 8px;
+  }
+  .shell :global(.compact-brand) {
+    font-size: 22px;
+  }
+  .shell :global(.origin-dot) {
+    width: 7px;
+    height: 7px;
+  }
+  .shell :global(.side-rail) {
+    width: 30px;
+    height: 135px;
+    font-size: 8px;
+    padding: 20px 10px;
+    transform: translateY(calc(var(--p) * (100svh - 135px)));
+  }
+  .shell :global(.side-rail span) {
+    font-size: 6px;
+  }
+  .shell :global(.opening h1) {
+    font-size: 23vw;
+    top: 72px;
+    left: 4.2%;
+    letter-spacing: -0.07em;
+  }
+  .shell :global(.opening-caption) {
+    left: 5%;
+    top: 48px;
+    font-size: 9px;
+  }
+  .shell :global(.opening-description) {
+    top: 68%;
+    left: 43%;
+    right: auto;
+    width: 49%;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+  .shell :global(.opening-credit) {
+    left: 5%;
+    bottom: 43px;
+    width: 135px;
+    min-height: 177px;
+    padding: 12px 10px;
+    gap: 28px;
+  }
+  .shell :global(.opening-credit > strong) {
+    font-size: 13px;
+    letter-spacing: -0.05em;
+  }
+  .shell :global(.opening-credit > div) {
+    padding-top: 10px;
+  }
+  .shell :global(.opening-credit span) {
+    font-size: 6px;
+  }
+  .shell :global(.opening-credit p) {
+    font-size: 7px;
+    line-height: 1.4;
+  }
+  .shell :global(.opening-preview) {
+    right: 5%;
+    bottom: 43px;
+    width: 99px;
+    height: 60px;
+    border-radius: 10px;
+    gap: 8px;
+  }
+  .shell :global(.thumbnail-disc) {
+    width: 28px;
+    height: 28px;
+    border-width: 4px;
+  }
+  .shell :global(.opening-preview strong) {
+    font-size: 8px;
+  }
+  .shell :global(.scroll-cue) {
+    font-size: 7px;
+    bottom: 15px;
+    gap: 7px;
+  }
+  .shell :global(.scroll-cue > span) {
+    width: 19px;
+    height: 19px;
+    font-size: 11px;
+  }
+  .shell :global(.study-disclosure) {
+    font-size: 5px;
+    bottom: 5px;
+    left: 5%;
+  }
+  .shell :global(.statement h2) {
+    left: 5%;
+    top: 71%;
+    font-size: 29px;
+    max-width: 49%;
+  }
+  .shell :global(.statement > p) {
+    right: 5%;
+    top: 73%;
+    font-size: 13px;
+    width: 39%;
+    line-height: 1.4;
+  }
+  .shell :global(.portable > p) {
+    font-size: 16px;
+    top: 23%;
+    left: 5%;
+  }
+  .shell :global(.portable h2) {
+    font-size: 24vw;
+    top: 76%;
+    left: 7%;
+    line-height: 0.9;
+  }
+  .shell :global(.portable h2 br) {
+    display: none;
+  }
+  .shell :global(.diagram-frame) {
+    left: 10%;
+    top: 33%;
+    width: 75%;
+    height: 38%;
+  }
+  .shell :global(.spec-label) {
+    font-size: 8px;
+    bottom: 14%;
+    left: 5%;
+  }
+  .shell :global(.precision > p) {
+    top: 16%;
+    left: 5%;
+    font-size: 9px;
+  }
+  .shell :global(.precision h2) {
+    left: 5%;
+    top: 21%;
+    font-size: 40px;
+  }
+  .shell :global(.blueprint) {
+    top: 43%;
+    height: 38%;
+    width: 52%;
+    left: 40%;
+  }
+  .shell :global(.precision-notes) {
+    font-size: 11px;
+    left: 5%;
+    bottom: 15%;
+    gap: 7px;
+  }
+  .shell :global(.editorial h2) {
+    font-size: 45px;
+    left: 5%;
+    top: 18%;
+  }
+  .shell :global(.editorial > p) {
+    font-size: 17px;
+    bottom: 15%;
+  }
+  .shell :global(.editorial-no) {
+    font-size: 32px;
+    left: 5%;
+  }
+  .shell :global(.products > div:first-child) {
+    top: 12%;
+    left: 5%;
+    max-width: 90%;
+  }
+  .shell :global(.products h2) {
+    font-size: 43px;
+    margin: 13px 0 18px;
+  }
+  .shell :global(.products > div > p:first-child) {
+    font-size: 9px;
+  }
+  .shell :global(.product-options) {
+    gap: 5px;
+  }
+  .shell :global(.product-options button) {
+    padding: 10px 13px;
+    min-width: 88px;
+    font-size: 9px;
+    gap: 10px;
+  }
+  .shell :global(.product-description) {
+    font-size: 11px;
+    max-width: 250px;
+    margin-top: 13px;
+  }
+  .shell :global(.product-facts) {
+    bottom: 13%;
+    left: 5%;
+    right: auto;
+    gap: 35px;
+  }
+  .shell :global(.product-facts > span) {
+    font-size: 8px;
+    gap: 7px;
+  }
+  .shell :global(.product-facts strong) {
+    font-size: 12px;
+  }
+  .shell :global(.closing h2) {
+    font-size: 39px;
+    right: 6%;
+    top: 17%;
+  }
+  .shell :global(.closing > p) {
+    top: 45%;
+    right: 6%;
+    font-size: 11px;
+    width: 75%;
+  }
+  .shell :global(.closing-actions) {
+    top: 57%;
+    right: 6%;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+  }
+  .shell :global(.closing-actions button) {
+    font-size: 10px;
+    padding: 14px 20px;
+  }
+  .shell :global(.closing-actions a) {
+    font-size: 10px;
+  }
+  .shell :global(.closing-word) {
+    font-size: 25vw;
+    bottom: 10%;
+    left: 5%;
+  }
+  .shell :global(.study-dialog) {
+    padding: 32px 25px;
+  }
+  .shell :global(.study-dialog h2) {
+    font-size: 29px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shell :global(*),
+  .shell :global(*:before),
+  .shell :global(*:after) {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .shell :global(.story-copy) {
+    transform: none !important;
+  }
+  .shell :global(.film-grain) {
+    display: none;
+  }
+}
+.shell :global(.study-header) {
+  right: 5%;
+}
+.shell :global(.opening h1) {
+  transform: scaleX(1.08);
+  transform-origin: left top;
+  top: 57px;
+}
+.shell :global(.opening-description) {
+  top: 44.3%;
+}
+@media (min-width: 1800px) {
+  .shell :global(.opening h1) {
+    top: 72px;
+  }
+}
+@media (max-width: 760px) {
+  .shell :global(.study-header) {
+    right: 12%;
+  }
+  .shell :global(.opening h1) {
+    top: 72px;
+    transform: none;
+  }
+  .shell :global(.opening-description) {
+    top: 68%;
+  }
+}
+
+/* Gradelarp: preserve the scrubbed spatial composition, change its subject. */
+.shell {
+  --cream: #f5eedf;
+  --brown: #171820;
+  --muted: #b8b6c7;
+}
+.shell :global(.gradelarp-study) {
+  --photo: 0;
+  --spread: 0;
+  --form-x: -35%;
+}
+.shell :global(.story-viewport) {
+  background: #171820;
+}
+.shell :global(.scene-host) {
+  opacity: calc(1 - var(--photo) * 0.9);
+}
+.shell :global(.opening h1) {
+  text-transform: none;
+  font-size: 10.3vw;
+  letter-spacing: -0.075em;
+  top: 70px;
+  transform: none;
+}
+.shell :global(.opening-caption) {
+  text-transform: none;
+  left: 25.6%;
+  font-weight: 650;
+  letter-spacing: -0.35px;
+}
+.shell :global(.opening-description) {
+  top: 43%;
+  right: 5.5%;
+  width: 29%;
+  letter-spacing: -0.05em;
+}
+.shell :global(.opening-description h2) {
+  font-size: clamp(29px, 3.15vw, 60px);
+  font-weight: 750;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+  margin: 0 0 22px;
+}
+.shell :global(.opening-description p) {
+  font-size: clamp(14px, 1.2vw, 22px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.5;
+  margin: 0;
+}
+.shell :global(.opening-credit) {
+  min-height: 230px;
+  width: 230px;
+  background: #e8e1d822;
+  border-color: #e8e1d855;
+  gap: 48px;
+}
+.shell :global(.opening-credit > strong) {
+  font-size: 25px;
+  letter-spacing: -0.055em;
+}
+.shell :global(.opening-credit p) {
+  font-weight: 500;
+}
+.shell :global(.opening-preview) {
+  background: #555775eb;
+  border-color: #bbb7de88;
+  box-shadow: 0 0 24px #423e5f22;
+}
+.shell :global(.thumbnail-book) {
+  background: #676989;
+  color: #f5eedf;
+  border: 1px solid #c3c0d077;
+  box-shadow:
+    -3px 3px 0 #f0eada,
+    -5px 5px 0 #45465e;
+  width: 35px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  border-radius: 2px;
+  font-size: 30px;
+  font-weight: 800;
+  transform: rotate(-10deg);
+}
+.shell :global(.story-copy h2) {
+  text-transform: none;
+}
+.shell :global(.statement h2) {
+  font-weight: 700;
+  top: 68%;
+  font-size: clamp(35px, 3.5vw, 67px);
+}
+.shell :global(.statement > p) {
+  font-size: clamp(17px, 1.7vw, 32px);
+  font-weight: 500;
+}
+.shell :global(.portable h2) {
+  left: 80%;
+  transform: translateX(var(--form-x));
+  font-size: clamp(70px, 8vw, 150px);
+  white-space: nowrap;
+  letter-spacing: -0.06em;
+  top: 28%;
+}
+.shell :global(.diagram-frame) {
+  border-color: #bfc4d359;
+}
+.shell :global(.diagram-circle) {
+  border-radius: 3%;
+  inset: 0;
+  border-color: #bfc4d329;
+}
+.shell :global(.precision h2) {
+  font-size: clamp(48px, 4.8vw, 90px);
+  left: 4%;
+  top: 25%;
+}
+.shell :global(.precision > p) {
+  left: 4%;
+  top: 20%;
+  text-transform: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+.shell :global(.precision-notes) {
+  left: 4%;
+  font-size: 15px;
+}
+.shell :global(.source-diagram) {
+  position: absolute;
+  left: 73%;
+  top: 27%;
+  width: 18%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.shell :global(.source-diagram > span) {
+  padding: 14px;
+  border: 1px solid #bfc4d355;
+  width: 100%;
+  font-size: 12px;
+  text-align: center;
+  color: #d4d0e4;
+}
+.shell :global(.source-diagram > i) {
+  width: 1px;
+  height: 45px;
+  background: #bfc4d344;
+}
+.shell :global(.editorial h2) {
+  left: 5%;
+  top: 11%;
+  font-size: clamp(43px, 4.7vw, 86px);
+  line-height: 1.02;
+  z-index: 2;
+}
+.shell :global(.editorial > p) {
+  right: 7%;
+  bottom: 9%;
+  font-size: 22px;
+}
+.shell :global(.photo-spread) {
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc((0.5 - var(--spread)) * 12vw));
+}
+.shell :global(.study-photo) {
+  position: absolute;
+  margin: 0;
+  padding: 9px 9px 0;
+  background: #f1eadc;
+  color: #222331;
+  box-shadow: 0 20px 70px #0004;
+}
+.shell :global(.study-photo img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.shell :global(.study-photo figcaption) {
+  padding: 13px 3px 14px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.shell :global(.study-photo figcaption a) {
+  display: block;
+  font-size: 8px;
+  color: #6d6c78;
+  letter-spacing: 0;
+}
+.shell :global(.study-photo.writing) {
+  left: 8%;
+  top: 37%;
+  width: 36%;
+  height: 38%;
+  transform: rotate(-5deg);
+}
+.shell :global(.study-photo.books) {
+  left: 53%;
+  top: 20%;
+  width: 36%;
+  height: 43%;
+  transform: rotate(6deg);
+}
+.shell :global(.products > div:first-child) {
+  max-width: 43%;
+  left: 4%;
+  top: 17%;
+}
+.shell :global(.products h2) {
+  font-size: clamp(50px, 5.8vw, 105px);
+  letter-spacing: -0.055em;
+  font-weight: 700;
+}
+.shell :global(.product-options button) {
+  border-color: #bbb7de55;
+  background: #343444;
+}
+.shell :global(.product-options button[aria-pressed="true"]) {
+  background: #bbb7de;
+  border-color: #bbb7de;
+  color: #21222e;
+}
+.shell :global(.product-description) {
+  color: #bbb9cc;
+  font-size: 15px;
+}
+.shell :global(.product-facts > span) {
+  color: #a19caf;
+}
+.shell :global(.product-facts strong) {
+  color: #e6e0ed;
+}
+.shell :global(.closing h2) {
+  font-size: clamp(55px, 6vw, 110px);
+  top: 16%;
+  font-weight: 700;
+}
+.shell :global(.closing > p) {
+  color: #b2aebd;
+  top: 46%;
+}
+.shell :global(.closing-actions) {
+  top: 58%;
+}
+.shell :global(.closing-actions button) {
+  background: #555775;
+  border-color: #8580a3;
+}
+.shell :global(.closing-actions .text-button) {
+  background: none;
+  border: 0;
+  padding: 12px 0;
+}
+.shell :global(.closing-word) {
+  font-size: 17vw;
+  color: #f5eedf13;
+}
+.shell :global(.study-dialog) {
+  background: #252632;
+  border-color: #57546b;
+}
+.shell :global(.study-dialog p) {
+  color: #bebacb;
+}
+.shell :global(.study-dialog > span) {
+  color: #c5bfd8;
+}
+.shell :global(.fallback-gradebook) {
+  width: 200px;
+  height: 270px;
+  border-radius: 7px;
+  background: #555775;
+  box-shadow: 8px 8px 0 #e5dfd2;
+  display: grid;
+  place-items: center;
+  border: 1px solid #aaa4bd;
+  margin: 20px;
+}
+.shell :global(.fallback-gradebook:before) {
+  content: "g";
+  font-size: 130px;
+  font-weight: 800;
+  color: #f5eedf;
+}
+.shell :global(.scene-fallback) {
+  background: #252632;
+}
+.shell :global(.study-header nav button) {
+  text-transform: none;
+  font-weight: 600;
+}
+.shell :global(.side-rail) {
+  font-weight: 700;
+}
+.shell :global(.side-rail i) {
+  background: #8e86b2;
+}
+.shell :global(.loading-scene) {
+  background: #252632;
+}
+.shell :global(.study-disclosure) {
+  font-size: 8px;
+  bottom: 7px;
+  opacity: 0.65;
+}
+@media (min-width: 1800px) {
+  .shell :global(.opening h1) {
+    top: 80px;
+  }
+  .shell :global(.opening-credit) {
+    width: 280px;
+    min-height: 280px;
+  }
+  .shell :global(.opening-credit > strong) {
+    font-size: 30px;
+  }
+}
+@media (max-width: 760px) {
+  .shell :global(.opening h1) {
+    font-size: 22.5vw;
+    left: 4.5%;
+    top: 85px;
+    letter-spacing: -0.08em;
+  }
+  .shell :global(.opening-caption) {
+    left: 5%;
+    top: 58px;
+    font-size: 9px;
+  }
+  .shell :global(.opening-description) {
+    top: 68%;
+    left: 45%;
+    width: 48%;
+    right: auto;
+  }
+  .shell :global(.opening-description h2) {
+    font-size: 23px;
+    margin-bottom: 12px;
+  }
+  .shell :global(.opening-description p) {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .shell :global(.opening-credit) {
+    left: 5%;
+    width: 132px;
+    min-height: 175px;
+    bottom: 48px;
+    padding: 12px 10px;
+    gap: 40px;
+  }
+  .shell :global(.opening-credit > strong) {
+    font-size: 16px;
+  }
+  .shell :global(.opening-credit span) {
+    font-size: 6px;
+  }
+  .shell :global(.opening-credit p) {
+    font-size: 8px;
+  }
+  .shell :global(.opening-preview) {
+    bottom: 47px;
+    width: 108px;
+  }
+  .shell :global(.thumbnail-book) {
+    width: 23px;
+    height: 32px;
+    font-size: 22px;
+  }
+  .shell :global(.statement h2) {
+    left: 5%;
+    top: 70%;
+    font-size: 29px;
+    max-width: 60%;
+  }
+  .shell :global(.statement > p) {
+    top: 73%;
+    right: 5%;
+    width: 34%;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .shell :global(.portable h2) {
+    font-size: 17vw;
+    left: 5%;
+    top: 77%;
+    transform: none;
+    line-height: 0.95;
+    white-space: normal;
+  }
+  .shell :global(.portable h2 br) {
+    display: none;
+  }
+  .shell :global(.portable > p) {
+    top: 20%;
+    font-size: 18px;
+  }
+  .shell :global(.spec-label) {
+    bottom: 11%;
+    font-size: 8px;
+  }
+  .shell :global(.precision h2) {
+    top: 20%;
+    left: 5%;
+    font-size: 38px;
+    line-height: 1.01;
+  }
+  .shell :global(.precision > p) {
+    top: 15%;
+    left: 5%;
+    font-size: 10px;
+  }
+  .shell :global(.source-diagram) {
+    left: 62%;
+    top: 55%;
+    width: 30%;
+    gap: 8px;
+  }
+  .shell :global(.source-diagram > span) {
+    font-size: 8px;
+    padding: 10px;
+  }
+  .shell :global(.source-diagram > i) {
+    height: 18px;
+  }
+  .shell :global(.precision-notes) {
+    left: 5%;
+    font-size: 9px;
+    bottom: 13%;
+    gap: 6px;
+    max-width: 52%;
+  }
+  .shell :global(.editorial h2) {
+    left: 5%;
+    top: 13%;
+    font-size: 43px;
+  }
+  .shell :global(.editorial > p) {
+    right: 6%;
+    bottom: 13%;
+    font-size: 14px;
+  }
+  .shell :global(.study-photo.writing) {
+    left: 2%;
+    top: 36%;
+    width: 55%;
+    height: 29%;
+    transform: rotate(-7deg);
+  }
+  .shell :global(.study-photo.books) {
+    left: 60%;
+    top: 32%;
+    width: 52%;
+    height: 26%;
+    transform: rotate(7deg);
+  }
+  .shell :global(.study-photo) {
+    padding: 5px 5px 0;
+  }
+  .shell :global(.study-photo figcaption) {
+    padding: 7px 1px;
+    font-size: 8px;
+  }
+  .shell :global(.study-photo figcaption a) {
+    font-size: 5px;
+  }
+  .shell :global(.photo-spread) {
+    transform: translateX(calc((0.5 - var(--spread)) * 20vw));
+  }
+  .shell :global(.products > div:first-child) {
+    left: 5%;
+    top: 12%;
+    max-width: 90%;
+  }
+  .shell :global(.products h2) {
+    font-size: 44px;
+    line-height: 0.95;
+    margin: 15px 0 20px;
+  }
+  .shell :global(.products h2 br:last-of-type) {
+    display: none;
+  }
+  .shell :global(.product-description) {
+    font-size: 11px;
+    max-width: 255px;
+  }
+  .shell :global(.product-options button) {
+    min-width: 86px;
+    font-size: 9px;
+    gap: 10px;
+    padding: 11px 12px;
+  }
+  .shell :global(.closing h2) {
+    font-size: 41px;
+    top: 16%;
+    right: 6%;
+  }
+  .shell :global(.closing > p) {
+    top: 43%;
+    width: 57%;
+    font-size: 11px;
+  }
+  .shell :global(.closing-actions) {
+    top: 56%;
+  }
+  .shell :global(.closing-word) {
+    font-size: 22vw;
+    bottom: 9%;
+  }
+  .shell :global(.study-disclosure) {
+    font-size: 6px;
+    bottom: 5px;
+  }
+}
+/* The light study-paper opening needs ink, not low-contrast cream copy. */
+.shell :global(.opening) {
+  color: #2a2b3b;
+}
+.shell :global(.opening-caption) {
+  color: #464559;
+}
+.shell :global(.opening h1) {
+  color: #343448;
+}
+.shell :global(.opening-credit) {
+  color: #f5eedf;
+  background: #323245b0;
+  backdrop-filter: blur(4px);
+  border-color: #d9d3df55;
+}
+.shell :global(.opening-description) {
+  color: #303041;
+}
+.shell :global(.opening-preview) {
+  color: #f5eedf;
+}
+.shell :global(.study-header nav) {
+  color: color-mix(in srgb, #f5eedf calc((1 - var(--intro)) * 100%), #353446);
+}
+.shell :global(.study-header nav button[aria-current="true"]) {
+  border-bottom-color: currentColor;
+}
+.shell :global(.scroll-cue) {
+  color: color-mix(in srgb, #f5eedf calc((1 - var(--intro)) * 100%), #353446);
+}
+.shell :global(.origin-dot) {
+  background: #343448;
+}
+.shell :global(.opening-description) {
+  right: 4%;
+  width: 29%;
+}
+@media (max-width: 760px) {
+  .shell :global(.opening-description) {
+    left: 45%;
+    right: auto;
+    width: 49%;
+  }
+}
+
+.shell :global(.study-photo img) {
+  height: calc(100% - 57px);
+}
+.shell :global(.study-photo figcaption) {
+  height: 57px;
+  padding: 10px 4px;
+  color: #2b2a38;
+}
+.shell :global(.study-photo figcaption a) {
+  color: #626170;
+  font-size: 9px;
+}
+.shell :global(.study-photo) {
+  padding-bottom: 0;
+}
+@media (max-width: 760px) {
+  .shell :global(.study-photo img) {
+    height: calc(100% - 42px);
+  }
+  .shell :global(.study-photo figcaption) {
+    height: 42px;
+    padding: 6px 2px;
+    font-size: 8px;
+    line-height: 1.4;
+  }
+  .shell :global(.study-photo figcaption a) {
+    font-size: 6px;
+    line-height: 1.5;
+  }
+}
+
+.shell {
+  isolation: isolate;
+  min-width: 0;
+  overflow-x: clip;
+}
+.shell :global(.landing-enter) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 22px;
+  min-height: 44px;
+  padding: 12px 19px;
+  border-radius: 28px;
+  background: #555775;
+  color: #f5eedf;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+.shell :global(.study-header nav a) {
+  font-size: 11px;
+  font-weight: 650;
+  border: 1px solid currentColor;
+  border-radius: 22px;
+  padding: 8px 12px;
+  margin-top: -8px;
+}
+.shell :global(.closing-actions .landing-enter) {
+  margin: 0;
+  font-size: 12px;
+}
+.shell :global(.opening h1) {
+  font-size: 10.3vw;
+}
+@media (max-width: 760px) {
+  .shell :global(.opening h1) {
+    font-size: 19.5vw;
+  }
+  .shell :global(.landing-enter) {
+    font-size: 10px;
+    padding: 9px 13px;
+    margin-top: 13px;
+    min-height: 40px;
+  }
+  .shell :global(.study-header nav) {
+    gap: 10px;
+  }
+  .shell :global(.study-header nav a) {
+    font-size: 8px;
+    padding: 6px 9px;
+    margin-top: -6px;
+  }
+}
+@media (max-width: 760px) {
+  .shell :global(.study-header nav button[data-navigation="2"]) {
+    display: none;
+  }
+  .shell :global(.opening-description .landing-enter) {
+    max-width: 100%;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .shell :global(.closing-actions) {
+    gap: 12px;
+  }
+}
+
+/* Explicit controls complement scroll-driven motion without capturing wheel/touch. */
+.shell :global(.scene-controls) {
+  position: absolute;
+  z-index: 9;
+  right: 5%;
+  top: 72px;
+  width: min(300px, 90%);
+  margin: 0;
+  border: 1px solid #a29cab;
+  border-radius: 16px;
+  padding: 18px;
+  background: #f4efe5;
+  color: #303041;
+  box-shadow: 0 10px 25px #17182026;
+  font-size: 12px;
+}
+.shell :global(.scene-controls legend) {
+  font-size: 14px;
+  font-weight: 700;
+  background: #f4efe5;
+  padding: 0 6px;
+  border-radius: 4px;
+}
+.shell :global(.scene-controls p) {
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+.shell :global(.scene-controls label) {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0;
+  font-weight: 650;
+}
+.shell :global(.scene-controls input) {
+  width: 100%;
+  min-height: 32px;
+  accent-color: #555775;
+}
+.shell :global(.scene-control-pages),
+.shell :global(.scene-control-actions) {
+  display: flex;
+  gap: 8px;
+}
+.shell :global(.scene-controls button) {
+  min-height: 40px;
+  border: 1px solid #a29cab;
+  border-radius: 10px;
+  background: transparent;
+  padding: 7px 9px;
+  font-size: 11px;
+}
+.shell :global(.scene-control-pages button) {
+  flex: 1;
+}
+.shell :global(.scene-controls button[aria-pressed="true"]) {
+  background: #555775;
+  color: #f4efe5;
+}
+.shell :global(.scene-control-actions) {
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.shell :global(.scene-controls :focus-visible) {
+  outline: 2px solid #303041;
+  outline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .shell :global(.study-header nav) {
+    gap: 8px;
+  }
+  .shell :global(.study-header nav button) {
+    font-size: 8px;
+  }
+  .shell :global(.scene-controls) {
+    top: 66px;
+  }
+  .shell :global(.opening-description) {
+    top: auto;
+    bottom: 110px;
+  }
+  .shell :global(.opening-credit) {
+    bottom: 110px;
+    width: 116px;
+    min-height: 170px;
+    gap: 28px;
+  }
+  .shell :global(.opening-preview) {
+    bottom: 47px;
+    height: 48px;
+    width: 138px;
+  }
+  .shell :global(.opening-preview strong) {
+    font-size: 9px;
+  }
+}
+.shell :global(.scene-controls label) {
+  color: #303041;
+}
+.shell :global(.study-header nav button),
+.shell :global(.study-header nav a) {
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  .shell :global(.compact-brand) {
+    font-size: 17px;
+  }
+}

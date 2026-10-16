@@ -1,4 +1,4 @@
-import { GradelarpApp } from "@/product/app";
+import { LandingPage } from "@/landing";
 export default function Page() {
-  return <GradelarpApp />;
+  return <LandingPage />;
 }

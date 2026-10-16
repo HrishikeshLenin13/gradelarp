@@ -8,6 +8,7 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
+    channel: process.env.PW_BROWSER_CHANNEL || undefined,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
