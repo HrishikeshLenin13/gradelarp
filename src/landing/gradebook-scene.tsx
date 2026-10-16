@@ -3,6 +3,7 @@ import {
   Component,
   Suspense,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   type MutableRefObject,
@@ -18,7 +19,10 @@ import {
   DoubleSide,
   SRGBColorSpace,
   TextureLoader,
-  PCFShadowMap,
+  PCFSoftShadowMap,
+  InstancedMesh,
+  Matrix4,
+  DirectionalLight,
   Shape,
   ShapeGeometry,
   Vector3,
@@ -27,6 +31,11 @@ import { clamp, type StudyState } from "./study-state";
 import { routeTime, settleValue } from "./scene-motion";
 import { woodTexture, matTexture } from "./study-textures";
 import { coverTexture, recordTexture } from "./gradebook-textures";
+import {
+  surfaceRelief,
+  printedRoughness,
+  paperGeometry,
+} from "./material-details";
 interface Props {
   state: MutableRefObject<StudyState>;
   registerInvalidate: (fn: () => void) => void;
@@ -130,13 +139,24 @@ function Gradebook({
     frames: 0,
   });
   const coverMap = useMemo(() => coverTexture(), []);
+  const cloth = useMemo(() => surfaceRelief("cloth"), []);
+  const paper = useMemo(() => surfaceRelief("paper"), []);
+  const finish = useMemo(
+    () => printedRoughness(coverMap.image as HTMLCanvasElement),
+    [coverMap],
+  );
+  const curvedPage = useMemo(() => paperGeometry(), []);
   const records = useMemo(() => [0, 1, 2].map(recordTexture), []);
   useEffect(
     () => () => {
       coverMap.dispose();
+      cloth.dispose();
+      paper.dispose();
+      finish.dispose();
+      curvedPage.dispose();
       records.forEach((texture) => texture.dispose());
     },
-    [coverMap, records],
+    [coverMap, records, cloth, paper, finish, curvedPage],
   );
   useFrame(({ camera, size, gl, invalidate }, delta) => {
     const p = state.current.reduced ? 0 : state.current.progress;
@@ -215,6 +235,11 @@ function Gradebook({
         (2 - index) * 0.024 +
         separation * (index * 0.22 + selectedWeight * 0.65);
       sheet.position.x = separation * (index - 1) * 0.32;
+      sheet.rotation.set(
+        0,
+        separation * (index - 1) * 0.02,
+        separation * (index - 1) * -0.018,
+      );
     });
     gl.domElement.dataset.coverOpen = open.toFixed(3);
     gl.domElement.dataset.modelYaw = frame.yaw.toFixed(3);
@@ -237,7 +262,14 @@ function Gradebook({
         castShadow
         receiveShadow
       >
-        <meshStandardMaterial color="#484961" roughness={0.8} />
+        <meshPhysicalMaterial
+          color="#484961"
+          roughness={0.8}
+          bumpMap={cloth}
+          bumpScale={0.018}
+          sheen={0.18}
+          sheenColor="#a8a4c4"
+        />
       </RoundedBox>
       <RoundedBox
         args={[4.15, 0.3, 5.65]}
@@ -246,7 +278,12 @@ function Gradebook({
         castShadow
         receiveShadow
       >
-        <meshStandardMaterial color="#e4ded0" roughness={1} />
+        <meshStandardMaterial
+          color="#e4ded0"
+          roughness={1}
+          bumpMap={paper}
+          bumpScale={0.008}
+        />
       </RoundedBox>
       {Array.from({ length: 9 }, (_, i) => (
         <mesh key={i} position={[0.03, 0.1 + i * 0.03, 2.83]}>
@@ -262,16 +299,18 @@ function Gradebook({
           }}
         >
           <mesh
+            geometry={curvedPage}
             rotation={[-Math.PI / 2, 0, 0]}
             position={[0.03, 0.17, 0]}
-            castShadow
+            castShadow={false}
             receiveShadow
             onAfterRender={report}
           >
-            <planeGeometry args={[4.1, 5.63]} />
             <meshStandardMaterial
               map={records[index]}
-              roughness={0.95}
+              roughness={0.93}
+              bumpMap={paper}
+              bumpScale={0.006}
               side={DoubleSide}
             />
           </mesh>
@@ -287,7 +326,7 @@ function Gradebook({
           </RoundedBox>
         </group>
       ))}
-      <group ref={cover} position={[-2.15, 0.43, 0]}>
+      <group ref={cover} position={[-2.15, 0.56, 0]}>
         <RoundedBox
           args={[4.4, 0.095, 5.9]}
           radius={0.018}
@@ -295,7 +334,14 @@ function Gradebook({
           castShadow
           receiveShadow
         >
-          <meshStandardMaterial color="#555775" roughness={0.8} />
+          <meshPhysicalMaterial
+            color="#555775"
+            roughness={0.82}
+            bumpMap={cloth}
+            bumpScale={0.018}
+            sheen={0.18}
+            sheenColor="#a8a4c4"
+          />
         </RoundedBox>
         <mesh
           rotation={[-Math.PI / 2, 0, 0]}
@@ -303,29 +349,55 @@ function Gradebook({
           onAfterRender={report}
         >
           <planeGeometry args={[4.28, 5.78]} />
-          <meshStandardMaterial map={coverMap} roughness={0.9} />
-        </mesh>
-      </group>
-      {Array.from({ length: 13 }, (_, index) => (
-        <mesh
-          key={index}
-          position={[-2.08, 0.31, -2.52 + index * 0.42]}
-          rotation={[Math.PI / 2, 0, 0]}
-          castShadow
-        >
-          <torusGeometry args={[0.17, 0.025, 8, 20]} />
-          <meshStandardMaterial
-            color="#c4c2bd"
-            metalness={0.85}
-            roughness={0.32}
+          <meshPhysicalMaterial
+            map={coverMap}
+            bumpMap={cloth}
+            bumpScale={0.014}
+            roughnessMap={finish}
+            roughness={0.9}
+            sheen={0.2}
+            sheenColor="#a8a4c4"
+            sheenRoughness={0.8}
+            clearcoat={0.025}
+            clearcoatRoughness={0.7}
           />
         </mesh>
-      ))}
+      </group>
+      <SpiralBinding />
       <mesh position={[1.65, 0.4, 1.95]} rotation={[0, -0.1, 0]}>
         <boxGeometry args={[0.12, 0.035, 1.6]} />
         <meshStandardMaterial color="#ada4d5" roughness={0.9} />
       </mesh>
     </group>
+  );
+}
+function SpiralBinding() {
+  const mesh = useRef<InstancedMesh>(null);
+  useLayoutEffect(() => {
+    if (!mesh.current) return;
+    const matrix = new Matrix4().makeRotationX(Math.PI / 2);
+    for (let i = 0; i < 13; i++) {
+      matrix.setPosition(-2.08, 0.4, -2.52 + i * 0.42);
+      mesh.current.setMatrixAt(i, matrix);
+    }
+    mesh.current.instanceMatrix.needsUpdate = true;
+    mesh.current.computeBoundingSphere();
+  }, []);
+  return (
+    <instancedMesh
+      ref={mesh}
+      args={[undefined, undefined, 13]}
+      castShadow
+      receiveShadow
+    >
+      <torusGeometry args={[0.17, 0.025, 12, 28]} />
+      <meshPhysicalMaterial
+        color="#c4c2bd"
+        metalness={0.95}
+        roughness={0.24}
+        anisotropy={0.25}
+      />
+    </instancedMesh>
   );
 }
 function StudyPhoto() {
@@ -353,6 +425,7 @@ function StudyPhoto() {
 function Desk({ state }: { state: Props["state"] }) {
   const root = useRef<Group>(null);
   const wood = useMemo(() => woodTexture(), []);
+  const grain = useMemo(() => surfaceRelief("wood"), []);
   const mat = useMemo(() => matTexture(), []);
   const matGeometry = useMemo(() => {
     const shape = new Shape();
@@ -380,10 +453,11 @@ function Desk({ state }: { state: Props["state"] }) {
   useEffect(
     () => () => {
       wood.dispose();
+      grain.dispose();
       mat.dispose();
       matGeometry.dispose();
     },
-    [wood, mat, matGeometry],
+    [wood, grain, mat, matGeometry],
   );
   useFrame(() => {
     if (root.current) {
@@ -401,7 +475,12 @@ function Desk({ state }: { state: Props["state"] }) {
         receiveShadow
       >
         <planeGeometry args={[60, 60]} />
-        <meshStandardMaterial map={wood} roughness={0.85} />
+        <meshStandardMaterial
+          map={wood}
+          roughness={0.83}
+          bumpMap={grain}
+          bumpScale={0.025}
+        />
       </mesh>
       <group position={[3.4, 0.035, -1.3]} rotation={[0, 0.14, 0]}>
         <mesh
@@ -486,12 +565,37 @@ function Desk({ state }: { state: Props["state"] }) {
 function SceneLighting({ state }: { state: Props["state"] }) {
   const color = useMemo(() => new Color(), []);
   const endColor = useMemo(() => new Color("#171820"), []);
-  useFrame(({ scene }) => {
+  const rim = useRef<DirectionalLight>(null);
+  useFrame(({ scene }, delta) => {
     const t = clamp((state.current.progress - 0.02) / 0.04);
     color.set("#37323a").lerp(endColor, t);
     scene.background = color;
+    if (rim.current) {
+      const x =
+        -3 + t * 5 + (state.current.reduced ? 0 : state.current.pointerX * 0.9);
+      rim.current.position.x = state.current.reduced
+        ? -3
+        : settleValue(rim.current.position.x, x, delta);
+    }
   });
-  return null;
+  return (
+    <>
+      <directionalLight
+        ref={rim}
+        position={[-3, 4, 2]}
+        intensity={0.55}
+        color="#d9d7ef"
+      />
+      <mesh
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, -0.16, 0]}
+        receiveShadow
+      >
+        <planeGeometry args={[30, 30]} />
+        <shadowMaterial transparent opacity={0.2} color="#080a13" />
+      </mesh>
+    </>
+  );
 }
 export default function GradelarpScene({
   state,
@@ -523,7 +627,7 @@ export default function GradelarpScene({
               matchMedia("(pointer: coarse)").matches ? 1.25 : 1.5,
             ),
           );
-          gl.shadowMap.type = PCFShadowMap;
+          gl.shadowMap.type = PCFSoftShadowMap;
           gl.toneMapping = ACESFilmicToneMapping;
           gl.toneMappingExposure = 1.0;
           registerInvalidate(invalidate);
@@ -538,6 +642,7 @@ export default function GradelarpScene({
           shadow-mapSize={[2048, 2048]}
           shadow-bias={-0.0001}
           shadow-normalBias={0.025}
+          shadow-radius={3}
           shadow-camera-left={-12}
           shadow-camera-right={12}
           shadow-camera-top={12}
@@ -556,6 +661,20 @@ export default function GradelarpScene({
             scale={[10, 10, 1]}
             intensity={1.5}
             color="#fff1d5"
+          />
+          <Lightformer
+            position={[-4, 3, 3]}
+            target={[0, 0, 0]}
+            scale={[2, 4, 1]}
+            intensity={1.6}
+            color="#f5eedf"
+          />
+          <Lightformer
+            position={[-1.6, 3, 3]}
+            target={[0, 0, 0]}
+            scale={[1.2, 4, 1]}
+            intensity={1.2}
+            color="#f5eedf"
           />
         </Environment>
         <Suspense fallback={null}>
