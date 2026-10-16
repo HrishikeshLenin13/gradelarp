@@ -370,9 +370,11 @@ export function HacLogin({
 export function HacWelcome({
   onSync,
   onManual,
+  destination = "Overview",
 }: {
   onSync: (s: LiveSnapshot) => void;
   onManual: () => void;
+  destination?: string;
 }) {
   return (
     <main className="hac-entry" data-testid="hac-entry">
@@ -428,6 +430,13 @@ export function HacWelcome({
               </div>
             </li>
           </ul>
+          {destination !== "Overview" && (
+            <p className="hac-entry-note" data-testid="entry-destination">
+              Next: <strong>{destination}</strong>. Your selected tool opens
+              after sign-in or manual entry. What-if and GPA planning use a
+              separate manual profile with your confirmed grading rules.
+            </p>
+          )}
           <p className="hac-entry-note">
             No sample grades. No invented progress. Just your school’s data and
             your own plans.

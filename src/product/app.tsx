@@ -1,6 +1,13 @@
 "use client";
 import Link from "next/link";
 import { SourceHistory } from "./source-history";
+import {
+  readWorkspaceView,
+  initialWorkspaceView,
+  subscribeWorkspaceView,
+  navigateWorkspace,
+  type WorkspaceView,
+} from "./workspace-routes";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MotionConfig, motion, useReducedMotion } from "motion/react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -75,7 +82,7 @@ const pages = [
   { id: "hac", name: "School connection", icon: School },
   { id: "data", name: "Data & backups", icon: Upload },
 ] as const;
-type View = (typeof pages)[number]["id"];
+type View = WorkspaceView;
 const descriptions: Record<View, string> = {
   overview: "Your semester, with a little perspective.",
   courses: "Your actual assignments, categories, and course targets.",
@@ -113,8 +120,12 @@ export function GradelarpApp() {
     [saveError, setSaveError] = useState(""),
     [saved, setSaved] = useState("Loading local grades…");
   const [entry, setEntry] = useState(false);
-  const [view, setView] = useState<View>("overview"),
-    [semester, setSemester] = useState(currentSemester),
+  const view = useSyncExternalStore(
+    subscribeWorkspaceView,
+    readWorkspaceView,
+    initialWorkspaceView,
+  );
+  const [semester, setSemester] = useState(currentSemester),
     [selected, setSelected] = useState("");
   const [editor, setEditor] = useState<Course | null>(null),
     [appearance, setAppearance] = useState(false),
@@ -237,12 +248,12 @@ export function GradelarpApp() {
     if (next.activeProfileId !== data?.activeProfileId) {
       setSemester(p.state.courses[0]?.semester ?? currentSemester());
       setSelected(p.state.courses[0]?.id ?? "");
-      if (!keepView) setView("overview");
+      if (!keepView) navigateWorkspace("overview");
     }
     commit(next);
   }
   function navigate(next: View) {
-    setView(next);
+    navigateWorkspace(next);
     setMobile(false);
     window.scrollTo({ top: 0, behavior: "instant" });
   }
@@ -261,9 +272,8 @@ export function GradelarpApp() {
       );
       return;
     }
-    changeData(next);
+    changeData(next, true);
     setEntry(false);
-    setView("overview");
     notify(
       snapshot.status === "partial"
         ? "HAC partially synced. Review the source notices."
@@ -307,6 +317,7 @@ export function GradelarpApp() {
   if (entry)
     return (
       <HacWelcome
+        destination={pages.find((page) => page.id === view)?.name}
         onSync={syncSchool}
         onManual={() => {
           rememberManualEntry();
