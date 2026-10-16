@@ -4,6 +4,10 @@ A grade dashboard and planner built around Home Access Center.
 
 Connect your school's HAC account to see its reported averages and assignments. Use a separate manual profile for what-if calculations, GPA planning, and anything you want to track yourself. Gradelarp doesn't write changes back to your school.
 
+## Start with the 3D website
+
+The homepage at `/` is the cinematic 3D introduction. Choose **Open Gradelarp** or **Open app** to continue to HAC sign-in and the academic workspace at `/app`. Opening `/app` directly skips the introduction by design; it doesn't replace it. Sign-in and the workspace both have a clearly labelled **3D website** return link.
+
 ## Run locally
 
 You'll need Node.js 22 or newer and npm.
