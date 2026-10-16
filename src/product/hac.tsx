@@ -200,9 +200,15 @@ export function HacLogin({
           >
             <option value="lisd">Leander ISD · LISD</option>
             <option value="rrisd">Round Rock ISD · RRISD</option>
-            <option value="other">Another HAC district</option>
+            <option value="other">Any other HAC district · enter portal</option>
           </select>
         </label>
+        <p className="hac-login-footnote">
+          Your district isn’t listed? Choose “Any other HAC district” and enter
+          its official portal. Standard HAC sign-in is checked before
+          connecting; school SSO or verification steps may need the district
+          website.
+        </p>
         {district === "other" && (
           <>
             <label className="field">
@@ -492,9 +498,21 @@ export function SchoolConnection({
       setBusy(false);
     }
   }
-  if (!session)
+  const sessionMismatch = Boolean(
+    session &&
+    source &&
+    (session.portal !== source.portal ||
+      session.studentId !== source.studentId),
+  );
+  if (!session || sessionMismatch)
     return (
       <div className="product-stack hac-connect-page">
+        {sessionMismatch && (
+          <p className="hac-notice" role="status">
+            The active school session belongs to a different student. Sign in to
+            this profile’s account to refresh it. Saved records remain separate.
+          </p>
+        )}
         {source && (
           <p className="hac-notice">
             Your saved school records are still available. Sign in again to
@@ -570,6 +588,33 @@ export function SourceGradebook({
   onConnect?: () => void;
   primary?: boolean;
 }) {
+  const [query, setQuery] = useState("");
+  const [attention, setAttention] = useState(false);
+  const search = query.trim().toLowerCase();
+  const visible = snapshot.courses
+    .map((course) => {
+      const courseMatch = `${course.name} ${course.teacher}`
+        .toLowerCase()
+        .includes(search);
+      const assignments = course.assignments.filter(
+        (a) =>
+          (courseMatch ||
+            `${a.name} ${a.category}`.toLowerCase().includes(search)) &&
+          (!attention || a.status === "missing" || a.status === "ungraded"),
+      );
+      return {
+        ...course,
+        assignments,
+        originalCount: course.assignments.length,
+        courseMatch,
+      };
+    })
+    .filter(
+      (course) =>
+        (course.courseMatch || course.assignments.length > 0) &&
+        (!attention || course.assignments.length > 0),
+    );
+  const filtered = Boolean(search || attention);
   const Heading = primary ? "h1" : "h2";
   const CourseHeading = primary ? "h2" : "h3";
   return (
@@ -594,6 +639,29 @@ export function SourceGradebook({
           </Button>
         )}
       </header>
+      {snapshot.courses.length > 0 && (
+        <div className="product-toolbar hac-record-filters">
+          <label className="product-search">
+            Search school records
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Course, teacher or assignment"
+            />
+          </label>
+          <label>
+            Assignment view
+            <select
+              aria-label="School assignment view"
+              value={attention ? "attention" : "all"}
+              onChange={(e) => setAttention(e.target.value === "attention")}
+            >
+              <option value="all">All published work</option>
+              <option value="attention">Missing or ungraded</option>
+            </select>
+          </label>
+        </div>
+      )}
       {snapshot.issues.map((issue, i) => (
         <p className="hac-notice" key={i}>
           {issue}
@@ -608,7 +676,21 @@ export function SourceGradebook({
           </p>
         </section>
       )}
-      {snapshot.courses.map((course) => (
+      {snapshot.courses.length > 0 && !visible.length && (
+        <section className="panel product-empty">
+          <h3>No school records match this view.</h3>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setQuery("");
+              setAttention(false);
+            }}
+          >
+            Clear filters
+          </Button>
+        </section>
+      )}
+      {visible.map((course) => (
         <section key={course.id} className="panel hac-source-course">
           <div className="hac-source-course-top">
             <div>
@@ -620,15 +702,22 @@ export function SourceGradebook({
               <span>HAC average</span>
             </div>
           </div>
+          {course.stale && (
+            <p className="hac-notice">
+              This course was not returned in the latest sync. These marks are
+              from a previous successful sync.
+            </p>
+          )}
           {!course.assignmentsAvailable && (
             <p className="hac-notice">
               Assignment data was unavailable on this sync. Any listed
               assignments are from the previous successful sync.
             </p>
           )}
-          <details open>
+          <details open={filtered || course.assignments.length <= 20}>
             <summary>
-              {course.assignments.length} published assignment
+              {course.assignments.length} {filtered ? "matching" : "published"}{" "}
+              assignment
               {course.assignments.length === 1 ? "" : "s"}
             </summary>
             {course.assignments.length ? (
@@ -668,8 +757,9 @@ export function SourceGradebook({
               </ul>
             ) : (
               <p className="helper">
-                No published assignment rows were returned. No scores were
-                filled in.
+                {filtered
+                  ? "No assignments match these filters. The reported course average is unchanged."
+                  : "No published assignment rows were returned. No scores were filled in."}
               </p>
             )}
           </details>
