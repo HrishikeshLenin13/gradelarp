@@ -966,6 +966,27 @@ export function GradelarpApp() {
                 placeholder="Search courses or tools…"
               />
               <div className="product-search-results">
+                {profile.hacLive?.snapshot.courses
+                  .filter((c) =>
+                    `${c.name} ${c.teacher}`
+                      .toLowerCase()
+                      .includes(query.toLowerCase()),
+                  )
+                  .map((c) => (
+                    <button
+                      key={`source-${c.id}`}
+                      onClick={() => {
+                        setSearch(false);
+                        navigate("courses");
+                      }}
+                    >
+                      <BookOpen size={17} />
+                      <span>
+                        {c.name}
+                        <small>School-reported course</small>
+                      </span>
+                    </button>
+                  ))}
                 {state.courses
                   .filter((c) =>
                     `${c.name} ${c.semester}`
