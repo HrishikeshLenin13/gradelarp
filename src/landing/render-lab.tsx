@@ -426,20 +426,18 @@ export function RenderLab() {
                 </p>
               </div>
             </div>
-            <button
+            <Link
               className="opening-preview"
-              onClick={() => {
-                goTo(0.075);
-                setInspect(true);
-              }}
+              href={workspaceHref("courses")}
+              prefetch={false}
             >
               <span className="thumbnail-book">g</span>
               <strong>
-                Explore
+                Open
                 <br />
                 your gradebook <span>↗</span>
               </strong>
-            </button>
+            </Link>
           </article>
           <article
             className="story-copy statement"

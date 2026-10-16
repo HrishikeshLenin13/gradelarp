@@ -104,6 +104,88 @@ test.beforeEach(async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
 });
 
+test("large gradebook entry opens the product and preserves its destination through onboarding", async ({
+  page,
+}) => {
+  let hacRequests = 0;
+  page.on("request", (request) => {
+    if (request.url().includes("/api/hac")) hacRequests++;
+  });
+  await page.goto("/");
+  const entry = page.locator(".opening-preview");
+  await expect(entry).toHaveAttribute("href", "/app#courses");
+  await expect(entry).toHaveAccessibleName(/Open your gradebook/);
+  await expect(page.getByTestId("study")).toHaveAttribute(
+    "data-webgl",
+    "ready",
+    {
+      timeout: 45000,
+    },
+  );
+  await entry.click();
+  await expect(page).toHaveURL(/\/app#courses$/);
+  await expect(page.getByTestId("hac-entry")).toBeVisible();
+  await expect(page.getByTestId("entry-destination")).toContainText(
+    "Next: Courses",
+  );
+  expect(hacRequests).toBe(0);
+  await page
+    .getByRole("button", { name: "Continue with manual grades instead" })
+    .click();
+  await expect(page.locator(".product-view")).toHaveAttribute(
+    "data-view",
+    "courses",
+  );
+  await expect(
+    page.getByRole("button", { name: "Add your first course" }),
+  ).toBeVisible();
+  await expect(page.getByTestId("study")).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator(".product-view")).toHaveAttribute(
+    "data-view",
+    "courses",
+  );
+});
+
+test("large gradebook entry opens existing grades directly instead of the 3D inspector", async ({
+  page,
+}, info) => {
+  await seed(page);
+  await page.goto("/");
+  await expect(page.getByTestId("study")).toHaveAttribute(
+    "data-webgl",
+    "ready",
+    {
+      timeout: 45000,
+    },
+  );
+  await page.screenshot({
+    path: `artifacts/product-button-2026-10-16/${info.project.name}-cta.png`,
+  });
+  const entry = page.getByRole("link", {
+    name: "Open your gradebook",
+    exact: false,
+  });
+  await entry.focus();
+  await entry.press("Enter");
+  await expect(page).toHaveURL(/\/app#courses$/);
+  await expect(page.locator(".product-view")).toHaveAttribute(
+    "data-view",
+    "courses",
+  );
+  await expect(page.locator(".product-view")).toContainText(
+    "Entry test algebra",
+  );
+  await expect(page.locator(".product-view")).toContainText("80");
+  await expect(page.getByTestId("hac-entry")).toHaveCount(0);
+  await expect(page.getByTestId("study")).toHaveCount(0);
+  const data = await stored(page);
+  expect(data.profiles[0].state.courses[0].assignments[0].earned).toBe(80);
+  await page.screenshot({
+    path: `artifacts/product-button-2026-10-16/${info.project.name}-actual-product.png`,
+  });
+});
+
 test("landing opens the requested calculator through onboarding, with real course setup and history", async ({
   page,
 }, info) => {
