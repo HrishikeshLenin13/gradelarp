@@ -55,3 +55,11 @@ See [HAC_INTEGRATION.md](HAC_INTEGRATION.md) for exact flow, security boundaries
 ### Landing interaction follow-up
 
 The integrated landing now offers keyboard/touch-friendly 3D controls: rotate the gradebook, open its cover, switch between the three concept pages, reset, and close the controls. Native vertical scrolling still drives the cinematic camera; no wheel or touch scrolling is hijacked. Reduced-motion mode removes the scroll-driven camera animation but still permits explicit model adjustments. The district selector includes a custom official-portal option for other HAC districts; that is not a claim that every district's SSO, MFA or customized markup has been authenticated and tested.
+
+### Cinematic polish — October 15
+
+- Continuous camera timing through the existing poses, complementary chapter crossfades, cached chapter nodes and damped input that stops rendering when settled.
+- Cloth/paper/wood relief maps, printed-cover finish variation, naturally curled pages, instanced metal bindings, soft grounding shadows and window-shaped reflections. No new photographs or generated photo assets.
+- Shorter native-scroll travel, subtle pointer-driven photo depth and tactile controls, with reduced-motion overrides.
+- Product-specific copy, explicit school-record/personal-plan distinctions, readable mobile navigation, opaque text backing where the model is bright, larger photo credits and a cover slider that tracks automatic opening.
+- Motion and material math have deterministic unit coverage; browser checks cover idle rendering, chapter visibility, reduced motion, layout and login navigation. Local frame-interval observations are diagnostics on this machine, not a universal FPS guarantee.

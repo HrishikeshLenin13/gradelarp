@@ -58,4 +58,10 @@ The Chrome channel uses the installed browser for GPU-backed landing tests. The 
 
 The local project predates this repository. Its saved source checkpoints were imported into Git; [the history notes](docs/history.md) explain the reconstruction and dates.
 
-On the landing, **3D controls** lets you rotate the gradebook, open the cover and switch pages. **Reset view** returns to the scroll-driven presentation. These controls work with keyboard and touch without taking over page scrolling. In the app, choose **Any other HAC district** to enter a district's official portal if it isn't one of the quick picks.
+## The landing
+
+Scroll down to move through the study-desk scene. The camera follows a continuous path, and the gradebook uses textured cloth, curved paper, metal bindings and soft studio lighting. The photographs are real and credited in the page.
+
+**3D controls** lets you rotate the gradebook, open the cover and switch pages with a keyboard or touch. **Reset view** returns to the scroll-driven pose. Motion settles instead of running a permanent animation loop, and reduced-motion preferences are respected.
+
+In the app, choose **Any other HAC district** to enter a district's official portal if it isn't one of the quick picks.
