@@ -2,7 +2,7 @@
 
 ## User flow
 
-Open [Gradelarp](http://localhost:3000/). First-time visitors see a short introduction and one HAC login form. Select Leander ISD or Round Rock ISD, or choose **Another HAC district** and paste its official HTTPS HAC address. Enter credentials in the app, then choose **Sign in & sync**.
+Open [Gradelarp](http://localhost:3000/), then choose **Open app**. The [workspace sign-in](http://localhost:3000/app) contains one direct HAC login form. Select Leander ISD or Round Rock ISD, or choose **Another HAC district** and paste its official HTTPS HAC address. Enter credentials in the app, then choose **Sign in & sync**.
 
 The server reads that portal’s current login form, preserves its anti-forgery cookie/token, POSTs credentials to the same portal, and fetches/validates its gradebook. A successful response automatically opens the school-reported gradebook and saves those academic records in a separate student profile. There is no mock connection, fixture selector, preview/import confirmation, seeded course data, or third-party hosted grade API in the user flow.
 
@@ -88,3 +88,9 @@ A SOURCE_VALIDATION / parse-records failure occurs after the connection has fetc
 The adapter prioritizes explicit student-name/overall-average elements and assignment anchors. The field-only schema diagnostic is displayed on failures. In local development, only the last code/stage/schema-field names are saved under `.next/hac-validation-diagnostic.json`; production writes no diagnostic file. School values, account identifiers, credentials, cookie contents and HTML are excluded. Successful validated sync replaces diagnostic metadata with SYNC_OK / complete.
 
 Research and observed limits: `research/hac/GRADEWAY_COMPARISON.md`. This work checks GradeWay's public documented behavior and independent primary sources; it does not claim access to GradeWay's private source code or claim a personal account sync from fixture tests. Final commands, regression evidence and independent-copy rollback: `artifacts/hac-records-fix-2026-10-15/VERIFICATION.txt`.
+
+## Cross-feature records
+
+A successful sync updates the source gradebook, source-assignment planner view, teacher/course identities, search, read-only CSV export and compact school-average history. Identical averages do not generate duplicate history points; older responses are ignored. A partial same-term sync retains absent records with a stale label. Personal task completion and academic entries survive refreshes and stay distinct from official records. Full-year source dates alone enter the calendar; ambiguous due-date text remains visible in the agenda.
+
+Source profiles do not infer GPA credits or grading policy. Personal schedule, attendance and transcript entries are explicitly manual. The original manual calculator/profile workflows remain available.

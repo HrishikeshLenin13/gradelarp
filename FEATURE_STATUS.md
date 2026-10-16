@@ -40,3 +40,18 @@ See [HAC_INTEGRATION.md](HAC_INTEGRATION.md) for exact flow, security boundaries
 - Longer source labels and raw possible-point text survive source-profile storage and backup round trips.
 - Source field-name-only diagnostics identify any remaining schema mismatch. Actual account-specific retry remains the integration confirmation.
 - Research: `research/hac/GRADEWAY_COMPARISON.md`; observed test/rollback results: `artifacts/hac-records-fix-2026-10-15/VERIFICATION.txt`.
+
+
+## Landing integration and feature consistency — October 15, 2026
+
+- `/` now serves the approved cinematic gradebook landing page; `/app` is the existing workspace and HAC sign-in. CTA links and the workspace Website link connect them on one origin. Landing CSS is scoped and its photographs are local, credited camera photographs.
+- Main UI spacing, wrapping, mobile form/tool rows and school-record layouts have a shared cleanup pass.
+- School course identities now connect to personal planner/academic selectors, teacher names and search. Pending HAC assignments appear in the agenda/calendar only when a complete valid date is reported; completion checkboxes never submit work to HAC.
+- Grade history records observed school averages (up to 60 compact points), not manual reconstructions. Late older responses do not overwrite newer data. Courses retained after partial sync are visibly stale.
+- Source CSV export includes original school marks and date strings; full JSON backups retain source history and personal plans. CSV formula-like source text is escaped for spreadsheets.
+- Schedule, attendance and transcript entries remain personal/manual records. GPA and what-if use manually confirmed grading inputs in a separate manual profile; HAC credits and policy are not guessed.
+- Exact build, browser, public-form and rollback results are in `artifacts/integration-2026-10-15/VERIFICATION.txt`. Authenticated district-account sync still requires the user’s own in-app sign-in; public-form checks do not establish account compatibility.
+
+### Landing interaction follow-up
+
+The integrated landing now offers keyboard/touch-friendly 3D controls: rotate the gradebook, open its cover, switch between the three concept pages, reset, and close the controls. Native vertical scrolling still drives the cinematic camera; no wheel or touch scrolling is hijacked. Reduced-motion mode removes the scroll-driven camera animation but still permits explicit model adjustments. The district selector includes a custom official-portal option for other HAC districts; that is not a claim that every district's SSO, MFA or customized markup has been authenticated and tested.
