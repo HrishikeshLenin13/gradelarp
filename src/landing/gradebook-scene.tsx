@@ -586,14 +586,6 @@ function SceneLighting({ state }: { state: Props["state"] }) {
         intensity={0.55}
         color="#d9d7ef"
       />
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.16, 0]}
-        receiveShadow
-      >
-        <planeGeometry args={[30, 30]} />
-        <shadowMaterial transparent opacity={0.2} color="#080a13" />
-      </mesh>
     </>
   );
 }
