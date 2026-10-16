@@ -335,6 +335,10 @@ test("every existing tool has a reloadable URL and the closing links target real
   const actions = await page.locator(".closing-primary-actions").boundingBox();
   const shortcuts = await links.boundingBox();
   expect(shortcuts!.y).toBeGreaterThan(actions!.y + actions!.height);
+  if (info.project.name === "mobile") {
+    const rail = await page.locator(".side-rail").boundingBox();
+    expect(shortcuts!.x + shortcuts!.width).toBeLessThanOrEqual(rail!.x - 8);
+  }
   for (const shortcut of workspaceShortcuts) {
     await expect(
       links.getByRole("link", { name: shortcut.label, exact: false }),
