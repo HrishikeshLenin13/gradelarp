@@ -15,6 +15,25 @@ npm run dev
 
 Open [localhost:3000](http://localhost:3000) for the cinematic landing page, then choose **Open app**. The workspace and HAC sign-in are at [localhost:3000/app](http://localhost:3000/app). Choose a district or its official HAC address; manual entry remains available. Both pages share one origin, so existing browser records are preserved.
 
+The landing's **Grades** and **What-if calculator** links open the existing tools directly. The closing section also links to GPA and assignment planning. A first visit shows HAC sign-in; after sign-in or manual entry, the selected destination stays selected.
+
+| Workspace | URL |
+| --- | --- |
+| Overview / sign-in | `/app` |
+| Grades and assignments | `/app#courses` |
+| What-if calculator | `/app#whatif` |
+| GPA planner | `/app#gpa` |
+| Grade history | `/app#trends` |
+| Assignment planner | `/app#planner` |
+| Academic tools | `/app#academics` |
+| HAC connection | `/app#hac` |
+| Data and backups | `/app#data` |
+
+The 3D loading screen includes an **Open app without waiting** link, so entering the workspace does not depend on WebGL or the cinematic bundle finishing. Tool URLs survive refresh and browser Back/Forward. A blank manual what-if profile offers **Add your first course**, using the existing course editor and calculation engine. School-source profiles keep their read-only records; creating a manual planning profile from what-if or GPA keeps that tool open.
+
+If `localhost:3000` opens a different local project, check the server address. IPv4 and IPv6 listeners can make that address ambiguous. Use a free dedicated port instead: `npm run dev -- --port 3004`, then open [127.0.0.1:3004](http://127.0.0.1:3004/). Browser storage is origin-specific: `localhost` and `127.0.0.1` do not share records. Stay on the origin where you saved your grades, or export and import a JSON backup when moving between them.
+
+
 ## What's here
 
 - HAC sign-in, saved school records, refresh, and disconnect

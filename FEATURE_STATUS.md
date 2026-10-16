@@ -63,3 +63,14 @@ The integrated landing now offers keyboard/touch-friendly 3D controls: rotate th
 - Shorter native-scroll travel, subtle pointer-driven photo depth and tactile controls, with reduced-motion overrides.
 - Product-specific copy, explicit school-record/personal-plan distinctions, readable mobile navigation, opaque text backing where the model is bright, larger photo credits and a cover slider that tracks automatic opening.
 - Motion and material math have deterministic unit coverage; browser checks cover idle rendering, chapter visibility, reduced motion, layout and login navigation. Local frame-interval observations are diagnostics on this machine, not a universal FPS guarantee.
+
+
+### Real workspace destinations — October 16, 2026
+
+- Landing shortcuts open the real grades, what-if calculator, GPA planner and assignment planner. No duplicate dashboard or sample academic records were added.
+- The 3D loading screen offers direct app entry before its scene loads; the link also works without client-side JavaScript.
+- All nine workspace views now have fragment URLs. Refresh, Back and Forward restore the intended tool. Unsupported fragments fall back to Overview.
+- The requested destination survives first-visit manual entry and HAC connection. Sign-in explains which tool will open next.
+- The empty manual calculator opens the existing course editor. Creating or switching to a manual profile from what-if/GPA keeps the calculator selected; school-source records remain distinct and unchanged.
+- Navigation unit coverage and isolated desktop/mobile browser flows exercise deep links, controlled HAC responses, real what-if calculations, scenario persistence and original-grade preservation. Controlled responses do not establish a real district account sign-in.
+- Earlier source commits were already on origin/main before this work. New code, website shortcuts, regression tests and documentation are grouped by distinct changes without rewriting prior history.
