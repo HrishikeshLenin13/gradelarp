@@ -1,4 +1,5 @@
 "use client";
+import { SourceHistory } from "./source-history";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { MotionConfig, motion, useReducedMotion } from "motion/react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -513,14 +514,21 @@ export function GradelarpApp() {
                     sideOffset={8}
                   >
                     <DropdownMenu.Item
+                      disabled={Boolean(profile.hacLive)}
                       onSelect={() => setEditor(newCourse(semester))}
                     >
                       <Plus size={15} />
                       Add course
                     </DropdownMenu.Item>
-                    <DropdownMenu.Item onSelect={snapshot}>
+                    <DropdownMenu.Item
+                      onSelect={
+                        profile.hacLive ? () => navigate("trends") : snapshot
+                      }
+                    >
                       <BarChart3 size={15} />
-                      Record actual snapshot
+                      {profile.hacLive
+                        ? "View school grade history"
+                        : "Record actual snapshot"}
                     </DropdownMenu.Item>
                     <DropdownMenu.Item onSelect={() => setAppearance(true)}>
                       <Settings2 size={15} />
@@ -791,30 +799,33 @@ export function GradelarpApp() {
                     onUpdate={updateProfile}
                   />
                 ))}
-              {view === "trends" && (
-                <>
-                  <section className="panel product-chart-panel">
-                    <h2>Course comparison</h2>
-                    <p className="helper">
-                      Current calculated grades and distance from your own
-                      targets.
-                    </p>
-                    <LabCourseChart
-                      courses={courses}
-                      selectedId={selectedId}
-                      onSelect={select}
-                      policy={state.policy}
-                      presentation={prefs.chart}
+              {view === "trends" &&
+                (profile.hacLive ? (
+                  <SourceHistory profile={profile} />
+                ) : (
+                  <>
+                    <section className="panel product-chart-panel">
+                      <h2>Course comparison</h2>
+                      <p className="helper">
+                        Current calculated grades and distance from your own
+                        targets.
+                      </p>
+                      <LabCourseChart
+                        courses={courses}
+                        selectedId={selectedId}
+                        onSelect={select}
+                        policy={state.policy}
+                        presentation={prefs.chart}
+                      />
+                    </section>
+                    <TrendsPanel
+                      key={semester}
+                      state={state}
+                      semester={semester}
+                      onSnapshot={snapshot}
                     />
-                  </section>
-                  <TrendsPanel
-                    key={semester}
-                    state={state}
-                    semester={semester}
-                    onSnapshot={snapshot}
-                  />
-                </>
-              )}
+                  </>
+                ))}
               {view === "planner" && (
                 <Planner
                   profile={profile}
