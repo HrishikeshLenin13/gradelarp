@@ -328,7 +328,11 @@ export function GradelarpApp() {
       ? selected
       : (courses[0]?.id ?? ""),
     semesters = [
-      ...new Set([semester, ...state.courses.map((c) => c.semester)]),
+      ...new Set([
+        ...(profile.hacLive
+          ? [profile.hacLive.snapshot.term || "School-reported term"]
+          : [semester, ...state.courses.map((c) => c.semester)]),
+      ]),
     ];
   const duration =
     prefs.motion === "none" || reduced
@@ -452,7 +456,11 @@ export function GradelarpApp() {
               <label className="product-semester">
                 <span className="sr-only">Active semester</span>
                 <select
-                  value={semester}
+                  value={
+                    profile.hacLive
+                      ? profile.hacLive.snapshot.term || "School-reported term"
+                      : semester
+                  }
                   onChange={(e) => {
                     setSemester(e.target.value);
                     setSelected(
@@ -837,7 +845,7 @@ export function GradelarpApp() {
               {view === "academics" && (
                 <Academics
                   profile={profile}
-                  semester={semester}
+                  semester={profile.hacLive?.snapshot.term || semester}
                   onUpdate={updateProfile}
                 />
               )}
@@ -899,7 +907,7 @@ export function GradelarpApp() {
         {appearance && (
           <Appearance
             profile={profile}
-            semester={semester}
+            semester={profile.hacLive?.snapshot.term || semester}
             onSave={(p) => {
               updateProfile(p);
               notify("Preferences saved.");

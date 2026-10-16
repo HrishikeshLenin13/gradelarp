@@ -364,7 +364,9 @@ export function Profiles({
                     <strong>{p.name}</strong>
                     <small>
                       {p.hacLive ? "HAC student" : "Manual / imported"} ·{" "}
-                      {p.state.courses.length} courses
+                      {p.hacLive?.snapshot.courses.length ??
+                        p.state.courses.length}{" "}
+                      courses
                     </small>
                   </span>
                   {data.activeProfileId === p.id && (

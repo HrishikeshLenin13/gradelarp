@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { formatGrade, uid } from "@/lib/utils";
 import { download } from "@/lib/import-export";
 import { courseGrade } from "@/lib/calculations";
+import { profileCourseCatalog } from "./source-records";
 import { bellStatus } from "./engine";
 import {
   ScheduleSchema,
@@ -41,6 +42,13 @@ export function Academics({
   const [tab, setTab] = useState<Tab>("schedule");
   return (
     <div className="product-stack">
+      {profile.hacLive && (
+        <p className="hac-notice">
+          HAC supplies your course names and available teacher names here.
+          Schedule, attendance, transcript and goal entries are personal records
+          you enter; they are not automatically imported from the school.
+        </p>
+      )}
       <div className="product-tabs" role="group" aria-label="Academic tools">
         {tabs.map((t) => (
           <button
@@ -81,7 +89,7 @@ function coursesField(profile: Profile, optional = false): Field {
       ...(optional
         ? [{ value: "", label: "Other / break" }]
         : [{ value: "", label: "Choose a course" }]),
-      ...profile.state.courses.map((c) => ({
+      ...profileCourseCatalog(profile).map((c) => ({
         value: c.id,
         label: `${c.name} · ${c.semester}`,
       })),
@@ -323,12 +331,12 @@ function AttendancePanel({ profile, onUpdate }: Props) {
         <div className="panel-title">
           <h3>Attendance, accounted for.</h3>
           <Button
-            disabled={!profile.state.courses.length}
+            disabled={!profileCourseCatalog(profile).length}
             onClick={() =>
               setEditing({
                 id: uid(),
                 date: localDate(),
-                courseId: profile.state.courses[0]?.id ?? "",
+                courseId: profileCourseCatalog(profile)[0]?.id ?? "",
                 status: "present",
                 note: "",
               })
@@ -346,7 +354,7 @@ function AttendancePanel({ profile, onUpdate }: Props) {
             onChange={(e) => setCourse(e.target.value)}
           >
             <option value="all">All courses</option>
-            {profile.state.courses.map((c) => (
+            {profileCourseCatalog(profile).map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
               </option>
@@ -378,8 +386,9 @@ function AttendancePanel({ profile, onUpdate }: Props) {
                 <tr key={a.id}>
                   <td>{a.date}</td>
                   <td>
-                    {profile.state.courses.find((c) => c.id === a.courseId)
-                      ?.name ?? "Archived course"}
+                    {profileCourseCatalog(profile).find(
+                      (c) => c.id === a.courseId,
+                    )?.name ?? "Archived course"}
                   </td>
                   <td>{a.status}</td>
                   <td>{a.note || "—"}</td>
@@ -690,11 +699,11 @@ function TeachersPanel({ profile, onUpdate }: Props) {
           are entered by you.
         </p>
         <Button
-          disabled={!profile.state.courses.length}
+          disabled={!profileCourseCatalog(profile).length}
           onClick={() =>
             setEditing({
               id: uid(),
-              courseId: profile.state.courses[0]?.id ?? "",
+              courseId: profileCourseCatalog(profile)[0]?.id ?? "",
               name: "",
               email: "",
               room: "",
@@ -708,7 +717,7 @@ function TeachersPanel({ profile, onUpdate }: Props) {
         </Button>
       </div>
       <div className="product-contact-grid">
-        {profile.state.courses.map((c) => {
+        {profileCourseCatalog(profile).map((c) => {
           const contacts = profile.contacts.filter((x) => x.courseId === c.id);
           return (
             <section className="panel" key={c.id}>
@@ -756,7 +765,7 @@ function TeachersPanel({ profile, onUpdate }: Props) {
           );
         })}
       </div>
-      {!profile.state.courses.length && (
+      {!profileCourseCatalog(profile).length && (
         <div className="panel product-empty">
           <h3>Your people, in one place.</h3>
           <p>Add a course to start your teacher directory.</p>
