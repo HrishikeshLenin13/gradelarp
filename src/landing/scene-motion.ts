@@ -37,7 +37,9 @@ export function settleValue(
   epsilon = 0.0001,
 ) {
   if (Math.abs(current - target) <= epsilon) return target;
-  const next =
-    current + (target - current) * -Math.expm1(-rate * clamp(delta, 0, 0.05));
+  // A demand-rendered scene may have slept for seconds. Start input with one
+  // ordinary frame rather than consuming that whole idle interval as motion.
+  const step = delta > 0.1 ? 1 / 60 : clamp(delta, 0, 0.05);
+  const next = current + (target - current) * -Math.expm1(-rate * step);
   return Math.abs(next - target) <= epsilon ? target : next;
 }

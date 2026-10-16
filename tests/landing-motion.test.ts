@@ -49,7 +49,8 @@ describe("cinematic motion", () => {
     expect(x).toBe(1);
     expect(settleValue(1, 1, 1 / 60)).toBe(1);
     expect(settleValue(0, 1, 0)).toBe(0);
-    expect(settleValue(0, 1, 10)).toBe(settleValue(0, 1, 0.05));
+    expect(settleValue(0, 1, 10)).toBe(settleValue(0, 1, 1 / 60));
+    expect(settleValue(0, 1, 10)).toBeLessThan(0.4);
   });
   it("never leaves a blank gap between chapters", () => {
     for (let i = 0; i <= 1000; i++) {
