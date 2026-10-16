@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import Image from "next/image";
+import { workspaceHref, workspaceShortcuts } from "@/product/workspace-routes";
 import {
   useCallback,
   useLayoutEffect,
@@ -399,6 +400,16 @@ export function RenderLab() {
               <Link className="landing-enter" href="/app" prefetch={false}>
                 Open Gradelarp ↗
               </Link>
+              <nav
+                className="workspace-shortcuts"
+                aria-label="Open a workspace tool"
+              >
+                {workspaceShortcuts.slice(0, 2).map(({ view, label }) => (
+                  <Link key={view} href={workspaceHref(view)} prefetch={false}>
+                    {label} ↗
+                  </Link>
+                ))}
+              </nav>
             </div>
             <div className="opening-credit">
               <strong>
@@ -625,18 +636,30 @@ export function RenderLab() {
               Your records stay in your browser.
             </p>
             <div className="closing-actions">
-              <Link className="landing-enter" href="/app" prefetch={false}>
-                Open Gradelarp ↗
-              </Link>
-              <button className="text-button" onClick={() => goTo(0)}>
-                Replay
-              </button>
-              <button
-                className="text-button"
-                onClick={() => dialog.current?.showModal()}
+              <div className="closing-primary-actions">
+                <Link className="landing-enter" href="/app" prefetch={false}>
+                  Open Gradelarp ↗
+                </Link>
+                <button className="text-button" onClick={() => goTo(0)}>
+                  Replay
+                </button>
+                <button
+                  className="text-button"
+                  onClick={() => dialog.current?.showModal()}
+                >
+                  About Gradelarp
+                </button>
+              </div>
+              <nav
+                className="workspace-shortcuts closing-shortcuts"
+                aria-label="Choose a workspace tool"
               >
-                About Gradelarp
-              </button>
+                {workspaceShortcuts.map(({ view, label }) => (
+                  <Link key={view} href={workspaceHref(view)} prefetch={false}>
+                    {label} ↗
+                  </Link>
+                ))}
+              </nav>
             </div>
             <div className="closing-word">gradelarp</div>
           </article>
@@ -659,6 +682,9 @@ export function RenderLab() {
             <div className="loading-scene" role="status">
               <strong>gradelarp</strong>
               <span>Loading experience</span>
+              <Link className="landing-enter" href="/app" prefetch={false}>
+                Open app without waiting ↗
+              </Link>
             </div>
           )}
         </div>
