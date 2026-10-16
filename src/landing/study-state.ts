@@ -10,13 +10,19 @@ export interface StudyState {
 export const chapterStops = [0, 0.075, 0.22, 0.43, 0.65, 0.83, 1] as const;
 export const clamp = (value: number, min = 0, max = 1) =>
   Math.max(min, Math.min(max, value));
+function handoff(progress: number, left: number, right: number) {
+  const t = clamp(((progress - left) / (right - left) - 0.42) / 0.16);
+  return t * t * (3 - 2 * t);
+}
+/** Complementary crossfades: adjacent chapters sum to one, never both disappear. */
 export function chapterOpacity(progress: number, index: number) {
-  if (index === 0) return 1 - clamp(progress / 0.035);
+  if (index < 0 || index >= chapterStops.length) return 0;
   const center = chapterStops[index];
-  const before = (chapterStops[index - 1] + center) / 2;
-  const after = index === 6 ? 1.1 : (center + chapterStops[index + 1]) / 2;
-  return Math.min(
-    clamp((progress - before) / 0.025),
-    clamp((after - progress) / 0.025),
-  );
+  const enter =
+    index === 0 ? 1 : handoff(progress, chapterStops[index - 1], center);
+  const leave =
+    index === chapterStops.length - 1
+      ? 1
+      : 1 - handoff(progress, center, chapterStops[index + 1]);
+  return Math.min(enter, leave);
 }

@@ -24,6 +24,7 @@ import {
   Vector3,
 } from "three";
 import { clamp, type StudyState } from "./study-state";
+import { routeTime, settleValue } from "./scene-motion";
 import { woodTexture, matTexture } from "./study-textures";
 import { coverTexture, recordTexture } from "./gradebook-textures";
 interface Props {
@@ -58,7 +59,6 @@ class SceneBoundary extends Component<
     );
   }
 }
-const stops = [0, 0.028, 0.075, 0.22, 0.43, 0.6, 0.72, 0.83, 0.94, 1];
 const cameras = [
   [0, 13, 0.001],
   [0, 8, 4],
@@ -97,12 +97,12 @@ const rotations = [
   [0.17, 0.18, 0],
   [1.1, 0.2, -0.08],
 ];
-function curveTime(progress: number) {
-  let i = 0;
-  while (i < stops.length - 2 && progress > stops[i + 1]) i++;
-  const t = clamp((progress - stops[i]) / (stops[i + 1] - stops[i]));
-  return { i, t: t * t * (3 - 2 * t) };
-}
+const rotationCurve = new CatmullRomCurve3(
+  rotations.map((v) => new Vector3(...(v as [number, number, number]))),
+  false,
+  "catmullrom",
+  0.35,
+);
 function Gradebook({
   state,
   ready,
@@ -114,6 +114,21 @@ function Gradebook({
   const cover = useRef<Group>(null);
   const sheets = useRef<Group[]>([]);
   const reported = useRef(false);
+  const scratch = useMemo(
+    () => ({
+      position: new Vector3(),
+      target: new Vector3(),
+      rotation: new Vector3(),
+    }),
+    [],
+  );
+  const motion = useRef({
+    pointerX: 0,
+    pointerY: 0,
+    yaw: 0,
+    cover: 0,
+    frames: 0,
+  });
   const coverMap = useMemo(() => coverTexture(), []);
   const records = useMemo(() => [0, 1, 2].map(recordTexture), []);
   useEffect(
@@ -123,19 +138,46 @@ function Gradebook({
     },
     [coverMap, records],
   );
-  useFrame(({ camera, size, gl }) => {
+  useFrame(({ camera, size, gl, invalidate }, delta) => {
     const p = state.current.reduced ? 0 : state.current.progress;
-    const { i, t } = curveTime(p);
-    const time = (i + t) / (stops.length - 1);
-    const position = cameraCurve.getPoint(time);
-    const target = targetCurve.getPoint(time);
+    const time = routeTime(p);
+    const position = cameraCurve.getPoint(time, scratch.position);
+    const target = targetCurve.getPoint(time, scratch.target);
+    const rotation = rotationCurve.getPoint(time, scratch.rotation);
+    const frame = motion.current;
+    const pointerX = state.current.reduced ? 0 : state.current.pointerX;
+    const pointerY = state.current.reduced ? 0 : state.current.pointerY;
+    const coverTarget =
+      state.current.cover === null
+        ? clamp((p - 0.04) / 0.08) * (1 - clamp((p - 0.94) / 0.06))
+        : state.current.cover / 100;
+    frame.pointerX = state.current.reduced
+      ? 0
+      : settleValue(frame.pointerX, pointerX, delta);
+    frame.pointerY = state.current.reduced
+      ? 0
+      : settleValue(frame.pointerY, pointerY, delta);
+    frame.yaw = state.current.reduced
+      ? state.current.yaw
+      : settleValue(frame.yaw, state.current.yaw, delta);
+    frame.cover = state.current.reduced
+      ? coverTarget
+      : settleValue(frame.cover, coverTarget, delta);
+    const moving =
+      frame.pointerX !== pointerX ||
+      frame.pointerY !== pointerY ||
+      frame.yaw !== state.current.yaw ||
+      frame.cover !== coverTarget;
+    if (moving) invalidate();
+    gl.domElement.dataset.motion = moving ? "settling" : "idle";
+    gl.domElement.dataset.sceneFrames = String(++frame.frames);
     if (size.width < 760) {
       position.y *= 1.55;
       position.z *= 1.55;
     }
     if (!state.current.reduced) {
-      position.x += state.current.pointerX * 0.12;
-      position.y += state.current.pointerY * 0.08;
+      position.x += frame.pointerX * 0.18;
+      position.y += frame.pointerY * 0.12;
     }
     camera.position.copy(position);
     camera.lookAt(target);
@@ -143,13 +185,7 @@ function Gradebook({
     gl.domElement.dataset.cameraY = position.y.toFixed(4);
     gl.domElement.dataset.cameraZ = position.z.toFixed(4);
     if (root.current) {
-      const a = rotations[i],
-        b = rotations[i + 1];
-      root.current.rotation.set(
-        a[0] + (b[0] - a[0]) * t,
-        a[1] + (b[1] - a[1]) * t + state.current.yaw,
-        a[2] + (b[2] - a[2]) * t,
-      );
+      root.current.rotation.set(rotation.x, rotation.y + frame.yaw, rotation.z);
       const productShift =
         clamp((p - 0.73) / 0.09) * (1 - clamp((p - 0.91) / 0.04)) * 2;
       const finalShift = clamp((p - 0.93) / 0.07) * -2.5;
@@ -163,25 +199,25 @@ function Gradebook({
       const macro = 1 + clamp(1 - Math.abs(p - 0.6) / 0.08) * 0.15;
       root.current.scale.setScalar((size.width < 760 ? 0.72 : 0.82) * macro);
     }
-    const open =
-      state.current.cover === null
-        ? clamp((p - 0.04) / 0.08) * (1 - clamp((p - 0.94) / 0.06))
-        : state.current.cover / 100;
+    const open = frame.cover;
     if (cover.current) cover.current.rotation.z = open * 2.85;
     const separation =
       state.current.cover === null
         ? clamp((p - 0.73) / 0.07) * (1 - clamp((p - 0.94) / 0.06))
-        : state.current.cover / 100;
+        : frame.cover;
     sheets.current.forEach((sheet, index) => {
-      const selected = Math.round(state.current.stack) - 1;
+      const selectedWeight = Math.max(
+        0,
+        1 - Math.abs(state.current.stack - (index + 1)),
+      );
       sheet.position.y =
         0.22 +
         (2 - index) * 0.024 +
-        separation * (index * 0.22 + (index === selected ? 0.65 : 0));
+        separation * (index * 0.22 + selectedWeight * 0.65);
       sheet.position.x = separation * (index - 1) * 0.32;
     });
     gl.domElement.dataset.coverOpen = open.toFixed(3);
-    gl.domElement.dataset.modelYaw = state.current.yaw.toFixed(3);
+    gl.domElement.dataset.modelYaw = frame.yaw.toFixed(3);
     gl.domElement.dataset.selectedPage = String(
       Math.round(state.current.stack) - 1,
     );
@@ -449,9 +485,10 @@ function Desk({ state }: { state: Props["state"] }) {
 }
 function SceneLighting({ state }: { state: Props["state"] }) {
   const color = useMemo(() => new Color(), []);
+  const endColor = useMemo(() => new Color("#171820"), []);
   useFrame(({ scene }) => {
     const t = clamp((state.current.progress - 0.02) / 0.04);
-    color.set("#37323a").lerp(new Color("#171820"), t);
+    color.set("#37323a").lerp(endColor, t);
     scene.background = color;
   });
   return null;
@@ -467,12 +504,11 @@ export default function GradelarpScene({
       <Canvas
         shadows
         frameloop="demand"
-        dpr={[1, 1.6]}
+        dpr={[1, 1.5]}
         camera={{ position: [0, 13, 0.001], fov: 40, near: 0.05, far: 100 }}
         gl={{
           antialias: true,
           powerPreference: "high-performance",
-          preserveDrawingBuffer: true,
         }}
         fallback={
           <div className="scene-fallback">
@@ -480,7 +516,13 @@ export default function GradelarpScene({
             Interactive scene unavailable. The story remains readable.
           </div>
         }
-        onCreated={({ gl, invalidate }) => {
+        onCreated={({ gl, invalidate, setDpr }) => {
+          setDpr(
+            Math.min(
+              devicePixelRatio,
+              matchMedia("(pointer: coarse)").matches ? 1.25 : 1.5,
+            ),
+          );
           gl.shadowMap.type = PCFShadowMap;
           gl.toneMapping = ACESFilmicToneMapping;
           gl.toneMappingExposure = 1.0;

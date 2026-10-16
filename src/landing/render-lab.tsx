@@ -67,6 +67,16 @@ export function RenderLab() {
   }, [reduced]);
   useLayoutEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+    const element = root.current;
+    if (!element) return;
+    const brand = element.querySelector<HTMLButtonElement>(".compact-brand");
+    const panels = [...element.querySelectorAll<HTMLElement>("[data-chapter]")];
+    const navigation = [
+      ...element.querySelectorAll<HTMLElement>("[data-navigation]"),
+    ];
+    const bar = element.querySelector<HTMLElement>(".side-rail i");
+    let lastActive = -1,
+      lastNav = -1;
     const ctx = gsap.context(() => {
       gsap.to(state.current, {
         progress: 1,
@@ -75,21 +85,18 @@ export function RenderLab() {
           trigger: runway.current,
           start: "top top",
           end: "bottom bottom",
-          scrub: 0.3,
+          scrub: reduced ? true : 0.45,
           invalidateOnRefresh: true,
         },
         onUpdate: () => {
           const p = state.current.progress;
-          const element = root.current;
-          if (!element) return;
-          const brand =
-            element.querySelector<HTMLButtonElement>(".compact-brand");
+
           if (brand) {
             brand.tabIndex = p > 0.03 ? 0 : -1;
             brand.setAttribute("aria-hidden", String(p <= 0.03));
           }
           element.dataset.progress = p.toFixed(4);
-          element.style.setProperty("--intro", String(1 - clamp(p / 0.035)));
+          element.style.setProperty("--intro", String(chapterOpacity(p, 0)));
           element.style.setProperty("--p", String(p));
           element.style.setProperty(
             "--desk",
@@ -106,35 +113,36 @@ export function RenderLab() {
           );
           let active = 0;
           let greatest = 0;
-          element
-            .querySelectorAll<HTMLElement>("[data-chapter]")
-            .forEach((panel, index) => {
-              const opacity = chapterOpacity(p, index);
-              panel.style.setProperty("--opacity", String(opacity));
-              panel.style.setProperty(
-                "--offset",
-                `${reduced ? 0 : (1 - opacity) * 28}px`,
-              );
-              if (opacity > greatest) {
-                active = index;
-                greatest = opacity;
-              }
-              panel.inert = opacity < 0.4;
-              panel.setAttribute("aria-hidden", String(opacity < 0.4));
+          panels.forEach((panel, index) => {
+            const opacity = chapterOpacity(p, index);
+            panel.style.setProperty("--opacity", String(opacity));
+            panel.style.setProperty(
+              "--offset",
+              `${reduced ? 0 : (1 - opacity) * 28}px`,
+            );
+            if (opacity > greatest) {
+              active = index;
+              greatest = opacity;
+            }
+          });
+          if (active !== lastActive) {
+            element.dataset.chapter = String(active);
+            panels.forEach((panel, index) => {
+              panel.inert = index !== active;
+              panel.setAttribute("aria-hidden", String(index !== active));
             });
-          element.dataset.chapter = String(active);
-          element
-            .querySelectorAll<HTMLElement>("[data-navigation]")
-            .forEach((button) =>
+            lastActive = active;
+          }
+          const currentNav = p < 0.35 ? 0 : p < 0.54 ? 1 : p < 0.74 ? 2 : 3;
+          if (currentNav !== lastNav) {
+            navigation.forEach((button) =>
               button.setAttribute(
                 "aria-current",
-                String(
-                  Number(button.dataset.navigation) ===
-                    (p < 0.35 ? 0 : p < 0.54 ? 1 : p < 0.74 ? 2 : 3),
-                ),
+                String(Number(button.dataset.navigation) === currentNav),
               ),
             );
-          const bar = element.querySelector<HTMLElement>(".side-rail i");
+            lastNav = currentNav;
+          }
           if (bar) bar.style.transform = `scaleY(${p})`;
           invalidator.current?.();
         },
@@ -200,6 +208,10 @@ export function RenderLab() {
       data-chapter="0"
       data-reduced-motion={String(reduced)}
       onPointerMove={pointer}
+      onPointerLeave={() => {
+        state.current.pointerX = state.current.pointerY = 0;
+        invalidator.current?.();
+      }}
     >
       <div className="story-runway" ref={runway}>
         <div className="story-viewport">
