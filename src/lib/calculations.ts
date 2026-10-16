@@ -2,32 +2,46 @@ import type { Course, GpaPolicy, Assignment, AppState } from "./model";
 export function included(a: Assignment) {
   return a.status === "graded" || a.status === "missing";
 }
-export function courseGrade(course: Course): number | null {
-  const work = course.assignments.filter(included);
-  if (!work.length) return null;
-  if (course.mode === "points") {
-    const possible = work.reduce((s, a) => s + a.possible, 0);
-    return possible
-      ? (work.reduce(
-          (s, a) => s + (a.status === "missing" ? 0 : (a.earned ?? 0)),
-          0,
-        ) /
-          possible) *
-          100
-      : null;
+type AssignmentTotals = { earned: number; possible: number };
+function categoryTotals(assignments: Assignment[]) {
+  const totals = new Map<string, AssignmentTotals>();
+  for (const assignment of assignments) {
+    if (!included(assignment)) continue;
+    const current = totals.get(assignment.categoryId);
+    const earned =
+      assignment.status === "missing" ? 0 : (assignment.earned ?? 0);
+    if (current) {
+      current.earned += earned;
+      current.possible += assignment.possible;
+    } else {
+      totals.set(assignment.categoryId, {
+        earned,
+        possible: assignment.possible,
+      });
+    }
   }
+  return totals;
+}
+export function courseGrade(course: Course): number | null {
+  if (course.mode === "points") {
+    let earned = 0,
+      possible = 0;
+    for (const assignment of course.assignments) {
+      if (!included(assignment)) continue;
+      possible += assignment.possible;
+      earned +=
+        assignment.status === "missing" ? 0 : (assignment.earned ?? 0);
+    }
+    return possible ? (earned / possible) * 100 : null;
+  }
+  const totals = categoryTotals(course.assignments);
   let total = 0,
     weights = 0;
   for (const category of course.categories) {
-    const items = work.filter((a) => a.categoryId === category.id);
-    const possible = items.reduce((s, a) => s + a.possible, 0);
-    if (possible && category.weight > 0) {
+    const categoryTotal = totals.get(category.id);
+    if (categoryTotal?.possible && category.weight > 0) {
       total +=
-        (items.reduce(
-          (s, a) => s + (a.status === "missing" ? 0 : (a.earned ?? 0)),
-          0,
-        ) /
-          possible) *
+        (categoryTotal.earned / categoryTotal.possible) *
         100 *
         category.weight;
       weights += category.weight;
@@ -45,13 +59,12 @@ export function gradeLetter(grade: number | null, policy: GpaPolicy) {
 export function gpa(courses: Course[], policy: GpaPolicy, weighted = true) {
   let sum = 0,
     credits = 0;
+  const scale = [...policy.scale].sort((a, b) => b.min - a.min);
   for (const course of courses) {
     const grade = courseGrade(course);
     if (grade === null) continue;
     let points =
-      [...policy.scale]
-        .sort((a, b) => b.min - a.min)
-        .find((s) => grade >= s.min)?.points ?? 0;
+      scale.find((threshold) => grade >= threshold.min)?.points ?? 0;
     if (weighted && grade >= policy.bonusMinimum)
       points +=
         course.level === "AP"
@@ -116,15 +129,9 @@ export function requiredScore(
   return Math.ceil(high * 100 - 1e-8) / 100;
 }
 export function categoryBreakdown(course: Course) {
+  const totals = categoryTotals(course.assignments);
   return course.categories.map((c) => {
-    const work = course.assignments.filter(
-      (a) => a.categoryId === c.id && included(a),
-    );
-    const possible = work.reduce((s, a) => s + a.possible, 0),
-      earned = work.reduce(
-        (s, a) => s + (a.status === "missing" ? 0 : (a.earned ?? 0)),
-        0,
-      );
+    const { earned = 0, possible = 0 } = totals.get(c.id) ?? {};
     return {
       ...c,
       earned,

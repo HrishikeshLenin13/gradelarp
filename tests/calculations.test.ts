@@ -84,6 +84,32 @@ describe("grade calculations", () => {
     ).toBeNull());
   it("shows category totals", () =>
     expect(categoryBreakdown(c([a("a", "test", 90)]))[0].earned).toBe(90));
+  it("aggregates assignments in one pass for many categories", () => {
+    let categoryReads = 0;
+    const categories = Array.from({ length: 100 }, (_, index) => ({
+      id: `category-${index}`,
+      name: `Category ${index}`,
+      weight: 1,
+    }));
+    const assignments = Array.from({ length: 1000 }, (_, index) => {
+      const categoryId = categories[index % categories.length].id;
+      const assignment = a(`assignment-${index}`, categoryId, 100);
+      Object.defineProperty(assignment, "categoryId", {
+        enumerable: true,
+        get() {
+          categoryReads++;
+          return categoryId;
+        },
+      });
+      return assignment;
+    });
+    const course = { ...c(assignments), categories };
+    expect(courseGrade(course)).toBe(100);
+    expect(categoryBreakdown(course).every((row) => row.grade === 100)).toBe(
+      true,
+    );
+    expect(categoryReads).toBeLessThan(assignments.length * 3);
+  });
   it("finds minimum target score", () =>
     expect(
       requiredScore(
