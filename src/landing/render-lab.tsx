@@ -194,6 +194,14 @@ export function RenderLab() {
       return;
     state.current.pointerX = event.clientX / innerWidth - 0.5;
     state.current.pointerY = event.clientY / innerHeight - 0.5;
+    root.current?.style.setProperty(
+      "--pointer-x",
+      String(state.current.pointerX),
+    );
+    root.current?.style.setProperty(
+      "--pointer-y",
+      String(state.current.pointerY),
+    );
     invalidator.current?.();
   }
   return (
@@ -210,6 +218,8 @@ export function RenderLab() {
       onPointerMove={pointer}
       onPointerLeave={() => {
         state.current.pointerX = state.current.pointerY = 0;
+        root.current?.style.setProperty("--pointer-x", "0");
+        root.current?.style.setProperty("--pointer-y", "0");
         invalidator.current?.();
       }}
     >
