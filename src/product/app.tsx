@@ -788,6 +788,7 @@ export function GradelarpApp() {
                   </section>
                 ) : (
                   <WhatIf
+                    onAddCourse={() => setEditor(newCourse(semester))}
                     courses={state.courses}
                     selectedId={selectedId}
                     onSelect={select}
@@ -939,7 +940,9 @@ export function GradelarpApp() {
         {profiles && (
           <Profiles
             data={data}
-            onChange={changeData}
+            onChange={(next) =>
+              changeData(next, view === "whatif" || view === "gpa")
+            }
             onClose={() => setProfiles(false)}
           />
         )}

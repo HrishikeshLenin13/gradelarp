@@ -19,6 +19,7 @@ export function WhatIf({
   scenarios,
   onSave,
   onDelete,
+  onAddCourse,
 }: {
   courses: Course[];
   selectedId: string;
@@ -26,13 +27,21 @@ export function WhatIf({
   scenarios: Scenario[];
   onSave: (s: Scenario) => void;
   onDelete: (id: string) => void;
+  onAddCourse: () => void;
 }) {
   const course = courses.find((c) => c.id === selectedId) ?? courses[0];
   if (!course)
     return (
       <section className="panel product-empty">
         <h2>A little possibility starts with a course.</h2>
-        <p>Add your first course before running a simulation.</p>
+        <p>
+          Add your first course and confirmed grading rules before running a
+          simulation.
+        </p>
+        <Button onClick={onAddCourse}>
+          <Plus size={16} />
+          Add your first course
+        </Button>
       </section>
     );
   return (
