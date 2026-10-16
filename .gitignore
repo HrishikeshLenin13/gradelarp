@@ -11,3 +11,6 @@ research/hac/v2/
 research/hac/python/
 .DS_Store
 *.log
+
+# Generated local dependency-graph reports
+graphify-out/
