@@ -5,15 +5,21 @@ import { Button } from "@/components/ui/button";
 import { uid } from "@/lib/utils";
 import type { Course } from "@/lib/model";
 import { localDate, TaskSchema, type Profile, type Task } from "./model";
+import {
+  profileCourseCatalog,
+  sourcePlannerAssignments,
+} from "./source-records";
 import { EntityEditor, Confirm } from "./forms";
 export function Planner({
   profile,
   onUpdate,
   onCourse,
+  onViewSource,
 }: {
   profile: Profile;
   onUpdate: (p: Profile) => void;
   onCourse: (c: Course) => void;
+  onViewSource?: () => void;
 }) {
   const [mode, setMode] = useState<"list" | "calendar">("list"),
     [filter, setFilter] = useState("open"),
@@ -26,7 +32,7 @@ export function Planner({
   const manual = profile.tasks.map((t) => ({
     ...t,
     kind: "task" as const,
-    course: profile.state.courses.find((c) => c.id === t.courseId),
+    course: profileCourseCatalog(profile).find((c) => c.id === t.courseId),
     key: t.id,
   }));
   const assignments = profile.state.courses.flatMap((c) =>
@@ -47,15 +53,21 @@ export function Planner({
         kind: "assignment" as const,
       })),
   );
-  const all = [...manual, ...assignments].sort(
-    (a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title),
+  const all = [
+    ...manual,
+    ...assignments,
+    ...sourcePlannerAssignments(profile),
+  ].sort(
+    (a, b) =>
+      (a.date || "9999").localeCompare(b.date || "9999") ||
+      a.title.localeCompare(b.title),
   );
   const items = all.filter(
     (t) =>
       (filter === "all" || filter === "done"
         ? filter === "all" || t.done
         : !t.done) &&
-      (filter !== "overdue" || t.date < today) &&
+      (filter !== "overdue" || Boolean(t.date && t.date < today)) &&
       (!day || t.date === day) &&
       `${t.title} ${t.course?.name ?? ""}`
         .toLowerCase()
@@ -100,6 +112,13 @@ export function Planner({
   }
   return (
     <div className="product-stack">
+      {profile.hacLive && (
+        <p className="hac-notice">
+          School assignments below come from your latest saved sync. Checkboxes
+          track your own progress, not submission to HAC. Dates without a full
+          year stay in the agenda rather than being guessed onto the calendar.
+        </p>
+      )}
       <div className="product-toolbar">
         <div className="segmented">
           <button
@@ -125,7 +144,8 @@ export function Planner({
       </div>
       <div className="product-planner-stats">
         <span>
-          <b>{all.filter((t) => !t.done && t.date < today).length}</b> overdue
+          <b>{all.filter((t) => !t.done && t.date && t.date < today).length}</b>{" "}
+          overdue
         </span>
         <span>
           <b>{all.filter((t) => !t.done && t.date === today).length}</b> due
@@ -249,21 +269,27 @@ export function Planner({
                 <strong>{t.title}</strong>
                 <span>
                   {t.course?.name ?? "Personal task"} ·{" "}
-                  {t.kind === "assignment"
-                    ? "Gradebook deadline"
+                  {t.kind !== "task"
+                    ? t.kind === "source"
+                      ? "HAC assignment"
+                      : "Gradebook deadline"
                     : "Planner task"}
                 </span>
                 {t.notes && <small>{t.notes}</small>}
               </div>
               <div className="product-agenda-date">
                 <b>
-                  {new Date(t.date + "T12:00:00").toLocaleDateString(
-                    undefined,
-                    { month: "short", day: "numeric" },
-                  )}
+                  {t.date
+                    ? new Date(t.date + "T12:00:00").toLocaleDateString(
+                        undefined,
+                        { month: "short", day: "numeric" },
+                      )
+                    : t.kind === "source"
+                      ? t.sourceDate || "Date not reported"
+                      : "Date not set"}
                 </b>
                 <span>
-                  {t.date < today && !t.done
+                  {t.date && t.date < today && !t.done
                     ? "Overdue"
                     : t.priority === "high"
                       ? "High priority"
@@ -276,11 +302,17 @@ export function Planner({
                 <Button
                   size="icon"
                   variant="ghost"
-                  aria-label={`Edit ${t.title}`}
+                  aria-label={`${t.kind === "source" ? "View school record for" : "Edit"} ${t.title}`}
                   onClick={() =>
                     t.kind === "task"
                       ? setEditor(profile.tasks.find((x) => x.id === t.id)!)
-                      : onCourse(t.course!)
+                      : t.kind === "source"
+                        ? onViewSource?.()
+                        : onCourse(
+                            profile.state.courses.find(
+                              (c) => c.id === t.course!.id,
+                            )!,
+                          )
                   }
                 >
                   <Pencil size={16} />
@@ -326,7 +358,7 @@ export function Planner({
               type: "select",
               options: [
                 { value: "", label: "Personal task" },
-                ...profile.state.courses.map((c) => ({
+                ...profileCourseCatalog(profile).map((c) => ({
                   value: c.id,
                   label: `${c.name} · ${c.semester}`,
                 })),

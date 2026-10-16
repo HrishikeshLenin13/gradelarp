@@ -820,6 +820,7 @@ export function GradelarpApp() {
                   profile={profile}
                   onUpdate={updateProfile}
                   onCourse={setEditor}
+                  onViewSource={() => navigate("courses")}
                 />
               )}
               {view === "academics" && (
