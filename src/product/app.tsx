@@ -253,6 +253,12 @@ export function GradelarpApp() {
     const current = liveData.current ?? data;
     if (!current) return;
     const next = applyLiveSnapshot(current, snapshot);
+    if (next === current) {
+      notify(
+        "An older sync response was ignored. Your newer saved grades are unchanged.",
+      );
+      return;
+    }
     changeData(next);
     setEntry(false);
     setView("overview");

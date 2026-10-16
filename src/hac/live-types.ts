@@ -27,6 +27,7 @@ export const SourceCourseSchema = z.object({
   average: z.number().finite().min(0).max(1000).nullable(),
   averageText: z.string().max(2048),
   assignmentsAvailable: z.boolean(),
+  stale: z.boolean().optional(),
   assignments: z.array(SourceAssignmentSchema).max(10000),
   categories: z
     .array(
@@ -68,12 +69,30 @@ export const LiveSessionSchema = z.object({
   expiresAt: z.iso.datetime(),
 });
 export type LiveSession = z.infer<typeof LiveSessionSchema>;
+export const SourceHistoryPointSchema = z.object({
+  fetchedAt: z.iso.datetime(),
+  term: z.string().max(2048),
+  status: z.enum(["complete", "partial"]),
+  courses: z
+    .array(
+      z.object({
+        id: text,
+        name: sourceLabel,
+        average: z.number().finite().min(0).max(1000).nullable(),
+        averageText: z.string().max(2048),
+        stale: z.boolean().optional(),
+      }),
+    )
+    .max(500),
+});
+export type SourceHistoryPoint = z.infer<typeof SourceHistoryPointSchema>;
 export const LiveConnectionSchema = z.object({
   mode: z.literal("live"),
   portal: z.url(),
   studentId: text,
   lastSync: z.iso.datetime(),
   snapshot: LiveSnapshotSchema,
+  history: z.array(SourceHistoryPointSchema).max(60).default([]),
 });
 export const LiveResponseSchema = z.object({
   session: LiveSessionSchema.nullable(),
