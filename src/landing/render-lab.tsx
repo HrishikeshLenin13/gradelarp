@@ -370,9 +370,9 @@ export function RenderLab() {
                 Made clearer.
               </h2>
               <p>
-                Bring your HAC gradebook into focus.
+                Connect your school’s HAC portal.
                 <br />
-                See courses and assignment details.
+                Keep grades and next steps in view.
               </p>
               <Link className="landing-enter" href="/app" prefetch={false}>
                 Open Gradelarp ↗
@@ -415,15 +415,15 @@ export function RenderLab() {
             inert
           >
             <h2>
-              Every course.
+              Your courses.
               <br />
-              Every assignment.
+              The details.
               <br />
-              One place.
+              In focus.
             </h2>
             <p>
-              Your school-reported averages, with assignment details close at
-              hand.
+              See the averages your school reports and the assignments behind
+              them.
             </p>
           </article>
           <article
@@ -445,13 +445,13 @@ export function RenderLab() {
               an average.
             </p>
             <h2>
-              Find what
-              <br /> needs focus.
+              Spot what
+              <br /> needs attention.
             </h2>
             <span className="spec-label">
-              Reported marks stay reported.
+              Missing work. Upcoming tasks.
               <br />
-              Missing details stay unknown.
+              School marks stay unchanged.
             </span>
           </article>
           <article
@@ -460,12 +460,13 @@ export function RenderLab() {
             aria-hidden="true"
             inert
           >
-            <p>Your school portal. A student-friendly view.</p>
+            <p>Your school’s records. A clearer way to use them.</p>
             <h2>
-              Your HAC.
-              <br />A clearer
+              Connect.
               <br />
-              view.
+              Review.
+              <br />
+              Plan.
             </h2>
             <div className="source-diagram" aria-hidden="true">
               <span>School portal</span>
@@ -475,9 +476,9 @@ export function RenderLab() {
               <span>Assignment details</span>
             </div>
             <div className="precision-notes">
-              <span>Connect a compatible HAC portal.</span>
-              <span>See your school’s reported averages.</span>
-              <span>Keep original assignment marks visible.</span>
+              <span>Choose your district or its official HAC address.</span>
+              <span>Sign in to bring over published grades.</span>
+              <span>Refresh when you need the latest records.</span>
             </div>
           </article>
           <article
@@ -487,9 +488,9 @@ export function RenderLab() {
             inert
           >
             <h2>
-              Know your
+              Make room
               <br />
-              next priority.
+              for what’s next.
             </h2>
             <div className="photo-spread">
               <figure className="study-photo writing">
@@ -532,9 +533,9 @@ export function RenderLab() {
               </figure>
             </div>
             <p>
-              Review the work behind the mark.
+              Set your priorities.
               <br />
-              Then get back to learning.
+              Keep school records as they are.
             </p>
           </article>
           <article
@@ -570,19 +571,19 @@ export function RenderLab() {
               <p className="product-description">
                 {
                   [
-                    "See courses, school-reported averages and available source details in one place.",
-                    "Review individual marks, missing work and category details to see the bigger picture.",
-                    "Plan tasks and goals. Use manual profiles for what-if grades and GPA with your own grading rules.",
+                    "School-reported averages, saved snapshots and a searchable view of your courses.",
+                    "Original marks, available category details, and missing or ungraded work. Nothing writes back to HAC.",
+                    "Your tasks and goals alongside pending schoolwork. Manual profiles add what-if grades and GPA planning.",
                   ][variant - 1]
                 }
               </p>
             </div>
             <div className="product-facts">
               <span>
-                HAC records<strong>School-reported</strong>
+                HAC records<strong>From your school</strong>
               </span>
               <span>
-                Planning<strong>Your own rules</strong>
+                Personal plans<strong>Set by you</strong>
               </span>
             </div>
           </article>
@@ -598,8 +599,8 @@ export function RenderLab() {
               you stand.
             </h2>
             <p>
-              School-reported grades, assignment details and personal planning.
-              One workspace, built around the student.
+              Connect HAC for school-reported grades, or start a manual profile.
+              Your records stay in your browser.
             </p>
             <div className="closing-actions">
               <Link className="landing-enter" href="/app" prefetch={false}>
@@ -647,7 +648,7 @@ export function RenderLab() {
       >
         <button
           className="dialog-close"
-          aria-label="Close preview information"
+          aria-label="Close information"
           onClick={() => dialog.current?.close()}
         >
           ×
@@ -663,6 +664,11 @@ export function RenderLab() {
           into one local-first workspace. Open the app to connect a compatible
           HAC portal or enter your own courses. The 3D gradebook is a concept
           illustration, not an application screenshot or a student record.
+        </p>
+        <p>
+          School marks stay read-only. Your HAC password isn’t stored. Some
+          districts require school SSO or extra verification; manual entry is
+          always an option.
         </p>
         <p>
           The photographs are real, credited Unsplash photography: a fountain

@@ -32,7 +32,7 @@ export function coverTexture() {
   ctx.fillRect(115, 1000, 790, 2);
   ctx.font = "35px Arial";
   ctx.fillText("Your grades.", 115, 1080);
-  ctx.fillText("Your next step.", 115, 1135);
+  ctx.fillText("Your next steps.", 115, 1135);
   ctx.font = "23px Arial";
   ctx.fillText("GRADES   /   ASSIGNMENTS   /   PLANS", 115, 1250);
   return finish(canvas);
@@ -81,7 +81,14 @@ export function recordTexture(section: number) {
     ctx.fillStyle = "#858595";
     ctx.font = "24px Arial";
     ctx.fillText(
-      section === 2 ? "Your own grading rules" : "From your records",
+      section === 2
+        ? [
+            "Your own task list",
+            "Personal priorities",
+            "Your own grading rules",
+            "Your own credits and scale",
+          ][index]
+        : "From your school records",
       130,
       y + 45,
     );
