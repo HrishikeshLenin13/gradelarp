@@ -126,15 +126,25 @@ export class LiveHacService {
 /** Only public request metadata is used. Body limit is enforced while streaming. */
 export async function readCommand(request: Request) {
   const url = new URL(request.url);
-  // Next dev/start binds 0.0.0.0 internally. Accept only known loopback Host
-  // aliases for the local preview; never trust arbitrary forwarded headers.
+  // Next can use its bound hostname rather than the browser's loopback alias.
+  // Normalize only loopback aliases on the same port; never trust forwarded hosts.
   const host = request.headers.get("host");
-  if (
-    url.hostname === "0.0.0.0" &&
-    host &&
-    /^(localhost|127\.0\.0\.1|\[::1\]):(3000|3002)$/.test(host)
-  )
-    url.host = host;
+  const loopback = ["localhost", "127.0.0.1", "[::1]"];
+  if (["0.0.0.0", "[::]", ...loopback].includes(url.hostname) && host) {
+    try {
+      const browserUrl = new URL(`${url.protocol}//${host}`);
+      if (
+        loopback.includes(browserUrl.hostname) &&
+        browserUrl.host === host &&
+        browserUrl.port === url.port &&
+        !browserUrl.username &&
+        !browserUrl.password
+      )
+        url.host = browserUrl.host;
+    } catch {
+      // Malformed Host values keep the original origin and fail validation below.
+    }
+  }
   if (request.method !== "POST")
     throw new HacError("METHOD", "Use a same-origin POST request.", 405);
   if (url.search)

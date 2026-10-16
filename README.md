@@ -31,7 +31,7 @@ The landing's **Grades** and **What-if calculator** links open the existing tool
 
 The 3D loading screen includes an **Open app without waiting** link, so entering the workspace does not depend on WebGL or the cinematic bundle finishing. Tool URLs survive refresh and browser Back/Forward. A blank manual what-if profile offers **Add your first course**, using the existing course editor and calculation engine. School-source profiles keep their read-only records; creating a manual planning profile from what-if or GPA keeps that tool open.
 
-If `localhost:3000` opens a different local project, check the server address. IPv4 and IPv6 listeners can make that address ambiguous. Use a free dedicated port instead: `npm run dev -- --port 3004`, then open [127.0.0.1:3004](http://127.0.0.1:3004/). Browser storage is origin-specific: `localhost` and `127.0.0.1` do not share records. Stay on the origin where you saved your grades, or export and import a JSON backup when moving between them.
+If `localhost:3000` opens a different local project, check the server address. IPv4 and IPv6 listeners can make that address ambiguous. Use a free dedicated port instead: `npm run dev -- --port 3004`, then open [127.0.0.1:3004](http://127.0.0.1:3004/). The development config permits the explicit loopback host, and the HAC request guard recognizes loopback aliases only on the same bound port; unrelated origins and forwarded hosts remain rejected. Browser storage is origin-specific: `localhost` and `127.0.0.1` do not share records. Stay on the origin where you saved your grades, or export and import a JSON backup when moving between them.
 
 
 ## What's here

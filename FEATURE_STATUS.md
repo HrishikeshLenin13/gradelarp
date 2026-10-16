@@ -70,6 +70,7 @@ The integrated landing now offers keyboard/touch-friendly 3D controls: rotate th
 - Landing shortcuts open the real grades, what-if calculator, GPA planner and assignment planner. No duplicate dashboard or sample academic records were added.
 - The 3D loading screen offers direct app entry before its scene loads; the link also works without client-side JavaScript.
 - All nine workspace views now have fragment URLs. Refresh, Back and Forward restore the intended tool. Unsupported fragments fall back to Overview.
+- The HAC request guard now accepts same-port loopback aliases on dedicated preview ports instead of a hardcoded two-port list. Cross-origin, unrelated Host, mismatched port and private portal rejection remain covered.
 - The requested destination survives first-visit manual entry and HAC connection. Sign-in explains which tool will open next.
 - The empty manual calculator opens the existing course editor. Creating or switching to a manual profile from what-if/GPA keeps the calculator selected; school-source records remain distinct and unchanged.
 - Navigation unit coverage and isolated desktop/mobile browser flows exercise deep links, controlled HAC responses, real what-if calculations, scenario persistence and original-grade preservation. Controlled responses do not establish a real district account sign-in.

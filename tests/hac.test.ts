@@ -452,6 +452,61 @@ describe("request guards", () => {
       },
       body,
     });
+  it.each([
+    ["0.0.0.0", "127.0.0.1", "3004"],
+    ["127.0.0.1", "localhost", "3002"],
+    ["localhost", "127.0.0.1", "3002"],
+    ["[::]", "[::1]", "4300"],
+  ])(
+    "accepts a loopback preview alias %s → %s on port %s",
+    async (bound, browser, port) => {
+      const origin = `http://${browser}:${port}`;
+      const request = new Request(`http://${bound}:${port}/api/hac`, {
+        method: "POST",
+        headers: {
+          host: `${browser}:${port}`,
+          origin,
+          "sec-fetch-site": "same-origin",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ action: "status" }),
+      });
+      expect(await readCommand(request)).toEqual({ action: "status" });
+    },
+  );
+  it.each([
+    [
+      "http://0.0.0.0:3004/api/hac",
+      "evil.example:3004",
+      "http://evil.example:3004",
+    ],
+    ["http://0.0.0.0:3004/api/hac", "127.0.0.1:4000", "http://127.0.0.1:4000"],
+    [
+      "http://0.0.0.0:3004/api/hac",
+      "localhost:3004@evil.example",
+      "http://evil.example",
+    ],
+    ["http://0.0.0.0:3004/api/hac", "bad[host", "http://localhost:3004"],
+    ["https://app.example/api/hac", "localhost:3004", "http://localhost:3004"],
+    ["http://0.0.0.0:3004/api/hac", "127.0.0.1:3004", "https://other.example"],
+  ])(
+    "rejects an unrelated Host/origin combination for %s with Host %s",
+    async (url, host, origin) => {
+      const request = new Request(url, {
+        method: "POST",
+        headers: {
+          host,
+          origin,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ action: "status" }),
+      });
+      await expect(readCommand(request)).rejects.toMatchObject({
+        code: "ORIGIN",
+        status: 403,
+      });
+    },
+  );
   it("accepts same-origin JSON without query secrets", async () =>
     expect(await readCommand(req('{"action":"status"}'))).toEqual({
       action: "status",
