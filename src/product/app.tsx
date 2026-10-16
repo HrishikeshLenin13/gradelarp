@@ -374,11 +374,12 @@ export function GradelarpApp() {
       <Link
         className={cn(styles.navItem, "product-website-link")}
         href="/"
-        aria-label="Gradelarp home"
-        title="Gradelarp home"
+        aria-label="Gradelarp 3D website"
+        title="Return to the 3D website"
+        prefetch={false}
       >
         <ArrowLeft size={18} />
-        <span>Website</span>
+        <span>3D website</span>
       </Link>
       <div className={styles.navCaption}>Academic workspace</div>
       <nav aria-label="Main navigation">

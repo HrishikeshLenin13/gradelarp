@@ -382,7 +382,14 @@ export function HacWelcome({
         <Link href="/" aria-label="Gradelarp home">
           g<span>gradelarp.</span>
         </Link>
-        <span>A little clarity. A lot of potential.</span>
+        <Link
+          className="hac-entry-homepage"
+          href="/"
+          prefetch={false}
+          aria-label="3D website"
+        >
+          ← 3D website
+        </Link>
       </header>
       <div className="hac-entry-layout">
         <section className="hac-entry-story">

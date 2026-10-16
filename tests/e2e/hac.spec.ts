@@ -283,7 +283,9 @@ test("landing sign-in enters the real workspace and returning students keep thei
     exact: true,
   });
   if (await menu.isVisible()) await menu.click();
-  await page.getByRole("link", { name: "Gradelarp home", exact: true }).click();
+  await page
+    .getByRole("link", { name: "Gradelarp 3D website", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByTestId("study")).toHaveAttribute(
     "data-webgl",

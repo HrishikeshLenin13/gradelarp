@@ -2467,3 +2467,21 @@ body:has(.product-root) .product-mobile-nav {
     padding-bottom: max(20px, env(safe-area-inset-bottom));
   }
 }
+
+/* Keep the cinematic homepage discoverable from sign-in, including narrow screens. */
+.hac-entry-header > .hac-entry-homepage {
+  min-height: 44px;
+  padding: 8px 14px;
+  gap: 8px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--text);
+}
+.hac-entry-homepage:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

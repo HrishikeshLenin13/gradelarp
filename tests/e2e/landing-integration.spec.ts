@@ -23,7 +23,7 @@ test("landing opens the real HAC app without contacting HAC or creating grades f
     ),
   ).toBe(true);
   await page.screenshot({
-    path: `artifacts/integration-2026-10-15/${info.project.name}-landing.png`,
+    path: `artifacts/homepage-flow-2026-10-16/${info.project.name}-homepage.png`,
   });
   await page.getByRole("link", { name: "Open app", exact: true }).click();
   await expect(page).toHaveURL(/\/app$/);
@@ -35,9 +35,19 @@ test("landing opens the real HAC app without contacting HAC or creating grades f
     ),
   ).toBe(true);
   await page.screenshot({
-    path: `artifacts/integration-2026-10-15/${info.project.name}-signin.png`,
+    path: `artifacts/homepage-flow-2026-10-16/${info.project.name}-signin.png`,
   });
-  await page.getByRole("link", { name: "Gradelarp home", exact: true }).click();
+  const homepage = page.getByRole("link", { name: "3D website", exact: true });
+  await expect(homepage).toBeVisible();
+  const linkBox = await homepage.boundingBox();
+  const brandBox = await page
+    .getByRole("link", { name: "Gradelarp home", exact: true })
+    .boundingBox();
+  expect(linkBox!.x).toBeGreaterThan(brandBox!.x + brandBox!.width);
+  expect(linkBox!.x + linkBox!.width).toBeLessThanOrEqual(
+    await page.evaluate(() => innerWidth),
+  );
+  await homepage.click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByTestId("study")).toHaveAttribute(
     "data-webgl",
@@ -70,7 +80,16 @@ test("landing stylesheet and scroll state never leak into a returning workspace"
     exact: true,
   });
   if (await menu.isVisible()) await menu.click();
-  await page.getByRole("link", { name: "Gradelarp home", exact: true }).click();
+  await page
+    .getByRole("link", { name: "Gradelarp 3D website", exact: true })
+    .click();
+  await expect(page.getByTestId("study")).toHaveAttribute(
+    "data-webgl",
+    "ready",
+    { timeout: 45000 },
+  );
+  await page.reload();
+  await expect(page).toHaveURL(/\/$/);
   await expect(page.getByTestId("study")).toHaveAttribute(
     "data-webgl",
     "ready",
