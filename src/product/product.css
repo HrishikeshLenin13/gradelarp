@@ -2336,3 +2336,134 @@ body:has(.product-root) .product-mobile-nav {
     font-size: 26px;
   }
 }
+
+/* Integration polish: one spacing rhythm, resilient school labels, usable small screens. */
+.product-root .product-view p,
+.product-root .product-view li,
+.hac-entry p {
+  text-wrap: pretty;
+}
+.product-root .product-view h1,
+.product-root .product-view h2,
+.hac-entry h1 {
+  text-wrap: balance;
+}
+.product-root .product-toolbar {
+  flex-wrap: wrap;
+  row-gap: 14px;
+}
+.product-root .product-toolbar > *,
+.product-root .panel-title > *,
+.product-root .hac-source-course-top > div:first-child,
+.product-root .hac-source-assignments li > div:first-child {
+  min-width: 0;
+}
+.product-root .panel h2 + .helper {
+  margin-top: 10px;
+  margin-bottom: 18px;
+}
+.product-root .panel > .btn {
+  margin-top: 18px;
+}
+.product-root .product-actions {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.product-root .product-tabs {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.product-root .hac-source-header h1,
+.product-root .hac-source-header h2,
+.product-root .hac-source-course-top h2,
+.product-root .hac-source-course-top h3,
+.product-root .hac-source-assignments strong,
+.product-root .hac-source-assignments span,
+.product-root .hac-school-average,
+.product-root .product-agenda-title {
+  overflow-wrap: anywhere;
+}
+.product-root .hac-school-average {
+  max-width: 35%;
+}
+.product-root .hac-source-assignments li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(75px, 26%);
+  gap: 24px;
+  padding: 20px 0;
+}
+.product-root .hac-source-score {
+  max-width: none;
+  min-width: 0;
+}
+.product-root .hac-source-course summary {
+  min-height: 40px;
+  padding: 10px 0 16px;
+}
+.product-root .product-website-link {
+  display: inline-flex;
+  min-height: 40px;
+  font-size: 12px;
+  color: var(--dl-muted);
+}
+.product-root .product-source-history .table-scroll {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+.product-root .product-source-history table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+.product-root .product-source-history th,
+.product-root .product-source-history td {
+  padding: 16px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--dl-line);
+}
+.product-root .product-source-history li {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  padding: 7px 0;
+  min-width: 200px;
+}
+.product-root .product-source-history li strong {
+  font-weight: 550;
+}
+.product-root .product-source-history li span {
+  text-align: right;
+  white-space: normal;
+}
+.product-root .product-source-history td {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 740px) {
+  .product-root .product-stack {
+    gap: 20px;
+  }
+  .product-root .hac-source-assignments li {
+    grid-template-columns: minmax(0, 1fr) minmax(65px, 28%);
+    gap: 14px;
+  }
+  .product-root .product-source-history th,
+  .product-root .product-source-history td {
+    padding: 12px;
+  }
+  .product-root .product-website-link {
+    min-height: 44px;
+  }
+  .product-root .product-toolbar .product-search {
+    flex: 1 1 100%;
+  }
+  .product-root .product-toolbar input {
+    width: 100%;
+    min-width: 0;
+  }
+  .product-root .hac-source-course-top {
+    gap: 14px;
+  }
+  .hac-entry {
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
+  }
+}
