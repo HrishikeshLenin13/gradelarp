@@ -34,6 +34,7 @@ export function RenderLab() {
   const root = useRef<HTMLElement>(null);
   const runway = useRef<HTMLDivElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+  const coverSlider = useRef<HTMLInputElement>(null);
   const context = useRef<gsap.Context | null>(null);
   const invalidator = useRef<(() => void) | null>(null);
   const state = useRef<StudyState>({
@@ -61,6 +62,17 @@ export function RenderLab() {
     setFailed(true);
     setReady(true);
   }, []);
+  useLayoutEffect(() => {
+    if (coverSlider.current) {
+      const p = reduced ? 0 : state.current.progress;
+      coverSlider.current.value = String(
+        coverPosition ??
+          Math.round(
+            clamp((p - 0.04) / 0.08) * (1 - clamp((p - 0.94) / 0.06)) * 100,
+          ),
+      );
+    }
+  }, [inspect, coverPosition, reduced]);
   useLayoutEffect(() => {
     state.current.reduced = reduced;
     invalidator.current?.();
@@ -90,7 +102,16 @@ export function RenderLab() {
         },
         onUpdate: () => {
           const p = state.current.progress;
-
+          if (coverSlider.current && state.current.cover === null) {
+            const coverProgress = reduced ? 0 : p;
+            coverSlider.current.value = String(
+              Math.round(
+                clamp((coverProgress - 0.04) / 0.08) *
+                  (1 - clamp((coverProgress - 0.94) / 0.06)) *
+                  100,
+              ),
+            );
+          }
           if (brand) {
             brand.tabIndex = p > 0.03 ? 0 : -1;
             brand.setAttribute("aria-hidden", String(p <= 0.03));
@@ -308,7 +329,8 @@ export function RenderLab() {
                   min="0"
                   max="100"
                   step="1"
-                  value={coverPosition ?? 0}
+                  ref={coverSlider}
+                  defaultValue={0}
                   aria-valuetext={
                     coverPosition === null
                       ? "Follows scrolling"

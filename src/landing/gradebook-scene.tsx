@@ -303,7 +303,7 @@ function Gradebook({
             rotation={[-Math.PI / 2, 0, 0]}
             position={[0.03, 0.17, 0]}
             castShadow={false}
-            receiveShadow
+            receiveShadow={false}
             onAfterRender={report}
           >
             <meshStandardMaterial

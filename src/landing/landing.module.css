@@ -1684,7 +1684,7 @@
 }
 @media (max-width: 760px) {
   .shell :global(.opening h1) {
-    font-size: 19.5vw;
+    font-size: 18vw;
   }
   .shell :global(.landing-enter) {
     font-size: 10px;
@@ -1869,6 +1869,123 @@
   }
   .shell :global(.landing-enter:hover),
   .shell :global(.landing-enter:focus-visible) {
+    transform: none;
+  }
+}
+
+/* Editorial readability: the concept pages must never wash out the product copy. */
+.shell :global(.story-copy h2) {
+  text-wrap: balance;
+}
+.shell :global(.product-description) {
+  padding: 12px 14px;
+  background: #171820;
+  border-left: 2px solid #b9b3de;
+  color: #f5eedf;
+  line-height: 1.6;
+  max-width: 42ch;
+  text-wrap: pretty;
+}
+.shell :global(.precision-notes) {
+  max-width: 27ch;
+  line-height: 1.6;
+}
+.shell :global(.scene-controls) {
+  max-height: calc(100svh - 100px);
+  overflow-y: auto;
+}
+@media (max-width: 760px) {
+  .shell :global(.study-header) {
+    gap: 10px;
+    align-items: center;
+  }
+  .shell :global(.study-header nav) {
+    align-items: center;
+    gap: 8px;
+  }
+  .shell :global(.study-header nav button[data-navigation="0"]) {
+    display: none;
+  }
+  .shell :global(.study-header nav button),
+  .shell :global(.study-header nav a) {
+    font-size: 9px;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .shell :global(.study-header nav button[data-navigation="2"]) {
+    display: none;
+  }
+  .shell :global(.study-header nav a) {
+    margin-top: 0;
+  }
+  .shell :global(.compact-brand) {
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+  .shell :global(.opening-description h2) {
+    font-size: clamp(21px, 5.6vw, 26px);
+  }
+  .shell :global(.opening-credit > strong) {
+    font-size: 15px;
+  }
+  .shell :global(.portable h2) {
+    top: 66%;
+    font-size: clamp(36px, 11vw, 48px);
+    max-width: 83%;
+  }
+  .shell :global(.precision > p) {
+    max-width: 78%;
+    line-height: 1.5;
+  }
+  .shell :global(.precision-notes) {
+    max-width: 54%;
+  }
+  .shell :global(.product-description) {
+    max-width: 31ch;
+    font-size: 11px;
+  }
+  .shell :global(.study-photo.writing) {
+    left: 3%;
+    width: 50%;
+  }
+  .shell :global(.study-photo.books) {
+    left: 55%;
+    width: 40%;
+  }
+  .shell :global(.study-photo img) {
+    height: calc(100% - 52px);
+  }
+  .shell :global(.study-photo figcaption) {
+    height: 52px;
+    padding: 5px 2px;
+    font-size: 9px;
+    line-height: 1.35;
+  }
+  .shell :global(.study-photo figcaption a) {
+    font-size: 8px;
+    line-height: 1.35;
+  }
+}
+@media (max-width: 380px) {
+  .shell :global(.study-header nav) {
+    gap: 6px;
+  }
+  .shell :global(.study-header nav button),
+  .shell :global(.study-header nav a) {
+    font-size: 8px;
+  }
+  .shell :global(.compact-brand) {
+    font-size: 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shell :global(.opening-preview:hover .thumbnail-book),
+  .shell :global(.opening-preview:focus-visible .thumbnail-book) {
+    transform: rotate(-10deg);
+  }
+  .shell :global(.product-options button:hover > span),
+  .shell :global(.product-options button:focus-visible > span) {
     transform: none;
   }
 }
