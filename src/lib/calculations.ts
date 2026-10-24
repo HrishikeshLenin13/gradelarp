@@ -144,6 +144,7 @@ export function categoryBreakdown(course: Course) {
 export function semesterProgress(start: string, end: string, now = new Date()) {
   const from = new Date(start + "T00:00:00").getTime(),
     to = new Date(end + "T23:59:59").getTime();
+  if (![from, to, now.getTime()].every(Number.isFinite) || to <= from) return 0;
   return Math.min(
     100,
     Math.max(0, ((now.getTime() - from) / (to - from)) * 100),

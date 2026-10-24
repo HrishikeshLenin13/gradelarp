@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { requiredScore } from '../src/lib/calculations';
+import { requiredScore, semesterProgress } from '../src/lib/calculations';
 import type { Course, Assignment } from '../src/lib/model';
-const assignment = { id:'a', categoryId:'c', possible:100, earned:0, status:'planned', name:'Final' } as Assignment;
+const assignment = { id:'a', categoryId:'c', possible:100, earned:0, status:'future', name:'Final', due:'2026-12-01' } as Assignment;
 const course = { id:'c', mode:'points', assignments:[], categories:[] } as unknown as Course;
 
 describe('what-if input bounds', () => {
@@ -11,4 +11,12 @@ describe('what-if input bounds', () => {
     expect(requiredScore(course, assignment, 80)).toBe(80);
     expect(requiredScore(course, assignment, 101)).toBeNull();
   });
+});
+
+it('keeps semester progress finite for invalid or reversed dates', () => {
+  expect(semesterProgress('', '', new Date())).toBe(0);
+  expect(semesterProgress('2026-12-01', '2026-01-01')).toBe(0);
+  expect(semesterProgress('2026-01-01', '2026-12-01', new Date('bad'))).toBe(0);
+  expect(semesterProgress('2026-01-01', '2026-12-01', new Date('2025-01-01'))).toBe(0);
+  expect(semesterProgress('2026-01-01', '2026-12-01', new Date('2027-01-01'))).toBe(100);
 });
