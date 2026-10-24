@@ -116,6 +116,7 @@ export function requiredScore(
   assignment: Assignment,
   target: number,
 ): number | null {
+  if (!Number.isFinite(target) || !Number.isFinite(assignment.possible) || assignment.possible <= 0) return null;
   const at = (p: number) => courseGrade(scenarioCourse(course, assignment, p));
   if (at(100) === null || (at(100) ?? 0) + 1e-8 < target) return null;
   if ((at(0) ?? 0) >= target) return 0;
