@@ -139,3 +139,7 @@ assert.equal(api.semesterDaysRemaining('2026-01-01',now),0);
 test("calendar-days-exclude-the-current-day", () => {
 assert.equal(api.semesterDaysRemaining('2026-10-23',now),0);assert.equal(api.semesterDaysRemaining('2026-10-24',now),1);
 });
+
+test("weekday-counts-exclude-weekends", () => {
+assert.equal(api.semesterWeekdaysRemaining('2026-10-26',now),1);
+});
