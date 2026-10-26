@@ -143,3 +143,7 @@ assert.equal(api.semesterDaysRemaining('2026-10-23',now),0);assert.equal(api.sem
 test("weekday-counts-exclude-weekends", () => {
 assert.equal(api.semesterWeekdaysRemaining('2026-10-26',now),1);
 });
+
+test("weekday-exclusions-deduplicate-identical-dates", () => {
+assert.equal(api.semesterWeekdaysRemaining('2026-10-30',now,['2026-10-26','2026-10-26']),4);
+});
