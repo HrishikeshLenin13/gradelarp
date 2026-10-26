@@ -95,3 +95,7 @@ const before=JSON.stringify(course);assert.deepEqual(api.assignmentGradeRange(co
 test("gpa-excludes-zero-credit-courses", () => {
 assert.equal(api.gpa([{...course,credits:0}],defaultPolicy),null);
 });
+
+test("gpa-excludes-unknown-grades", () => {
+assert.equal(api.gpa([{...course,assignments:[]}],defaultPolicy),null);
+});
