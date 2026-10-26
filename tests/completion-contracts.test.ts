@@ -83,3 +83,7 @@ assert.equal(api.requiredScore(course,work,101),null);
 test("required-score-rejects-nonfinite-targets", () => {
 for(const target of [NaN,Infinity])assert.equal(api.requiredScore(course,work,target),null);
 });
+
+test("required-score-zero-needs-no-positive-points", () => {
+assert.equal(api.requiredScore(course,work,0),0);
+});
