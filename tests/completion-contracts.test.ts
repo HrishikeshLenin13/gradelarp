@@ -79,3 +79,7 @@ const c=api.scenarioCourse(course,{...work,id:'new'},50);assert.equal(c.assignme
 test("required-score-reports-unattainable-targets", () => {
 assert.equal(api.requiredScore(course,work,101),null);
 });
+
+test("required-score-rejects-nonfinite-targets", () => {
+for(const target of [NaN,Infinity])assert.equal(api.requiredScore(course,work,target),null);
+});
