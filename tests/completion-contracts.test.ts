@@ -23,3 +23,7 @@ assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',
 test("exclude-dropped-assignments-from-grade-totals", () => {
 assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',status:'dropped',earned:0,possible:900}]}),80);
 });
+
+test("exclude-exempt-assignments-from-grade-totals", () => {
+assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',status:'exempt',earned:0,possible:900}]}),80);
+});
