@@ -155,3 +155,7 @@ assert.equal(api.semesterWeekdaysRemaining('2026-10-30',now,['2026-10-25']),5);
 test("out-of-range-exclusions-do-not-reduce-the-total", () => {
 assert.equal(api.semesterWeekdaysRemaining('2026-10-30',now,['2026-11-01','2026-10-01']),5);
 });
+
+test("custom-study-days-can-include-weekends", () => {
+assert.equal(api.semesterStudyDaysRemaining('2026-10-30',now,[0,6]),2);
+});
