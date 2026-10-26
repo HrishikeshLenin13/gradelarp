@@ -103,3 +103,7 @@ assert.equal(api.gpa([{...course,assignments:[]}],defaultPolicy),null);
 test("gpa-credit-weighting-matches-quality-points", () => {
 const g=api.gpa([course,{...course,id:'second',credits:3}],defaultPolicy);assert.equal(g.credits,4);assert.equal(g.qualityPoints,g.value*4);
 });
+
+test("unweighted-gpa-does-not-add-ap-bonuses", () => {
+const c={...course,level:'AP',assignments:[{...work,earned:100}]};assert.ok(api.gpa([c],defaultPolicy,true).value>=api.gpa([c],defaultPolicy,false).value);
+});
