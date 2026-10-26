@@ -173,12 +173,7 @@ export function snapshotScores(courses: Course[]) {
             {
               name: a.name,
               status: a.status,
-              percent:
-                a.status === "missing"
-                  ? 0
-                  : a.status === "graded"
-                    ? ((a.earned ?? 0) / a.possible) * 100
-                    : null,
+              percent: assignmentPercent(a),
             },
           ]),
         ),
@@ -249,4 +244,11 @@ export function semesterWeekdaysRemaining(end: string, now = new Date(), exclude
     }
   }
   return result;
+}
+
+/** Non-graded or malformed work has no grade. */
+export function assignmentPercent(assignment: Assignment): number | null {
+  if (assignment.status === "missing") return 0;
+  if (assignment.status !== "graded" || assignment.earned === null || !Number.isFinite(assignment.earned) || !Number.isFinite(assignment.possible) || assignment.possible <= 0) return null;
+  return assignment.earned / assignment.possible * 100;
 }
