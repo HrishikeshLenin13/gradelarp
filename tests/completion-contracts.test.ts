@@ -167,3 +167,7 @@ assert.equal(api.semesterStudyDaysRemaining('2026-10-30',now,[1,1,3]),2);
 test("empty-study-schedules-have-zero-study-days", () => {
 assert.equal(api.semesterStudyDaysRemaining('2026-10-30',now,[]),0);
 });
+
+test("invalid-study-weekday-coordinates-are-rejected", () => {
+for(const days of [[7],[-1],[1.5]])assert.throws(()=>api.semesterStudyDaysRemaining('2026-10-30',now,days));
+});
