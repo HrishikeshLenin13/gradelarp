@@ -91,3 +91,7 @@ assert.equal(api.requiredScore(course,work,0),0);
 test("attainable-grade-range-preserves-inputs", () => {
 const before=JSON.stringify(course);assert.deepEqual(api.assignmentGradeRange(course,work),{minimum:0,maximum:100});assert.equal(JSON.stringify(course),before);
 });
+
+test("gpa-excludes-zero-credit-courses", () => {
+assert.equal(api.gpa([{...course,credits:0}],defaultPolicy),null);
+});
