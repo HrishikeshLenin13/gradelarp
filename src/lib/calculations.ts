@@ -266,3 +266,10 @@ export function semesterStudyDaysRemaining(end: string, now = new Date(), weekda
   }
   return result;
 }
+
+/** Real snapshot deltas; no synthetic or interpolated history. */
+export function courseGradeTrend(snapshots: AppState["snapshots"], courseId: string, semester: string) {
+  const records = snapshots.filter(snapshot => snapshot.semester === semester && Number.isFinite(Date.parse(snapshot.at)) && typeof snapshot.grades[courseId] === "number" && Number.isFinite(snapshot.grades[courseId]))
+    .map(snapshot => ({at:snapshot.at, grade:snapshot.grades[courseId] as number})).sort((a,b) => Date.parse(a.at)-Date.parse(b.at));
+  return {records, change:records.length >= 2 ? records[records.length-1].grade-records[0].grade : null};
+}
