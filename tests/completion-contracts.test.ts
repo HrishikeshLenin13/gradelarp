@@ -119,3 +119,7 @@ assert.equal(api.cumulativeGpa([course],{...defaultPolicy,priorGpa:NaN}),null);
 test("grade-letter-keeps-unknown-grades-distinct", () => {
 assert.equal(api.gradeLetter(null,defaultPolicy),'—');assert.equal(typeof api.gradeLetter(100,defaultPolicy),'string');
 });
+
+test("category-breakdown-preserves-category-order", () => {
+assert.deepEqual(api.categoryBreakdown(course).map(c=>c.id),['c']);assert.equal(api.categoryBreakdown(course)[0].earned,80);
+});
