@@ -71,3 +71,7 @@ for(const possible of [0,-1,Infinity])assert.equal(api.assignmentPercent({...wor
 test("scenario-replaces-rather-than-duplicates-assignment-id", () => {
 const c=api.scenarioCourse(course,work,90);assert.equal(c.assignments.length,1);assert.equal(c.assignments[0].earned,90);assert.equal(work.earned,80);
 });
+
+test("scenario-appends-new-assignments-without-mutating-input", () => {
+const c=api.scenarioCourse(course,{...work,id:'new'},50);assert.equal(c.assignments.length,2);assert.equal(course.assignments.length,1);
+});
