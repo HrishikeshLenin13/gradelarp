@@ -35,3 +35,7 @@ assert.equal(api.courseGrade({...course,assignments:[{...work,status:'missing',e
 test("point-grades-weight-by-possible-points", () => {
 assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'small',earned:0,possible:25}]}),64);
 });
+
+test("invalid-included-points-do-not-poison-the-grade", () => {
+for(const possible of [-1,NaN,Infinity])assert.equal(api.courseGrade({...course,assignments:[{...work,possible}]}),null);
+});
