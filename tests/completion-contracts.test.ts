@@ -39,3 +39,7 @@ assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'small',ea
 test("invalid-included-points-do-not-poison-the-grade", () => {
 for(const possible of [-1,NaN,Infinity])assert.equal(api.courseGrade({...course,assignments:[{...work,possible}]}),null);
 });
+
+test("nonfinite-earned-points-do-not-produce-infinite-grades", () => {
+assert.equal(api.courseGrade({...course,assignments:[{...work,earned:Infinity}]}),null);
+});
