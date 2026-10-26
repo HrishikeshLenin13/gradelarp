@@ -47,3 +47,7 @@ assert.equal(api.courseGrade({...course,assignments:[{...work,earned:Infinity}]}
 test("weighted-grades-renormalize-active-categories", () => {
 const c={...course,mode:'weighted',categories:[{id:'c',weight:20},{id:'empty',weight:80}]};assert.equal(api.courseGrade(c),80);
 });
+
+test("zero-weight-categories-do-not-distort-the-average", () => {
+const c={...course,mode:'weighted',categories:[{id:'c',weight:100},{id:'off',weight:0}],assignments:[work,{...work,id:'off',categoryId:'off',earned:0}]};assert.equal(api.courseGrade(c),80);
+});
