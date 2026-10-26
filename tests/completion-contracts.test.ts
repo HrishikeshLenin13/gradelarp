@@ -127,3 +127,7 @@ assert.deepEqual(api.categoryBreakdown(course).map(c=>c.id),['c']);assert.equal(
 test("snapshots-are-detached-from-later-assignment-edits", () => {
 const c=structuredClone(course),s=api.snapshotScores([c]);c.assignments[0].earned=0;assert.equal(s.grades.c,80);
 });
+
+test("invalid-semester-end-dates-remain-unknown", () => {
+for(const date of ['bad','2026-02-30','2026-13-01'])assert.equal(api.semesterDaysRemaining(date,now),null);
+});
