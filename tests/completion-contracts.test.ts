@@ -171,3 +171,7 @@ assert.equal(api.semesterStudyDaysRemaining('2026-10-30',now,[]),0);
 test("invalid-study-weekday-coordinates-are-rejected", () => {
 for(const days of [[7],[-1],[1.5]])assert.throws(()=>api.semesterStudyDaysRemaining('2026-10-30',now,days));
 });
+
+test("semester-progress-is-bounded-at-both-ends", () => {
+assert.equal(api.semesterProgress('2026-01-01','2026-06-01',new Date(2025,0,1)),0);assert.equal(api.semesterProgress('2026-01-01','2026-06-01',new Date(2027,0,1)),100);
+});
