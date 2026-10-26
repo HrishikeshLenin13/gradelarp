@@ -183,3 +183,7 @@ assert.equal(api.semesterProgress('2026-06-01','2026-01-01',now),0);
 test("empty-real-history-does-not-invent-a-trend", () => {
 assert.deepEqual(api.courseGradeTrend([],'c','fall'),{records:[],change:null});
 });
+
+test("trend-filters-other-semesters-and-sorts-real-timestamps", () => {
+const s=[{at:'2026-02-01',semester:'fall',grades:{c:90}},{at:'2026-01-01',semester:'fall',grades:{c:80}},{at:'2026-03-01',semester:'spring',grades:{c:20}}];assert.equal(api.courseGradeTrend(s,'c','fall').change,10);assert.equal(s[0].grades.c,90);
+});
