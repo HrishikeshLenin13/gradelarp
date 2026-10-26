@@ -111,3 +111,7 @@ const c={...course,level:'AP',assignments:[{...work,earned:100}]};assert.ok(api.
 test("cumulative-gpa-rejects-invalid-prior-credit-inputs", () => {
 for(const priorCredits of [-1,Infinity,NaN])assert.equal(api.cumulativeGpa([course],{...defaultPolicy,priorCredits}),null);
 });
+
+test("cumulative-gpa-rejects-invalid-prior-grade-inputs", () => {
+assert.equal(api.cumulativeGpa([course],{...defaultPolicy,priorGpa:NaN}),null);
+});
