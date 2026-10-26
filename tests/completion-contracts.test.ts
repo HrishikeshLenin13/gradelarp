@@ -19,3 +19,7 @@ assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',
 test("exclude-ungraded-assignments-from-grade-totals", () => {
 assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',status:'ungraded',earned:0,possible:900}]}),80);
 });
+
+test("exclude-dropped-assignments-from-grade-totals", () => {
+assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',status:'dropped',earned:0,possible:900}]}),80);
+});
