@@ -31,3 +31,7 @@ assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',
 test("missing-work-counts-as-zero-earned-points", () => {
 assert.equal(api.courseGrade({...course,assignments:[{...work,status:'missing',earned:80}]}),0);
 });
+
+test("point-grades-weight-by-possible-points", () => {
+assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'small',earned:0,possible:25}]}),64);
+});
