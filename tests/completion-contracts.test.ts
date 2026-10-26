@@ -11,3 +11,7 @@ const now=new Date(2026,9,23,12);
 test("empty-grades-remain-unknown", () => {
 assert.equal(api.courseGrade({...course,assignments:[]}),null);assert.equal(api.averageGrade([]),null);
 });
+
+test("exclude-future-assignments-from-grade-totals", () => {
+assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',status:'future',earned:0,possible:900}]}),80);
+});
