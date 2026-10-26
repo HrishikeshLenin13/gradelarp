@@ -103,3 +103,4 @@ The Next.js runtime and matching ESLint configuration are pinned to the same pat
 
 - [Feature usage and API contracts](docs/RECENT_IMPROVEMENTS.md)
 - [Troubleshooting and recovery](docs/TROUBLESHOOTING.md)
+- [Contributor checks and change review](docs/CONTRIBUTOR_CHECKLIST.md)
