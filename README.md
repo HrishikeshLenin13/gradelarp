@@ -98,3 +98,7 @@ This is not a school-attendance-day count: weekends, holidays, and school closur
 ## Framework maintenance
 
 The Next.js runtime and matching ESLint configuration are pinned to the same patched release. The lockfile also updates the affected HTTP-client dependency. Run `npm ci`, the checks above, and `npm run build` after changing framework dependencies.
+
+## Developer resources
+
+- [Feature usage and API contracts](docs/RECENT_IMPROVEMENTS.md)
