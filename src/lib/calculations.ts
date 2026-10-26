@@ -35,6 +35,7 @@ export function courseGrade(course: Course): number | null {
     }
     return possible ? (earned / possible) * 100 : null;
   }
+  if (new Set(course.categories.map(c => c.id)).size !== course.categories.length || course.categories.some(c => !Number.isFinite(c.weight) || c.weight < 0)) return null;
   const totals = categoryTotals(course.assignments);
   let total = 0,
     weights = 0;
