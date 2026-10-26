@@ -59,3 +59,7 @@ assert.equal(api.courseGrade({...course,mode:'weighted',categories:[...course.ca
 test("negative-category-weights-are-not-normalized-away", () => {
 assert.equal(api.courseGrade({...course,mode:'weighted',categories:[{id:'c',weight:-1}]}),null);
 });
+
+test("snapshot-percentages-distinguish-future-and-missing", () => {
+assert.equal(api.assignmentPercent({...work,status:'future'}),null);assert.equal(api.assignmentPercent({...work,status:'missing'}),0);
+});
