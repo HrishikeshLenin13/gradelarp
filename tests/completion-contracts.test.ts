@@ -175,3 +175,7 @@ for(const days of [[7],[-1],[1.5]])assert.throws(()=>api.semesterStudyDaysRemain
 test("semester-progress-is-bounded-at-both-ends", () => {
 assert.equal(api.semesterProgress('2026-01-01','2026-06-01',new Date(2025,0,1)),0);assert.equal(api.semesterProgress('2026-01-01','2026-06-01',new Date(2027,0,1)),100);
 });
+
+test("reversed-semesters-do-not-produce-invalid-progress", () => {
+assert.equal(api.semesterProgress('2026-06-01','2026-01-01',now),0);
+});
