@@ -87,3 +87,7 @@ for(const target of [NaN,Infinity])assert.equal(api.requiredScore(course,work,ta
 test("required-score-zero-needs-no-positive-points", () => {
 assert.equal(api.requiredScore(course,work,0),0);
 });
+
+test("attainable-grade-range-preserves-inputs", () => {
+const before=JSON.stringify(course);assert.deepEqual(api.assignmentGradeRange(course,work),{minimum:0,maximum:100});assert.equal(JSON.stringify(course),before);
+});
