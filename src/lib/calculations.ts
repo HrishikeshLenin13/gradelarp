@@ -141,6 +141,15 @@ export function categoryBreakdown(course: Course) {
     };
   });
 }
+/** Remaining calendar days, excluding today; null means no valid end date. */
+export function semesterDaysRemaining(end: string, now = new Date()): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(end) || !Number.isFinite(now.getTime())) return null;
+  const finish = new Date(end + "T00:00:00Z");
+  if (!Number.isFinite(finish.getTime()) || finish.toISOString().slice(0, 10) !== end) return null;
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  return Math.max(0, Math.round((finish.getTime() - today) / 86_400_000));
+}
+
 export function semesterProgress(start: string, end: string, now = new Date()) {
   const from = new Date(start + "T00:00:00").getTime(),
     to = new Date(end + "T23:59:59").getTime();

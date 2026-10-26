@@ -88,3 +88,9 @@ Scroll down to move through the study-desk scene. The camera follows a continuou
 **3D controls** lets you rotate the gradebook, open the cover and switch pages with a keyboard or touch. **Reset view** returns to the scroll-driven pose. Motion settles instead of running a permanent animation loop, and reduced-motion preferences are respected.
 
 In the app, choose **Any other HAC district** to enter a district's official portal if it isn't one of the quick picks.
+
+## Semester countdown
+
+When a manual profile has configured term dates, the workspace shows **calendar days remaining** next to semester progress. Today is excluded; a semester ending today or in the past shows zero. The countdown follows local calendar dates rather than elapsed 24-hour periods, and invalid dates show no numeric estimate.
+
+This is not a school-attendance-day count: weekends, holidays, and school closures are not subtracted. School-reported grades and HAC records remain read-only. Run `npm test -- --maxWorkers=2 --testTimeout=30000` and `npm run typecheck` to check the planning helpers and workspace types.

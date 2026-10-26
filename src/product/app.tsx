@@ -45,7 +45,7 @@ import { CourseEditor, newCourse } from "@/components/course-editor";
 import { CoursesPanel, TrendsPanel } from "@/components/panels";
 import { LabCourseChart } from "@/design-lab/charts";
 import { readableAccent, onAccent } from "@/design-lab/contrast";
-import { semesterProgress } from "@/lib/calculations";
+import { semesterProgress, semesterDaysRemaining } from "@/lib/calculations";
 import type { Course } from "@/lib/model";
 import { download } from "@/lib/import-export";
 import { cn, uid } from "@/lib/utils";
@@ -694,6 +694,7 @@ export function GradelarpApp() {
                             )}
                             % of configured dates elapsed
                           </b>
+                          <span>{semesterDaysRemaining(period.end) ?? "—"} calendar days remaining</span>
                         </>
                       ) : (
                         <>
