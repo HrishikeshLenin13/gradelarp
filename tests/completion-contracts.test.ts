@@ -135,3 +135,7 @@ for(const date of ['bad','2026-02-30','2026-13-01'])assert.equal(api.semesterDay
 test("past-semester-ends-never-have-negative-remaining-days", () => {
 assert.equal(api.semesterDaysRemaining('2026-01-01',now),0);
 });
+
+test("calendar-days-exclude-the-current-day", () => {
+assert.equal(api.semesterDaysRemaining('2026-10-23',now),0);assert.equal(api.semesterDaysRemaining('2026-10-24',now),1);
+});
