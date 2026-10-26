@@ -75,3 +75,7 @@ const c=api.scenarioCourse(course,work,90);assert.equal(c.assignments.length,1);
 test("scenario-appends-new-assignments-without-mutating-input", () => {
 const c=api.scenarioCourse(course,{...work,id:'new'},50);assert.equal(c.assignments.length,2);assert.equal(course.assignments.length,1);
 });
+
+test("required-score-reports-unattainable-targets", () => {
+assert.equal(api.requiredScore(course,work,101),null);
+});
