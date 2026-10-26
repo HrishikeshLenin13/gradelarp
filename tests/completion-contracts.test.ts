@@ -51,3 +51,7 @@ const c={...course,mode:'weighted',categories:[{id:'c',weight:20},{id:'empty',we
 test("zero-weight-categories-do-not-distort-the-average", () => {
 const c={...course,mode:'weighted',categories:[{id:'c',weight:100},{id:'off',weight:0}],assignments:[work,{...work,id:'off',categoryId:'off',earned:0}]};assert.equal(api.courseGrade(c),80);
 });
+
+test("duplicate-weighted-category-ids-are-ambiguous", () => {
+assert.equal(api.courseGrade({...course,mode:'weighted',categories:[...course.categories,...course.categories]}),null);
+});
