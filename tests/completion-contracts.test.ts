@@ -131,3 +131,7 @@ const c=structuredClone(course),s=api.snapshotScores([c]);c.assignments[0].earne
 test("invalid-semester-end-dates-remain-unknown", () => {
 for(const date of ['bad','2026-02-30','2026-13-01'])assert.equal(api.semesterDaysRemaining(date,now),null);
 });
+
+test("past-semester-ends-never-have-negative-remaining-days", () => {
+assert.equal(api.semesterDaysRemaining('2026-01-01',now),0);
+});
