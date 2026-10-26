@@ -80,6 +80,7 @@ export function gpa(courses: Course[], policy: GpaPolicy, weighted = true) {
   return credits ? { value: sum / credits, credits, qualityPoints: sum } : null;
 }
 export function cumulativeGpa(courses: Course[], policy: GpaPolicy) {
+  if (!Number.isFinite(policy.priorCredits) || policy.priorCredits < 0 || !Number.isFinite(policy.priorGpa) || policy.priorGpa < 0) return null;
   const current = gpa(courses, policy);
   const credits = (current?.credits ?? 0) + policy.priorCredits;
   return credits

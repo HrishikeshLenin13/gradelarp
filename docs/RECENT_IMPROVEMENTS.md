@@ -35,3 +35,7 @@ Run from the repository root:
 npm test -- --maxWorkers=2 --testTimeout=30000 && npm run typecheck
 ```
 
+
+## Robust planning and history APIs
+
+Malformed included point totals and ambiguous weighted categories return unknown grades rather than poisoned values; zero-possible extra credit remains valid. `semesterStudyDaysRemaining` supports explicit weekday sets and exclusions without claiming school-calendar sync. `courseGradeTrend` derives changes only from valid recorded snapshots in the requested semester and does not mutate history or invent samples. Cumulative GPA rejects invalid prior-credit metadata.
