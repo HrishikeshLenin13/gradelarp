@@ -15,3 +15,7 @@ assert.equal(api.courseGrade({...course,assignments:[]}),null);assert.equal(api.
 test("exclude-future-assignments-from-grade-totals", () => {
 assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',status:'future',earned:0,possible:900}]}),80);
 });
+
+test("exclude-ungraded-assignments-from-grade-totals", () => {
+assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',status:'ungraded',earned:0,possible:900}]}),80);
+});
