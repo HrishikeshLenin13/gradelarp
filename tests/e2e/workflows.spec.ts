@@ -1035,3 +1035,10 @@ test("tablet and wide layouts preserve Expressive hierarchy and accessible contr
     });
   }
 });
+
+
+test("configured semester shows a calendar-day countdown", async ({ page }) => {
+  await expect(page.locator(".product-semester-progress")).toContainText(/\d+ calendar days remaining/);
+  await expect(page.getByRole("progressbar", { name: "Semester calendar progress" })).toBeVisible();
+  await fit(page);
+});

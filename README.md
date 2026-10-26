@@ -94,3 +94,7 @@ In the app, choose **Any other HAC district** to enter a district's official por
 When a manual profile has configured term dates, the workspace shows **calendar days remaining** next to semester progress. Today is excluded; a semester ending today or in the past shows zero. The countdown follows local calendar dates rather than elapsed 24-hour periods, and invalid dates show no numeric estimate.
 
 This is not a school-attendance-day count: weekends, holidays, and school closures are not subtracted. School-reported grades and HAC records remain read-only. Run `npm test -- --maxWorkers=2 --testTimeout=30000` and `npm run typecheck` to check the planning helpers and workspace types.
+
+## Framework maintenance
+
+The Next.js runtime and matching ESLint configuration are pinned to the same patched release. The lockfile also updates the affected HTTP-client dependency. Run `npm ci`, the checks above, and `npm run build` after changing framework dependencies.
