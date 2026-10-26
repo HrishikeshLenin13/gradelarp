@@ -179,3 +179,7 @@ assert.equal(api.semesterProgress('2026-01-01','2026-06-01',new Date(2025,0,1)),
 test("reversed-semesters-do-not-produce-invalid-progress", () => {
 assert.equal(api.semesterProgress('2026-06-01','2026-01-01',now),0);
 });
+
+test("empty-real-history-does-not-invent-a-trend", () => {
+assert.deepEqual(api.courseGradeTrend([],'c','fall'),{records:[],change:null});
+});
