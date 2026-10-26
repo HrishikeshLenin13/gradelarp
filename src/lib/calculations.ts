@@ -23,6 +23,7 @@ function categoryTotals(assignments: Assignment[]) {
   return totals;
 }
 export function courseGrade(course: Course): number | null {
+  if (course.assignments.some(a => included(a) && (!Number.isFinite(a.possible) || a.possible < 0 || (a.status === "graded" && a.earned !== null && !Number.isFinite(a.earned))))) return null;
   if (course.mode === "points") {
     let earned = 0,
       possible = 0;
