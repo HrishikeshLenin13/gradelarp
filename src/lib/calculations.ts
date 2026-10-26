@@ -229,3 +229,24 @@ export function assignmentChanges(
   }
   return changes.reverse();
 }
+
+/** Weekday planning estimate; explicit exclusions are not school-calendar sync. */
+export function semesterWeekdaysRemaining(end: string, now = new Date(), excludedDates: string[] = []): number | null {
+  const days = semesterDaysRemaining(end, now);
+  if (days === null) return null;
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  let result = Math.floor(days / 7) * 5;
+  for (let offset = 1; offset <= days % 7; offset++) {
+    const weekday = new Date(today + offset * 86_400_000).getUTCDay();
+    if (weekday !== 0 && weekday !== 6) result++;
+  }
+  const last = today + days * 86_400_000;
+  for (const date of new Set(excludedDates)) {
+    const at = Date.parse(date + "T00:00:00Z");
+    if (Number.isFinite(at) && at > today && at <= last && new Date(at).toISOString().slice(0,10) === date) {
+      const weekday = new Date(at).getUTCDay();
+      if (weekday !== 0 && weekday !== 6) result--;
+    }
+  }
+  return result;
+}
