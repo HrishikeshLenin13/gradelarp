@@ -99,3 +99,7 @@ assert.equal(api.gpa([{...course,credits:0}],defaultPolicy),null);
 test("gpa-excludes-unknown-grades", () => {
 assert.equal(api.gpa([{...course,assignments:[]}],defaultPolicy),null);
 });
+
+test("gpa-credit-weighting-matches-quality-points", () => {
+const g=api.gpa([course,{...course,id:'second',credits:3}],defaultPolicy);assert.equal(g.credits,4);assert.equal(g.qualityPoints,g.value*4);
+});
