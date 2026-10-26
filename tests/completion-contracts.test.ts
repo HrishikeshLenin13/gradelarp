@@ -107,3 +107,7 @@ const g=api.gpa([course,{...course,id:'second',credits:3}],defaultPolicy);assert
 test("unweighted-gpa-does-not-add-ap-bonuses", () => {
 const c={...course,level:'AP',assignments:[{...work,earned:100}]};assert.ok(api.gpa([c],defaultPolicy,true).value>=api.gpa([c],defaultPolicy,false).value);
 });
+
+test("cumulative-gpa-rejects-invalid-prior-credit-inputs", () => {
+for(const priorCredits of [-1,Infinity,NaN])assert.equal(api.cumulativeGpa([course],{...defaultPolicy,priorCredits}),null);
+});
