@@ -27,3 +27,7 @@ assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',
 test("exclude-exempt-assignments-from-grade-totals", () => {
 assert.equal(api.courseGrade({...course,assignments:[work,{...work,id:'ignored',status:'exempt',earned:0,possible:900}]}),80);
 });
+
+test("missing-work-counts-as-zero-earned-points", () => {
+assert.equal(api.courseGrade({...course,assignments:[{...work,status:'missing',earned:80}]}),0);
+});
