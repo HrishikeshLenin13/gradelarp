@@ -225,23 +225,7 @@ export function assignmentChanges(
 
 /** Weekday planning estimate; explicit exclusions are not school-calendar sync. */
 export function semesterWeekdaysRemaining(end: string, now = new Date(), excludedDates: string[] = []): number | null {
-  const days = semesterDaysRemaining(end, now);
-  if (days === null) return null;
-  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-  let result = Math.floor(days / 7) * 5;
-  for (let offset = 1; offset <= days % 7; offset++) {
-    const weekday = new Date(today + offset * 86_400_000).getUTCDay();
-    if (weekday !== 0 && weekday !== 6) result++;
-  }
-  const last = today + days * 86_400_000;
-  for (const date of new Set(excludedDates)) {
-    const at = Date.parse(date + "T00:00:00Z");
-    if (Number.isFinite(at) && at > today && at <= last && new Date(at).toISOString().slice(0,10) === date) {
-      const weekday = new Date(at).getUTCDay();
-      if (weekday !== 0 && weekday !== 6) result--;
-    }
-  }
-  return result;
+  return semesterStudyDaysRemaining(end, now, [1,2,3,4,5], excludedDates);
 }
 
 /** Non-graded or malformed work has no grade. */
@@ -258,4 +242,27 @@ export function assignmentGradeRange(course: Course, assignment: Assignment) {
   const maximum = courseGrade(scenarioCourse(course, assignment, 100));
   if (minimum === null || maximum === null || !Number.isFinite(minimum) || !Number.isFinite(maximum)) return null;
   return { minimum, maximum };
+}
+
+/** Optional study weekdays use JS weekday numbers, Sunday=0. */
+export function semesterStudyDaysRemaining(end: string, now = new Date(), weekdays: number[] = [1,2,3,4,5], excludedDates: string[] = []): number | null {
+  if (weekdays.some(day => !Number.isInteger(day) || day < 0 || day > 6)) throw new RangeError("Use weekday numbers from zero to six.");
+  const selected = new Set(weekdays);
+  const days = semesterDaysRemaining(end, now);
+  if (days === null) return null;
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  let result = Math.floor(days / 7) * selected.size;
+  for (let offset = 1; offset <= days % 7; offset++) {
+    const weekday = new Date(today + offset * 86_400_000).getUTCDay();
+    if (selected.has(weekday)) result++;
+  }
+  const last = today + days * 86_400_000;
+  for (const date of new Set(excludedDates)) {
+    const at = Date.parse(date + "T00:00:00Z");
+    if (Number.isFinite(at) && at > today && at <= last && new Date(at).toISOString().slice(0,10) === date) {
+      const weekday = new Date(at).getUTCDay();
+      if (selected.has(weekday)) result--;
+    }
+  }
+  return result;
 }
