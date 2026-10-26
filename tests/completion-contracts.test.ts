@@ -163,3 +163,7 @@ assert.equal(api.semesterStudyDaysRemaining('2026-10-30',now,[0,6]),2);
 test("duplicate-study-weekdays-are-counted-once", () => {
 assert.equal(api.semesterStudyDaysRemaining('2026-10-30',now,[1,1,3]),2);
 });
+
+test("empty-study-schedules-have-zero-study-days", () => {
+assert.equal(api.semesterStudyDaysRemaining('2026-10-30',now,[]),0);
+});
