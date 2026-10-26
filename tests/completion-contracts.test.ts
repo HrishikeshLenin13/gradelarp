@@ -67,3 +67,7 @@ assert.equal(api.assignmentPercent({...work,status:'future'}),null);assert.equal
 test("snapshot-percentages-ignore-invalid-denominators", () => {
 for(const possible of [0,-1,Infinity])assert.equal(api.assignmentPercent({...work,possible}),null);
 });
+
+test("scenario-replaces-rather-than-duplicates-assignment-id", () => {
+const c=api.scenarioCourse(course,work,90);assert.equal(c.assignments.length,1);assert.equal(c.assignments[0].earned,90);assert.equal(work.earned,80);
+});
