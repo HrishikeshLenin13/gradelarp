@@ -63,3 +63,7 @@ assert.equal(api.courseGrade({...course,mode:'weighted',categories:[{id:'c',weig
 test("snapshot-percentages-distinguish-future-and-missing", () => {
 assert.equal(api.assignmentPercent({...work,status:'future'}),null);assert.equal(api.assignmentPercent({...work,status:'missing'}),0);
 });
+
+test("snapshot-percentages-ignore-invalid-denominators", () => {
+for(const possible of [0,-1,Infinity])assert.equal(api.assignmentPercent({...work,possible}),null);
+});
