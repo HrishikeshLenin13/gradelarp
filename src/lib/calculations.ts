@@ -117,17 +117,13 @@ export function requiredScore(
   target: number,
 ): number | null {
   if (!Number.isFinite(target) || !Number.isFinite(assignment.possible) || assignment.possible <= 0) return null;
-  const at = (p: number) => courseGrade(scenarioCourse(course, assignment, p));
-  if (at(100) === null || (at(100) ?? 0) + 1e-8 < target) return null;
-  if ((at(0) ?? 0) >= target) return 0;
-  let low = 0,
-    high = 100;
-  for (let i = 0; i < 60; i++) {
-    const middle = (low + high) / 2;
-    if ((at(middle) ?? 0) >= target) high = middle;
-    else low = middle;
-  }
-  return Math.ceil(high * 100 - 1e-8) / 100;
+  const range = assignmentGradeRange(course, assignment);
+  if (!range || range.maximum + 1e-8 < target) return null;
+  if (range.minimum >= target) return 0;
+  const span = range.maximum - range.minimum;
+  if (span <= 0) return null;
+  const percent = (target - range.minimum) / span * 100;
+  return Math.min(100, Math.max(0, Math.ceil(percent * 100 - 1e-8) / 100));
 }
 export function categoryBreakdown(course: Course) {
   const totals = categoryTotals(course.assignments);
