@@ -43,3 +43,7 @@ for(const possible of [-1,NaN,Infinity])assert.equal(api.courseGrade({...course,
 test("nonfinite-earned-points-do-not-produce-infinite-grades", () => {
 assert.equal(api.courseGrade({...course,assignments:[{...work,earned:Infinity}]}),null);
 });
+
+test("weighted-grades-renormalize-active-categories", () => {
+const c={...course,mode:'weighted',categories:[{id:'c',weight:20},{id:'empty',weight:80}]};assert.equal(api.courseGrade(c),80);
+});
