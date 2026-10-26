@@ -55,3 +55,7 @@ const c={...course,mode:'weighted',categories:[{id:'c',weight:100},{id:'off',wei
 test("duplicate-weighted-category-ids-are-ambiguous", () => {
 assert.equal(api.courseGrade({...course,mode:'weighted',categories:[...course.categories,...course.categories]}),null);
 });
+
+test("negative-category-weights-are-not-normalized-away", () => {
+assert.equal(api.courseGrade({...course,mode:'weighted',categories:[{id:'c',weight:-1}]}),null);
+});
