@@ -252,3 +252,12 @@ export function assignmentPercent(assignment: Assignment): number | null {
   if (assignment.status !== "graded" || assignment.earned === null || !Number.isFinite(assignment.earned) || !Number.isFinite(assignment.possible) || assignment.possible <= 0) return null;
   return assignment.earned / assignment.possible * 100;
 }
+
+/** Reachable grade interval; does not mutate a course. */
+export function assignmentGradeRange(course: Course, assignment: Assignment) {
+  if (!Number.isFinite(assignment.possible) || assignment.possible <= 0) return null;
+  const minimum = courseGrade(scenarioCourse(course, assignment, 0));
+  const maximum = courseGrade(scenarioCourse(course, assignment, 100));
+  if (minimum === null || maximum === null || !Number.isFinite(minimum) || !Number.isFinite(maximum)) return null;
+  return { minimum, maximum };
+}
