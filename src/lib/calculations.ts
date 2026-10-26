@@ -62,7 +62,7 @@ export function gpa(courses: Course[], policy: GpaPolicy, weighted = true) {
   const scale = [...policy.scale].sort((a, b) => b.min - a.min);
   for (const course of courses) {
     const grade = courseGrade(course);
-    if (grade === null) continue;
+    if (grade === null || !Number.isFinite(grade) || !Number.isFinite(course.credits) || course.credits <= 0) continue;
     let points =
       scale.find((threshold) => grade >= threshold.min)?.points ?? 0;
     if (weighted && grade >= policy.bonusMinimum)
