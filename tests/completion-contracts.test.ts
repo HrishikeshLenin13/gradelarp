@@ -121,7 +121,7 @@ assert.equal(api.gradeLetter(null,defaultPolicy),'—');assert.equal(typeof api.
 });
 
 test("category-breakdown-preserves-category-order", () => {
-assert.deepEqual(api.categoryBreakdown(course).map(c=>c.id),['c']);assert.equal(api.categoryBreakdown(course)[0].earned,80);
+assert.deepEqual(api.categoryBreakdown(course).map((c: {id: string})=>c.id),['c']);assert.equal(api.categoryBreakdown(course)[0].earned,80);
 });
 
 test("snapshots-are-detached-from-later-assignment-edits", () => {
