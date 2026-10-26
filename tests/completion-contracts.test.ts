@@ -115,3 +115,7 @@ for(const priorCredits of [-1,Infinity,NaN])assert.equal(api.cumulativeGpa([cour
 test("cumulative-gpa-rejects-invalid-prior-grade-inputs", () => {
 assert.equal(api.cumulativeGpa([course],{...defaultPolicy,priorGpa:NaN}),null);
 });
+
+test("grade-letter-keeps-unknown-grades-distinct", () => {
+assert.equal(api.gradeLetter(null,defaultPolicy),'—');assert.equal(typeof api.gradeLetter(100,defaultPolicy),'string');
+});
