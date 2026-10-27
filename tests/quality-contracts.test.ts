@@ -191,3 +191,7 @@ const assignment={...work,id:'new',possible:100,status:'future'};const input={..
 test("weighted-category-renormalization-1", () => {
 const c={...course,mode:'weighted',categories:[{id:'a',weight:0},{id:'b',weight:100}],assignments:[{...work,id:'one',categoryId:'a',earned:80},{...work,id:'two',categoryId:'b',earned:20}]};assert.ok(Math.abs(api.courseGrade(c)-20.0)<1e-9);assert.ok(Math.abs(api.courseGrade({...c,categories:c.categories.map((x:{id:string;weight:number})=>({...x,weight:x.weight*2}))})-20.0)<1e-9);
 });
+
+test("weighted-category-renormalization-2", () => {
+const c={...course,mode:'weighted',categories:[{id:'a',weight:10},{id:'b',weight:90}],assignments:[{...work,id:'one',categoryId:'a',earned:80},{...work,id:'two',categoryId:'b',earned:20}]};assert.ok(Math.abs(api.courseGrade(c)-26.0)<1e-9);assert.ok(Math.abs(api.courseGrade({...c,categories:c.categories.map((x:{id:string;weight:number})=>({...x,weight:x.weight*2}))})-26.0)<1e-9);
+});
