@@ -103,3 +103,7 @@ const days=[6];const value=api.semesterStudyDaysRemaining('2026-11-10',new Date(
 test("selected-weekdays-set-9", () => {
 const days=[0, 6];const value=api.semesterStudyDaysRemaining('2026-11-10',new Date(2026,9,27,12),days);assert.equal(value,4);assert.equal(api.semesterStudyDaysRemaining('2026-11-10',new Date(2026,9,27,12),days,['invalid','2026-10-27','2026-11-11']),value);
 });
+
+test("selected-weekdays-set-10", () => {
+const days=[1, 2, 3, 4, 5];const value=api.semesterStudyDaysRemaining('2026-11-10',new Date(2026,9,27,12),days);assert.equal(value,10);assert.equal(api.semesterStudyDaysRemaining('2026-11-10',new Date(2026,9,27,12),days,['invalid','2026-10-27','2026-11-11']),value);
+});
