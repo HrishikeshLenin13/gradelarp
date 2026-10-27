@@ -131,3 +131,7 @@ const days=[5, 6];const value=api.semesterStudyDaysRemaining('2026-11-10',new Da
 test("points-scenario-range-1", () => {
 const assignment={...work,id:'new',possible:100,status:'future'};const input={...course,assignments:[{...work,earned:50},assignment]};const copy=JSON.stringify(input);const projected=api.scenarioCourse(input,assignment,0);assert.ok(Math.abs(api.courseGrade(projected)-25.0)<1e-9);assert.deepEqual(api.assignmentGradeRange(input,assignment),{minimum:25,maximum:75});assert.equal(JSON.stringify(input),copy);assert.equal(projected.assignments.length,2);
 });
+
+test("points-scenario-range-2", () => {
+const assignment={...work,id:'new',possible:100,status:'future'};const input={...course,assignments:[{...work,earned:50},assignment]};const copy=JSON.stringify(input);const projected=api.scenarioCourse(input,assignment,1);assert.ok(Math.abs(api.courseGrade(projected)-25.5)<1e-9);assert.deepEqual(api.assignmentGradeRange(input,assignment),{minimum:25,maximum:75});assert.equal(JSON.stringify(input),copy);assert.equal(projected.assignments.length,2);
+});
