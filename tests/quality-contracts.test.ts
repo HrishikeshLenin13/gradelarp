@@ -303,3 +303,7 @@ const a={...work,status:"dropped",earned:80};assert.equal(api.assignmentPercent(
 test("assignment-status-exempt-1", () => {
 const a={...work,status:"exempt",earned:0};assert.equal(api.assignmentPercent(a),null);assert.equal(api.included(a),false);assert.equal(api.snapshotScores([{...course,assignments:[a]}]).assignments.c.a.percent,null);
 });
+
+test("assignment-status-exempt-2", () => {
+const a={...work,status:"exempt",earned:80};assert.equal(api.assignmentPercent(a),null);assert.equal(api.included(a),false);assert.equal(api.snapshotScores([{...course,assignments:[a]}]).assignments.c.a.percent,null);
+});
