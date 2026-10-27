@@ -247,3 +247,7 @@ const c={...course,mode:'weighted',categories:[{id:'a',weight:1},{id:'b',weight:
 test("weighted-category-renormalization-15", () => {
 const c={...course,mode:'weighted',categories:[{id:'a',weight:99},{id:'b',weight:1}],assignments:[{...work,id:'one',categoryId:'a',earned:80},{...work,id:'two',categoryId:'b',earned:20}]};assert.ok(Math.abs(api.courseGrade(c)-79.4)<1e-9);assert.ok(Math.abs(api.courseGrade({...c,categories:c.categories.map((x:{id:string;weight:number})=>({...x,weight:x.weight*2}))})-79.4)<1e-9);
 });
+
+test("assignment-status-graded-1", () => {
+const a={...work,status:"graded",earned:null};assert.equal(api.assignmentPercent(a),null);assert.equal(api.included(a),true);assert.equal(api.snapshotScores([{...course,assignments:[a]}]).assignments.c.a.percent,null);
+});
