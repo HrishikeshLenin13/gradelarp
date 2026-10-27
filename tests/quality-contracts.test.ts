@@ -267,3 +267,7 @@ const a={...work,status:"missing",earned:null};assert.equal(api.assignmentPercen
 test("assignment-status-missing-2", () => {
 const a={...work,status:"missing",earned:0};assert.equal(api.assignmentPercent(a),0);assert.equal(api.included(a),true);assert.equal(api.snapshotScores([{...course,assignments:[a]}]).assignments.c.a.percent,0);
 });
+
+test("assignment-status-missing-3", () => {
+const a={...work,status:"missing",earned:80};assert.equal(api.assignmentPercent(a),0);assert.equal(api.included(a),true);assert.equal(api.snapshotScores([{...course,assignments:[a]}]).assignments.c.a.percent,0);
+});
