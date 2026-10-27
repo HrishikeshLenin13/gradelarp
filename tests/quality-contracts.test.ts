@@ -127,3 +127,7 @@ const days=[1, 3, 5];const value=api.semesterStudyDaysRemaining('2026-11-10',new
 test("selected-weekdays-set-15", () => {
 const days=[5, 6];const value=api.semesterStudyDaysRemaining('2026-11-10',new Date(2026,9,27,12),days);assert.equal(value,4);assert.equal(api.semesterStudyDaysRemaining('2026-11-10',new Date(2026,9,27,12),days,['invalid','2026-10-27','2026-11-11']),value);
 });
+
+test("points-scenario-range-1", () => {
+const assignment={...work,id:'new',possible:100,status:'future'};const input={...course,assignments:[{...work,earned:50},assignment]};const copy=JSON.stringify(input);const projected=api.scenarioCourse(input,assignment,0);assert.ok(Math.abs(api.courseGrade(projected)-25.0)<1e-9);assert.deepEqual(api.assignmentGradeRange(input,assignment),{minimum:25,maximum:75});assert.equal(JSON.stringify(input),copy);assert.equal(projected.assignments.length,2);
+});
