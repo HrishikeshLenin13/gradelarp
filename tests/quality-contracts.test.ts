@@ -47,3 +47,7 @@ const now=new Date("2024-02-28T12:00:00");assert.equal(api.semesterDaysRemaining
 test("calendar-planning-boundary-10", () => {
 const now=new Date("2100-02-28T12:00:00");assert.equal(api.semesterDaysRemaining("2100-03-02",now),2);assert.equal(api.semesterWeekdaysRemaining("2100-03-02",now),2);assert.equal(api.semesterStudyDaysRemaining("2100-03-02",now,[0,1,2,3,4,5,6]),2);
 });
+
+test("calendar-planning-boundary-11", () => {
+const now=new Date("2000-02-28T12:00:00");assert.equal(api.semesterDaysRemaining("2000-03-02",now),3);assert.equal(api.semesterWeekdaysRemaining("2000-03-02",now),3);assert.equal(api.semesterStudyDaysRemaining("2000-03-02",now,[0,1,2,3,4,5,6]),3);
+});
