@@ -187,3 +187,7 @@ const assignment={...work,id:'new',possible:100,status:'future'};const input={..
 test("points-scenario-range-15", () => {
 const assignment={...work,id:'new',possible:100,status:'future'};const input={...course,assignments:[{...work,earned:50},assignment]};const copy=JSON.stringify(input);const projected=api.scenarioCourse(input,assignment,100);assert.ok(Math.abs(api.courseGrade(projected)-75.0)<1e-9);assert.deepEqual(api.assignmentGradeRange(input,assignment),{minimum:25,maximum:75});assert.equal(JSON.stringify(input),copy);assert.equal(projected.assignments.length,2);
 });
+
+test("weighted-category-renormalization-1", () => {
+const c={...course,mode:'weighted',categories:[{id:'a',weight:0},{id:'b',weight:100}],assignments:[{...work,id:'one',categoryId:'a',earned:80},{...work,id:'two',categoryId:'b',earned:20}]};assert.ok(Math.abs(api.courseGrade(c)-20.0)<1e-9);assert.ok(Math.abs(api.courseGrade({...c,categories:c.categories.map((x:{id:string;weight:number})=>({...x,weight:x.weight*2}))})-20.0)<1e-9);
+});
