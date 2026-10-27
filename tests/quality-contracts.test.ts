@@ -139,3 +139,7 @@ const assignment={...work,id:'new',possible:100,status:'future'};const input={..
 test("points-scenario-range-3", () => {
 const assignment={...work,id:'new',possible:100,status:'future'};const input={...course,assignments:[{...work,earned:50},assignment]};const copy=JSON.stringify(input);const projected=api.scenarioCourse(input,assignment,10);assert.ok(Math.abs(api.courseGrade(projected)-30.0)<1e-9);assert.deepEqual(api.assignmentGradeRange(input,assignment),{minimum:25,maximum:75});assert.equal(JSON.stringify(input),copy);assert.equal(projected.assignments.length,2);
 });
+
+test("points-scenario-range-4", () => {
+const assignment={...work,id:'new',possible:100,status:'future'};const input={...course,assignments:[{...work,earned:50},assignment]};const copy=JSON.stringify(input);const projected=api.scenarioCourse(input,assignment,25);assert.ok(Math.abs(api.courseGrade(projected)-37.5)<1e-9);assert.deepEqual(api.assignmentGradeRange(input,assignment),{minimum:25,maximum:75});assert.equal(JSON.stringify(input),copy);assert.equal(projected.assignments.length,2);
+});
