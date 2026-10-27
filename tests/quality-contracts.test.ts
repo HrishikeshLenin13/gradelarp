@@ -251,3 +251,7 @@ const c={...course,mode:'weighted',categories:[{id:'a',weight:99},{id:'b',weight
 test("assignment-status-graded-1", () => {
 const a={...work,status:"graded",earned:null};assert.equal(api.assignmentPercent(a),null);assert.equal(api.included(a),true);assert.equal(api.snapshotScores([{...course,assignments:[a]}]).assignments.c.a.percent,null);
 });
+
+test("assignment-status-graded-2", () => {
+const a={...work,status:"graded",earned:0};assert.equal(api.assignmentPercent(a),0);assert.equal(api.included(a),true);assert.equal(api.snapshotScores([{...course,assignments:[a]}]).assignments.c.a.percent,0);
+});
